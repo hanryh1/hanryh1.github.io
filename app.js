@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var recruits = require('./routes/recruits');
+var events = require('./routes/events');
 var session = require('express-session');
 
 var mongoose = require('mongoose');
@@ -25,10 +26,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({secret:'here-we-go-tech', resave: true, saveUninitialized: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/recruits', recruits);
+app.use('/events', events);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

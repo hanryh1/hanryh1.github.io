@@ -2,20 +2,22 @@ var express = require('express');
 var router = express.Router();
 var RecruitController = require('../controllers/recruitController');
 
-router.post('/', RecruitController.createRecruit);
-
-router.get('/', RecruitController.getAllRecruits);
-
-router.get('/:id', RecruitController.getRecruit);
-
-router.get('/:recruitId/times', RecruitController.getTimesForRecruit);
-
 var isAuthenticated = function(req, res, next){
-    if (req.session.user) {
+    if (req.session.authenticated) {
         return next()
     } else{
-    res.status(401).send({'error': 'You must be logged in to complete that action.'});
+        res.redirect('/');
     }
 }
+
+router.post('/', isAuthenticated, RecruitController.createRecruit);
+
+router.get('/', isAuthenticated, RecruitController.getAllRecruits);
+
+router.get('/:id', isAuthenticated, RecruitController.getRecruit);
+
+router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRecruit);
+
+router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);
 
 module.exports = router;

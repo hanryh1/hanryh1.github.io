@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 
 var timeSchema = new mongoose.Schema({
-  time: {type: 'String', required: true},
+  time: {type: 'Number', required: true},
+  timeString: {type: 'String', required: true},
   eventName: {type: 'String', required: true},
   points: {type: 'Number', required: true},
   date: {type: 'Date'},

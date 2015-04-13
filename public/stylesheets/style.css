@@ -1,8 +1,84 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@Lato {
+    font-family: Lato;
+    src: url('http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext');
+}
+* {
+  font-family: Lato, "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #52B3D9;
 }
 
-a {
-  color: #00B7FF;
+a:hover{
+    text-decoration: none;
+}
+
+.centered {
+    margin:auto;
+    width:50%;
+    text-align: center;
+}
+
+.margin-right {
+    margin-right:10px;
+}
+
+.margin-bottom {
+  margin-bottom:10px;
+}
+
+/*Recruits*/
+table{
+    width:100%;
+}
+#add-recruit{
+    width:300px;
+}
+.recruit-container{
+    border-top: 1px solid #D8E6E6;
+    border-bottom: 1px solid #D8E6E6;
+    margin:20px;
+    width:350px;
+}
+
+.delete-btn{
+  margin: 10px 0 10px 0;
+}
+.are-you-sure{
+  display:none;
+}
+
+.error{
+    color: #CF000F;
+    font-size: 20px;
+}
+
+/*Events*/
+#event-selection{
+  padding-right:20px;
+}
+
+#event-rank td, #event-rank th{
+  font-size: 16px;
+  padding:5px;
+}
+/*Navbar*/
+.navbar li a{
+  font-size:16px;
+  color: #000000; 
+}
+
+.navbar li a:hover{
+  background-color:#FAFAFA;
+  color:#52B3D9;
+}
+.navbar-container{
+  border-bottom: 1px solid #D8E6E6;
+  background-color:#FAFAFA;
+  height:55px;
+  margin-bottom:50px;
+}
+
+#logout-link{
+  margin-right:30px;
 }

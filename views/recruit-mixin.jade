@@ -1,8 +1,11 @@
 mixin recruit-mixin(recruit)
   div(id="container-" + recruit._id).recruit-container
-    h4=recruit.name
-    h4="Power Points " + recruit.points
-    table
+    h3=recruit.name
+    h5="Power Points: " + recruit.powerIndex
+    a(href="http://www.collegeswimming.com/swimmer/"+recruit.collegeSwimmingId)
+      span.glyphicon.glyphicon-link
+      |  CollegeSwimming Profile
+    table.table-striped
       tr
         th Event
         th Time
@@ -10,5 +13,10 @@ mixin recruit-mixin(recruit)
       for time in recruit.times
         tr
           td=time.eventName
-          td=time.time
+          td=time.timeString
           td=time.points
+    button.btn.btn-danger.delete-btn Delete Recruit
+    div.are-you-sure
+      p="Are you sure you want to delete "+recruit.name+"?"
+      button.btn.btn-danger.delete-confirm-btn.margin-right.margin-bottom Yes
+      button.btn.btn-default.delete-deny-btn.margin-bottom No!

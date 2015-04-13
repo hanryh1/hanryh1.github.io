@@ -49,4 +49,14 @@ $(document).ready(function(){
     $(".delete-deny-btn").click(function(){
       $(this).closest(".are-you-sure").hide();
     });
+
+    $('#logout-link').click(function(){
+      $.ajax({
+        url: '/logout',
+        type: 'POST',
+        success: function(){
+          window.location = '/';
+        }
+      });
+    });
 });

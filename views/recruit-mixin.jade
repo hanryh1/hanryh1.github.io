@@ -1,0 +1,14 @@
+mixin recruit-mixin(recruit)
+  div(id="container-" + recruit._id).recruit-container
+    h4=recruit.name
+    h4="Power Points " + recruit.points
+    table
+      tr
+        th Event
+        th Time
+        th Power Points
+      for time in recruit.times
+        tr
+          td=time.eventName
+          td=time.time
+          td=time.points

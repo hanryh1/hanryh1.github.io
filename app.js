@@ -6,13 +6,18 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var recruits = require('./routes/recruits');
+var session = require('express-session');
+
+var mongoose = require('mongoose');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+db = mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/stalkmyrecruit");
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -23,7 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/recruits', recruits);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -54,6 +59,14 @@ app.use(function(err, req, res, next) {
         message: err.message,
         error: {}
     });
+});
+
+var debug = require('debug')('stalkmyrecruit');
+
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
 });
 
 

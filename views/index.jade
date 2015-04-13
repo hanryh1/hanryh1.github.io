@@ -1,5 +1,8 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 StalkMyRecruit
+  div#recruits
+    for recruit in recruits
+        mixin recruit-mixin(recruit)
+include recruit-mixin

@@ -29,7 +29,7 @@ $(document).ready(function(){
         type: 'GET',
         data: {eventName: selectedEvent, gender: selectedGender},
         success: function(data){
-            var newHTML = generateHtml("50 Y Free", data);
+            var newHTML = generateHtml(selectedEvent, data);
             $("#event-rank").html(newHTML);
           }, 
         error: function(jqXHR, textStatus, err) {

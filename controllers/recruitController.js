@@ -10,7 +10,7 @@ controller.getAllRecruits = function(req, res) {
         if (err){
             res.render("error", {"error": error});
         } else{
-            Recruit.find({"gender": "F"}).populate("times").exec(function(err, fRecruits){
+            Recruit.find({"gender": "F"}).sort({powerIndex:1}).populate("times").exec(function(err, fRecruits){
                 if (err){
                     res.render("error", {"error": error});
                 } else{

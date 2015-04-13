@@ -6,7 +6,7 @@ var helpers = require("./helpers");
 controller = {};
 
 controller.getAllRecruits = function(req, res) {
-    Recruit.find({"gender": "M"}).populate("times").exec(function(err, mRecruits){
+    Recruit.find({"gender": "M"}).sort({powerIndex:1}).populate("times").exec(function(err, mRecruits){
         if (err){
             res.render("error", {"error": error});
         } else{

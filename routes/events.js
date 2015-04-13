@@ -10,10 +10,10 @@ var isAuthenticated = function(req, res, next){
     }
 }
 
-router.get('/', function(req, res){
+router.get('/', isAuthenticated, function(req, res){
     res.render('events');
 });
 
-router.get('/rank', controller.getTimesByEventAndGender);
+router.get('/rank', isAuthenticated, controller.getTimesByEventAndGender);
 
 module.exports = router;

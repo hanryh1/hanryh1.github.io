@@ -4,6 +4,7 @@
 }
 * {
   font-family: Lato, "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size:14px;
 }
 a {
   color: #52B3D9;
@@ -23,6 +24,10 @@ a:hover{
     margin-right:10px;
 }
 
+.vertical-centered{
+  margin-top:15%;
+  height:50%;
+}
 .margin-bottom {
   margin-bottom:10px;
 }
@@ -80,4 +85,49 @@ table{
 
 #logout-link{
   margin-right:30px;
+}
+
+@media screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2){
+  .vertical-centered{
+    margin-top:40%;
+  }
+  .recruit-container {
+    width:100%;
+  }
+  .centered{
+    width:80%;
+  }
+  #add-recruit{
+    width:60%;
+  }
+  .btn{
+    font-size:3em;
+  }
+  .delete-btn{
+    font-size:2em;
+  }
+  p{
+    font-size:2.5em;
+  }
+  a{
+    font-size:1.5em;
+  }
+  h3{
+    font-size:3.5em;
+  }
+  h5{
+    font-size:2em;
+  }
+  h1{
+    font-size:5em;
+  }
+  h2{
+    font-size:4em;
+  }
+  th{
+    font-size:2.25em;
+  }
+  td {
+    font-size:2.5em;
+  }
 }

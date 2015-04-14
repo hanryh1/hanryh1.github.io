@@ -137,6 +137,7 @@ table{
   }
   .recruit-container {
     width:100%;
+    margin: 0px;
   }
   .centered{
     width:80%;
@@ -173,5 +174,11 @@ table{
   }
   td {
     font-size:2.5em;
+  }
+  .navbar li a{
+    font-size:2.5em;
+  }
+  .navbar-container{
+    height:4.5em;
   }
 }

@@ -106,7 +106,7 @@ table{
   padding-right:20px;
 }
 
-#event-rank td, #event-rank th{
+td, th{
   font-size: 16px;
   padding:5px;
 }

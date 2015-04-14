@@ -32,13 +32,25 @@ a:hover{
   margin-bottom:10px;
 }
 
+.btn-default{
+  -webkit-transition: background-color 0.5s;
+}
+.btn-default:hover{
+  background-color:#BDC3C7;
+}
+
 /*Recruits*/
 table{
     width:100%;
 }
 #add-recruit{
-    width:300px;
+    width:350px;
+    background-color:#FAFAFA;
+    border: 1px solid #D8E6E6;
+    border-radius:10px;
+    padding:20px;
 }
+
 .recruit-container{
     border-top: 1px solid #D8E6E6;
     margin:20px;
@@ -46,7 +58,8 @@ table{
 }
 
 .delete-btn{
-  margin: 10px 0 10px 0;
+  margin: 10px 10px 10px 0;
+  -webkit-transition: background-color 0.5s;
 }
 .are-you-sure{
   display:none;
@@ -55,6 +68,37 @@ table{
 .error{
     color: #CF000F;
     font-size: 20px;
+}
+
+#recruits{
+  margin-top: 50px;
+}
+
+#update-all-btn{
+  margin: auto;
+  background-color: #FFFFFF;
+  border: 1px solid #019875;
+  color: #019875;
+  text-transform: uppercase;
+  -webkit-transition: color 1s;
+  -webkit-transition: background-color 1s;
+}
+
+#update-all-btn:hover{
+  color:#FFFFFF;
+  background-color: #019875;
+}
+
+.update-btn{
+  background-color: #019875;
+  color:#FFFFFF;
+  opacity:.7;
+  -webkit-transition: opacity 0.5s;
+}
+
+.update-btn:hover{
+  color:#FFFFFF;
+  opacity:1;
 }
 
 /*Events*/
@@ -74,7 +118,7 @@ table{
 
 .navbar li a:hover{
   background-color:#FAFAFA;
-  color:#52B3D9;
+  color:#019875;
 }
 .navbar-container{
   border-bottom: 1px solid #D8E6E6;
@@ -103,7 +147,7 @@ table{
   .btn{
     font-size:3em;
   }
-  .delete-btn{
+  .delete-btn, .update-btn{
     font-size:2em;
   }
   p{

@@ -43,7 +43,32 @@ $(document).ready(function(){
           }, error: function(jqXHR, textStatus, err) {
               $("#new-recruit-error").text("Could not delete recruit.");
             }
-        })
+        });
+    });
+
+    $(".update-btn").click(function(){
+        var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
+        $.ajax({
+          url: "/recruits/" + recruitId,
+          type: "PUT",
+          success: function(){
+            window.location.reload(true);
+          }, error: function(jqXHR, textStatus, err) {
+              $("#new-recruit-error").text("Could not update recruit.");
+            }
+        });
+    });
+
+    $("#update-all-btn").click(function(){
+        $.ajax({
+          url: "/recruits",
+          type: "PUT",
+          success: function(){
+            window.location.reload(true);
+          }, error: function(jqXHR, textStatus, err) {
+              $("#new-recruit-error").text("Oops, something went horribly wrong.");
+            }
+        });
     });
 
     $(".delete-deny-btn").click(function(){

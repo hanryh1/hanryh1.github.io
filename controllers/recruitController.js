@@ -2,8 +2,66 @@ var Recruit = require("../models/recruit");
 var request = require("request");
 var Time = require("../models/time");
 var helpers = require("./helpers");
+var async = require('async');
 
 controller = {};
+
+var updateTime = function(recruit, callback){
+    request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId + "/powerindex/", function(error, response, body){
+        if (error){
+            console.log(error);
+        } else if (response.statusCode == 200){
+            var cheerio = require("cheerio"),
+                $ = cheerio.load(body);
+            if ($(".page404").length > 0){
+                callback({"status": 404, "error": "Recruit not found"});
+            } else{
+                Time.remove({"recruit": recruit._id}, function(err){
+                    var data = [];
+                    var name = $(".profile-swimmer-name")[0].children[0].data;
+                    var powerIndex = $(".public-profile-statistic").find("a").first().text()
+                    $("tr").each(function(i, tr){
+                        var children = $(this).children();
+                        var row = {
+                            "eventName": children[0].children[0].data,//innerText,
+                            "time": helpers.convertTimeToNumber(children[1].children[0].data),
+                            "timeString": children[1].children[0].data,
+                            "points": parseInt(children[2].children[0].data)
+                        };
+                        data.push(row);
+                    });
+                    recruit.powerIndex = powerIndex;
+                    recruit.save(function(err, recruit){
+                        if (err){
+                            callback(err);
+                        } else {
+                            var numTimes = 0;
+                            var times = [];
+                            for (var i = 1; i < data.length; i ++){
+                                var time = data[i];
+                                //only care about yard times
+                                if (time["eventName"].indexOf(" Y ") >= 0){
+                                    time["recruit"] = recruit._id;
+                                    var t = new Time(time);
+                                    t.save();
+                                    times.push(t);
+                                    numTimes += 1;
+                                }
+                                if (numTimes > 5) break;
+                            }
+                            recruit["times"] = times;
+                            recruit.save(function (err, recruit){
+                                callback(err, recruit);        
+                            });
+                        }
+                    });
+
+                 });
+
+            }
+        }
+    });
+}
 
 controller.getAllRecruits = function(req, res) {
     Recruit.find({"gender": "M"}).sort({powerIndex:1}).populate("times").exec(function(err, mRecruits){
@@ -20,6 +78,47 @@ controller.getAllRecruits = function(req, res) {
         }
     });
 };
+
+controller.updateAllRecruits = function(req, res){
+    Recruit.find({}, function(err, recruits){
+        var calls = [];
+        recruits.forEach(function(recruit){
+            calls.push(function(callback){
+                updateTime(recruit, function(err, r){
+                    if (err){
+                        return callback(err)
+                    } else{
+                        callback(null, r);
+                    }
+                });
+            });
+        });
+        async.parallel(calls, function(err, result) {
+            if (err){
+                res.status(500).send(err)
+            } 
+            res.status(200).send({"message": "Successful update"})
+        });
+    });
+}
+//get new times for recruit
+controller.updateRecruitTimes = function(req, res){
+    Recruit.findById(req.params.recruitId, function(err, recruit){
+        if (err){
+            res.status(500).send(err)
+        } else if (!recruit){
+            res.status(404).send({"error":"This recruit does not exist."});
+        } else{
+            updateTime(recruit, function(err, recruit){
+                if (err){
+                    res.status(err.status || 500).send(err)
+                } else{
+                    res.status(200).send(recruit);
+                }
+            }); 
+        }
+    });
+}
 
 controller.getTimesForRecruit = function(req, res){
     Time.find({"recruit": req.params.recruitId}, function(err, times){

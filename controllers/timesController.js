@@ -10,7 +10,7 @@ timeController.getTimesByEventAndGender = function(req, res){
     } else{
         var eventName = req.query.eventName;
         var gender = req.query.gender;
-        Time.find({"eventName": eventName}).sort({time: 1}).populate('recruit').exec(function(err, times){
+        Time.find({"eventName": eventName}).sort({time: 1}).populate('recruit', 'name collegeSwimmingId gender').exec(function(err, times){
             if (err){
                 res.status(500).send(err);
             } else{

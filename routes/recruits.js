@@ -18,10 +18,14 @@ router.get('/:id', isAuthenticated, RecruitController.getRecruit);
 
 router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRecruit);
 
+router.post('/:recruitId/times', isAuthenticated, RecruitController.addTimeManually);
+
 router.put('/:recruitId', isAuthenticated, RecruitController.updateRecruitTimes);
 
 router.put('/', isAuthenticated, RecruitController.updateAllRecruits);
 
 router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);
+
+router.delete('/times/:timeId', isAuthenticated, RecruitController.deleteTime);
 
 module.exports = router;

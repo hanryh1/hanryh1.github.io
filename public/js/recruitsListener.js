@@ -1,5 +1,6 @@
 $(document).ready(function(){
     $(".are-you-sure").hide();
+    $(".add-manual-time").hide();
 
     $("#create-recruit-btn").click(function(evt){
       evt.preventDefault();
@@ -12,7 +13,6 @@ $(document).ready(function(){
         $("#new-recruit-error").text("You must select a gender!");
         return;
       }
-      console.log(formData);
       $.ajax({
         url: window.location.pathname,
         type: "POST",
@@ -41,23 +41,60 @@ $(document).ready(function(){
           success: function(){
             window.location.reload(true);
           }, error: function(jqXHR, textStatus, err) {
-              $("#new-recruit-error").text("Could not delete recruit.");
+              $("#container-" + recruitId).find(".recruit-error").text("Could not delete recruit.");
             }
         });
     });
 
-    $(".update-btn").click(function(){
-        var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
+    $(".add-update-btn").click(function(){
+        $(this).hide();
+        $(this).closest(".recruit-container").find(".add-manual-time").show();
+    });
+
+    $(".new-time-btn").click(function(evt){
+        evt.preventDefault;
+        var recruitId = $(this).attr("id").substring(9);
+        var time = $(this).closest(".add-manual-time").find(".new-time-input").val();
+        var eventName = $(this).closest(".add-manual-time").find(".new-event-select").val();
+        if (!/^([0-9]{1,2}:)?[0-9]{2}.[0-9]{1,2}$/.test(time)){
+           $("#container-" + recruitId).find(".recruit-error").text("Please enter a valid time.");
+           return;
+        }
         $.ajax({
-          url: "/recruits/" + recruitId,
-          type: "PUT",
-          success: function(){
-            window.location.reload(true);
+          url: "/recruits/" + recruitId + "/times",
+          type: "POST",
+          data: {"time": time, "eventName":eventName},
+          success: function(time){
+            $(".error").hide();
+            var timesTable = $("#container-" + recruitId).find(".table-striped");
+            var html = timesTable.html().substring(0,timesTable.html().length-8);
+            html += "<tr><td>"+time.eventName+"</td><td>"+time.timeString+"</td><td>-</td></tr></table>"
+            timesTable.html(html);
           }, error: function(jqXHR, textStatus, err) {
-              $("#new-recruit-error").text("Could not update recruit.");
+              var errMsg = JSON.parse(jqXHR.responseText).error;
+              $("#container-" + recruitId).find(".recruit-error").text(errMsg || "Could not add new time.");
             }
         });
     });
+
+    $(".time-cancel-btn").click(function(){
+        var recruitId = $(this).closest(".recruit-container").find(".add-manual-time").hide();
+        $(".error").hide();
+        $(".add-update-btn").show();
+    });
+
+    $(".delete-time-btn").click(function(){
+      var timeId = $(this).closest("tr").attr("id").substring(5);
+      $.ajax({
+        url: "/recruits/times/"+timeId,
+        type: "DELETE",
+        success: function(){
+          $("#time-"+timeId).hide();
+        }, error: function(jqXHR, textStatus, err){
+          console.log("You messed up somehow");
+        }
+      });
+    })
 
     $("#update-all-btn").click(function(){
         $.ajax({

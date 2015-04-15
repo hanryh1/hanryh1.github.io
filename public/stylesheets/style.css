@@ -20,16 +20,25 @@ a:hover, a:active, a:focus{
     text-align: center;
 }
 
+.margin-right-5 {
+    margin-right:5px;
+}
+
 .margin-right {
     margin-right:10px;
+}
+
+.margin-bottom {
+  margin-bottom:10px;
+}
+
+.margin-top{
+  margin-top:10px;
 }
 
 .vertical-centered{
   margin-top:15%;
   height:50%;
-}
-.margin-bottom {
-  margin-bottom:10px;
 }
 
 .btn-default{
@@ -70,6 +79,11 @@ table{
     font-size: 20px;
 }
 
+.inline{
+  display:inline-block;
+  padding-right:5px;
+}
+
 #recruits{
   margin-top: 50px;
 }
@@ -96,6 +110,28 @@ table{
   -webkit-transition: opacity 0.5s;
 }
 
+.btn-circle {
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 10px;
+  border-radius: 10px;
+  float:right;
+}
+
+.btn-circle .glyphicon{
+  top:0px;
+  line-height:2px;
+}
+
+.delete-time-btn{
+  display:none;
+}
+
+td:hover .delete-time-btn{
+  display: block;
+}
 .update-btn:hover, .update-btn:focus, .update-btn:active{
   color:#FFFFFF;
   opacity:1;

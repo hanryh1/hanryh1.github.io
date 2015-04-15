@@ -16,7 +16,7 @@ var updateTime = function(recruit, callback){
             if ($(".page404").length > 0){
                 callback({"status": 404, "error": "Recruit not found"});
             } else{
-                Time.remove({"recruit": recruit._id}, function(err){
+                Time.remove({"recruit": recruit._id, "manual": {$ne:true}}, function(err){
                     var data = [];
                     var name = $(".profile-swimmer-name")[0].children[0].data;
                     var powerIndex = $(".public-profile-statistic").find("a").first().text()
@@ -50,14 +50,16 @@ var updateTime = function(recruit, callback){
                                 if (numTimes > 5) break;
                             }
                             recruit["times"] = times;
-                            recruit.save(function (err, recruit){
-                                callback(err, recruit);        
+                            Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes){
+                                console.log(manualTimes);
+                                recruit["times"] = recruit["times"].concat(manualTimes);
+                                recruit.save(function (err, recruit){
+                                    callback(err, recruit);        
+                                });
                             });
                         }
                     });
-
                  });
-
             }
         }
     });
@@ -130,22 +132,68 @@ controller.getTimesForRecruit = function(req, res){
     });
 }
 
+controller.deleteTime = function(req, res){
+    Time.findById(req.params.timeId, function(err, time){
+        console.log(time);
+        if (err){
+            res.status(500).send(err);
+        } else if (!time){
+            res.status(404).send({"error": "This time does not exist."});
+        } else{
+            Recruit.findById(time.recruit, function(err, recruit){
+                if (err){
+                    res.status(500).send(err);
+                } else if (!recruit){
+                    res.status(500).send({"error": "This time does not belong to a recruit."});
+                } else{
+                    var timeIndex = recruit.times.indexOf(time._id);
+                    recruit.times.splice(timeIndex, 1);
+                    recruit.save(function(err){
+                        if (err){
+                            res.status(500).send(err);
+                        } else{
+                            time.remove();
+                            res.status(200).send({"message": "Time successfully deleted."});
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
 controller.addTimeManually = function(req, res){
     Recruit.findById(req.params.recruitId, function(err, recruit){
         if (err){
             res.status(500).send(err)
         } else {
-            var t = new Time({"time": req.body.time, "eventName": req.body.eventName, "powerPoints": 0});
-            t.save(function(err, time){
+            Time.findOne({"eventName": req.body.eventName, "recruit": recruit._id}, function(err, time){
                 if (err){
-                    res.status(500).send(err);
-                } else{
-                    recruit.times.push(time._id);
-                    recruit.save(function(err, r){
+                    res.status(500).send(err)
+                } else {
+                    var newTime = helpers.convertTimeToNumber(req.body.time);
+                    if (time){
+                        if (time.time <= newTime){
+                            return res.status(400).send({"error": "This time isn't faster than an existing time."});
+                        } else {
+                            var timeIndex = recruit.times.indexOf(time._id);
+                            recruit.times.slice(timeIndex, 1);
+                            recruit.save();
+                            time.remove();
+                        }
+                    }
+                    var t = new Time({"timeString": req.body.time, "time": newTime,"eventName": req.body.eventName, "powerPoints": 0, "manual": true, "recruit": recruit._id});
+                    t.save(function(err, time){
                         if (err){
                             res.status(500).send(err);
                         } else{
-                            res.status(201).send(time);
+                            recruit.times.push(time._id);
+                            recruit.save(function(err, r){
+                                if (err){
+                                    res.status(500).send(err);
+                                } else{
+                                    res.status(201).send(time);
+                                }
+                            });
                         }
                     });
                 }

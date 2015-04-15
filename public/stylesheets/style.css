@@ -186,8 +186,12 @@ td, th{
 }
 
 @media screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2){
-   .recruit-container {
-    width:90%;
+  .inline{
+    display:inline-block;
+    margin-bottom:5px;
+  }
+  .recruit-container {
+    width:92%;
   }
   .centered{
     width:90%;

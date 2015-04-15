@@ -203,4 +203,8 @@ td, th{
   .centered{
     width:90%;
   }
+
+  .events-container{
+    margin-bottom:100px;
+  }
 }

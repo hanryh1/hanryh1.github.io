@@ -49,6 +49,9 @@ var updateTime = function(recruit, callback){
                                 var times = [];
                                 for (var i = 1; i < data.length; i ++){
                                     var time = data[i];
+                                    if (time.points > 70){
+                                        continue;
+                                    }
                                     //only care about yard times
                                     if (time.eventName.indexOf(" Y ") >= 0){
                                         var manualEvent = findMatchingEvent(manualTimes, time.eventName);

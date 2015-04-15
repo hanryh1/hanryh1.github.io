@@ -56,7 +56,7 @@ $(document).ready(function(){
         var recruitId = $(this).attr("id").substring(9);
         var time = $(this).closest(".add-manual-time").find(".new-time-input").val();
         var eventName = $(this).closest(".add-manual-time").find(".new-event-select").val();
-        if (!/^([0-9]{1,2}:)?[0-9]{2}.[0-9]{1,2}$/.test(time)){
+        if (!/^([0-9]{1,2}:)?[0-9]{2}\.[0-9]{1,2}$/.test(time)){
            $("#container-" + recruitId).find(".recruit-error").text("Please enter a valid time.");
            return;
         }
@@ -72,7 +72,7 @@ $(document).ready(function(){
             timesTable.html(html);
           }, error: function(jqXHR, textStatus, err) {
               var errMsg = JSON.parse(jqXHR.responseText).error;
-              $("#container-" + recruitId).find(".recruit-error").text(errMsg || "Could not add new time.");
+              $("#container-" + recruitId).find(".recruit-error").text(errMsg || "Could not add new time.").show();
             }
         });
     });

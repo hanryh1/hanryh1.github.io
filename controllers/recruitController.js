@@ -6,6 +6,15 @@ var async = require('async');
 
 controller = {};
 
+var findMatchingEvent = function(events, eventName){
+    for (var i=0; i < events.length; i++){
+        if (events[i].eventName == eventName){
+            events[i].index = i;
+            return events[i];
+        }
+    }
+    return -1;
+}
 var updateTime = function(recruit, callback){
     request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId + "/powerindex/", function(error, response, body){
         if (error){
@@ -20,46 +29,56 @@ var updateTime = function(recruit, callback){
                     var data = [];
                     var name = $(".profile-swimmer-name")[0].children[0].data;
                     var powerIndex = $(".public-profile-statistic").find("a").first().text()
-                    $("tr").each(function(i, tr){
-                        var children = $(this).children();
-                        var row = {
-                            "eventName": children[0].children[0].data,//innerText,
-                            "time": helpers.convertTimeToNumber(children[1].children[0].data),
-                            "timeString": children[1].children[0].data,
-                            "points": parseInt(children[2].children[0].data)
-                        };
-                        data.push(row);
-                    });
-                    recruit.powerIndex = powerIndex;
-                    recruit.save(function(err, recruit){
-                        if (err){
-                            callback(err);
-                        } else {
-                            var numTimes = 0;
-                            var times = [];
-                            for (var i = 1; i < data.length; i ++){
-                                var time = data[i];
-                                //only care about yard times
-                                if (time["eventName"].indexOf(" Y ") >= 0){
-                                    time["recruit"] = recruit._id;
-                                    var t = new Time(time);
-                                    t.save();
-                                    times.push(t);
-                                    numTimes += 1;
+                    Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes){
+                        $("tr").each(function(i, tr){
+                            var children = $(this).children();
+                            var row = {
+                                "eventName": children[0].children[0].data,//innerText,
+                                "time": helpers.convertTimeToNumber(children[1].children[0].data),
+                                "timeString": children[1].children[0].data,
+                                "points": parseInt(children[2].children[0].data)
+                            };
+                            data.push(row);
+                        });
+                        recruit.powerIndex = powerIndex;
+                        recruit.save(function(err, recruit){
+                            if (err){
+                                callback(err);
+                            } else {
+                                var numTimes = 0;
+                                var times = [];
+                                for (var i = 1; i < data.length; i ++){
+                                    var time = data[i];
+                                    //only care about yard times
+                                    if (time.eventName.indexOf(" Y ") >= 0){
+                                        var manualEvent = findMatchingEvent(manualTimes, time.eventName);
+                                        if (manualEvent != -1){
+                                            if (manualEvent.time < time.time){
+                                                numTimes +=1;
+                                                if (numTimes > 6) break;
+                                                continue;
+                                            } else{
+                                                manualTimes[manualEvent.index].remove();
+                                                manualTimes.slice(manualEvent.index,1);
+                                            }
+                                        }
+                                        time["recruit"] = recruit._id;
+                                        var t = new Time(time);
+                                        t.save();
+                                        times.push(t);
+                                        numTimes += 1;
+                                    }
+                                    if (numTimes > 6) break;
                                 }
-                                if (numTimes > 5) break;
-                            }
-                            recruit["times"] = times;
-                            Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes){
-                                console.log(manualTimes);
-                                recruit["times"] = recruit["times"].concat(manualTimes);
+                                recruit.times = times;
+                                recruit.times = recruit.times.concat(manualTimes);
                                 recruit.save(function (err, recruit){
                                     callback(err, recruit);        
                                 });
-                            });
-                        }
+                            }
+                        });
                     });
-                 });
+                });
             }
         }
     });

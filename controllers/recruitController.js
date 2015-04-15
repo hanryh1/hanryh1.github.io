@@ -62,7 +62,7 @@ var updateTime = function(recruit, callback){
                                                 manualTimes.slice(manualEvent.index,1);
                                             }
                                         }
-                                        time["recruit"] = recruit._id;
+                                        time.recruit = recruit._id;
                                         var t = new Time(time);
                                         t.save();
                                         times.push(t);
@@ -71,7 +71,7 @@ var updateTime = function(recruit, callback){
                                     if (numTimes > 6) break;
                                 }
                                 recruit.times = times;
-                                recruit.times = recruit.times.concat(manualTimes);
+                                recruit.times = manualTimes.concat(recruit.times);
                                 recruit.save(function (err, recruit){
                                     callback(err, recruit);        
                                 });
@@ -288,8 +288,8 @@ controller.createRecruit = function(req, res) {
                                 for (var i = 1; i < data.length; i ++){
                                     var time = data[i];
                                     //only care about yard times
-                                    if (time["eventName"].indexOf(" Y ") >= 0){
-                                        time["recruit"] = recruit._id;
+                                    if (time.eventName.indexOf(" Y ") >= 0){
+                                        time.recruit = recruit._id;
                                         var t = new Time(time);
                                         t.save();
                                         times.push(t);
@@ -297,7 +297,7 @@ controller.createRecruit = function(req, res) {
                                     }
                                     if (numTimes > 5) break;
                                 }
-                                recruit["times"] = times;
+                                recruit.times = times;
                                 recruit.save(function (err, recruit){
                                     if (err) res.status(500).send(err);
                                     else{

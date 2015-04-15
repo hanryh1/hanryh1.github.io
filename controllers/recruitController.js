@@ -74,7 +74,7 @@ var updateTime = function(recruit, callback){
                                     if (numTimes > 6) break;
                                 }
                                 recruit.times = times;
-                                recruit.times = manualTimes.concat(recruit.times);
+                                recruit.times = recruit.times.concat(manualTimes);
                                 recruit.save(function (err, recruit){
                                     callback(err, recruit);        
                                 });

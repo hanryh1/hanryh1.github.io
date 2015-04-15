@@ -7,6 +7,23 @@ var generateHtml = function(eventName, data){
   newHtml += "</table>"
   return newHtml
 }
+
+var selectNewEvent = function(){
+      var selectedEvent = $("#select-event").find("option:selected").text();
+      var selectedGender = $("#select-gender").find("option:selected").text()[0];
+      $.ajax({
+        url: "/events/rank",
+        type: 'GET',
+        data: {eventName: selectedEvent, gender: selectedGender},
+        success: function(data){
+            var newHTML = generateHtml(selectedEvent, data);
+            $("#event-rank").html(newHTML);
+          }, 
+        error: function(jqXHR, textStatus, err) {
+            $("#event-error").text("Something went wrong.");
+          }
+      });
+}
 $(document).ready(function(){
     $.ajax({
         url: "/events/rank",
@@ -21,22 +38,9 @@ $(document).ready(function(){
           }
     });
 
-    $('#get-event-rank-btn').click(function(){
-      var selectedEvent = $("#select-event").find("option:selected").text();
-      var selectedGender = $("#select-gender").find("option:selected").text()[0];
-      $.ajax({
-        url: "/events/rank",
-        type: 'GET',
-        data: {eventName: selectedEvent, gender: selectedGender},
-        success: function(data){
-            var newHTML = generateHtml(selectedEvent, data);
-            $("#event-rank").html(newHTML);
-          }, 
-        error: function(jqXHR, textStatus, err) {
-            $("#event-error").text("Something went wrong.");
-          }
-        });
-    });
+    $('#select-event').change(selectNewEvent);
+    $('#select-gender').change(selectNewEvent);
+
 
     $('#logout-link').click(function(){
       $.ajax({

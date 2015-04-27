@@ -15,6 +15,7 @@ var findMatchingEvent = function(events, eventName){
     }
     return -1;
 }
+
 var updateTime = function(recruit, callback){
     request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId + "/powerindex/", function(error, response, body){
         if (error){
@@ -33,7 +34,7 @@ var updateTime = function(recruit, callback){
                         $("tr").each(function(i, tr){
                             var children = $(this).children();
                             var row = {
-                                "eventName": children[0].children[0].data,//innerText,
+                                "eventName": children[0].children[0].data,
                                 "time": helpers.convertTimeToNumber(children[1].children[0].data),
                                 "timeString": children[1].children[0].data,
                                 "points": parseInt(children[2].children[0].data)
@@ -156,7 +157,6 @@ controller.getTimesForRecruit = function(req, res){
 
 controller.deleteTime = function(req, res){
     Time.findById(req.params.timeId, function(err, time){
-        console.log(time);
         if (err){
             res.status(500).send(err);
         } else if (!time){
@@ -251,7 +251,7 @@ controller.deleteRecruit = function(req, res){
     });
 }
 
-//get recruit"s information from collegeswimming.com
+//get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
     Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit){
         if (err){

@@ -28,7 +28,6 @@ var updateTime = function(recruit, callback){
             } else{
                 Time.remove({"recruit": recruit._id, "manual": {$ne:true}}, function(err){
                     var data = [];
-                    var name = $(".profile-swimmer-name")[0].children[0].data;
                     var powerIndex = $(".public-profile-statistic").find("a").first().text()
                     Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes){
                         $("tr").each(function(i, tr){
@@ -42,44 +41,38 @@ var updateTime = function(recruit, callback){
                             data.push(row);
                         });
                         recruit.powerIndex = powerIndex;
-                        recruit.save(function(err, recruit){
-                            if (err){
-                                callback(err);
-                            } else {
-                                var numTimes = 0;
-                                var times = [];
-                                for (var i = 1; i < data.length; i ++){
-                                    var time = data[i];
-                                    if (time.points > 70){
-                                        continue;
-                                    }
-                                    //only care about yard times
-                                    if (time.eventName.indexOf(" Y ") >= 0){
-                                        var manualEvent = findMatchingEvent(manualTimes, time.eventName);
-                                        if (manualEvent != -1){
-                                            if (manualEvent.time < time.time){
-                                                numTimes +=1;
-                                                if (numTimes > 6) break;
-                                                continue;
-                                            } else{
-                                                manualTimes[manualEvent.index].remove();
-                                                manualTimes.slice(manualEvent.index,1);
-                                            }
-                                        }
-                                        time.recruit = recruit._id;
-                                        var t = new Time(time);
-                                        t.save();
-                                        times.push(t);
-                                        numTimes += 1;
-                                    }
-                                    if (numTimes > 6) break;
-                                }
-                                recruit.times = times;
-                                recruit.times = recruit.times.concat(manualTimes);
-                                recruit.save(function (err, recruit){
-                                    callback(err, recruit);        
-                                });
+                        var numTimes = 0;
+                        var times = [];
+                        for (var i = 1; i < data.length; i ++){
+                            var time = data[i];
+                            if (time.points > 70){
+                                continue;
                             }
+                            //only care about yard times
+                            if (time.eventName.indexOf(" Y ") >= 0){
+                                var manualEvent = findMatchingEvent(manualTimes, time.eventName);
+                                if (manualEvent != -1){
+                                    if (manualEvent.time < time.time){
+                                        numTimes +=1;
+                                        if (numTimes > 6) break;
+                                        continue;
+                                    } else{
+                                        manualTimes[manualEvent.index].remove();
+                                        manualTimes.slice(manualEvent.index,1);
+                                    }
+                                }
+                                time.recruit = recruit._id;
+                                var t = new Time(time);
+                                t.save();
+                                times.push(t);
+                                numTimes += 1;
+                            }
+                            if (numTimes > 6) break;
+                        }
+                        recruit.times = times;
+                        recruit.times = recruit.times.concat(manualTimes);
+                        recruit.save(function (err, recruit){
+                            callback(err, recruit);        
                         });
                     });
                 });
@@ -286,7 +279,6 @@ controller.createRecruit = function(req, res) {
                             if (err){
                                 res.status(500).send(err);
                             } else {
-                                var numTimes = 0;
                                 var times = [];
                                 for (var i = 1; i < data.length; i ++){
                                     var time = data[i];
@@ -296,9 +288,8 @@ controller.createRecruit = function(req, res) {
                                         var t = new Time(time);
                                         t.save();
                                         times.push(t);
-                                        numTimes += 1;
                                     }
-                                    if (numTimes > 5) break;
+                                    if (times.length > 5) break;
                                 }
                                 recruit.times = times;
                                 recruit.save(function (err, recruit){

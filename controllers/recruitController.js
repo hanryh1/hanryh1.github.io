@@ -28,7 +28,6 @@ var updateTime = function(recruit, callback){
             } else{
                 Time.remove({"recruit": recruit._id, "manual": {$ne:true}}, function(err){
                     var data = [];
-                    var powerIndex = $(".public-profile-statistic").find("a").first().text()
                     Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes){
                         $("tr").each(function(i, tr){
                             var children = $(this).children();
@@ -40,7 +39,6 @@ var updateTime = function(recruit, callback){
                             };
                             data.push(row);
                         });
-                        recruit.powerIndex = powerIndex;
                         var numTimes = 0;
                         var times = [];
                         for (var i = 1; i < data.length; i ++){
@@ -81,6 +79,25 @@ var updateTime = function(recruit, callback){
     });
 }
 
+var updatePowerIndex = function(recruit, callback){
+    request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId, function(error, response, body){
+        if (error){
+            console.log(error);
+        } else if (response.statusCode == 200){
+            powerIndexRegex = new RegExp("/powerindex\">[0-9]{1,2}\.[0-9]{1,2}</a>");
+            powerIndex = body.match(powerIndexRegex);
+            if (!powerIndex) {
+                callback({"error": "Could not get power index", "status": 500}, null);
+            } else{
+                recruit.powerIndex = powerIndex[0].substring(13, powerIndex[0].length-4);
+                recruit.save(function(err, recruit){
+                    callback(err, recruit);
+                });
+            }
+        }
+    });
+}
+
 controller.getAllRecruits = function(req, res) {
     Recruit.find({"gender": "M"}).sort({powerIndex:1}).populate("times").exec(function(err, mRecruits){
         if (err){
@@ -104,9 +121,15 @@ controller.updateAllRecruits = function(req, res){
             calls.push(function(callback){
                 updateTime(recruit, function(err, r){
                     if (err){
-                        return callback(err)
+                        return callback(err);
                     } else{
-                        callback(null, r);
+                        updatePowerIndex(r, function(err, r){
+                            if (err){
+                                return callback(err);
+                            } else{
+                                return callback(null, r);
+                            }
+                        });
                     }
                 });
             });
@@ -114,8 +137,9 @@ controller.updateAllRecruits = function(req, res){
         async.parallel(calls, function(err, result) {
             if (err){
                 res.status(500).send(err)
-            } 
-            res.status(200).send({"message": "Successful update"})
+            } else {
+                res.status(200).send({"message": "Successful update"});
+            }
         });
     });
 }
@@ -128,10 +152,16 @@ controller.updateRecruitTimes = function(req, res){
             res.status(404).send({"error":"This recruit does not exist."});
         } else{
             updateTime(recruit, function(err, recruit){
-                if (err){
-                    res.status(err.status || 500).send(err)
+             if (err){
+                    res.status(500).send(err);
                 } else{
-                    res.status(200).send(recruit);
+                    updatePowerIndex(r, function(err, r){
+                        if (err){
+                            res.status(500).send(err);
+                        } else{
+                            res.status(200).send(r);
+                        }
+                    });
                 }
             }); 
         }
@@ -253,6 +283,7 @@ controller.createRecruit = function(req, res) {
             res.status(200).send(recruit); //already exists, don"t need to make new one
         } else {
             request("http://www.collegeswimming.com/swimmer/" + req.body.csId + "/powerindex/", function(error, response, body){
+                console.log(body);
                 if (error){
                     console.log(error);
                 } else if (response.statusCode == 200){
@@ -262,8 +293,7 @@ controller.createRecruit = function(req, res) {
                         res.status(404).send({"error": "Recruit not found"});
                     } else{
                         var data = [];
-                        var name = $(".profile-swimmer-name")[0].children[0].data;
-                        var powerIndex = $(".public-profile-statistic").find("a").first().text()
+                        var name = $(".swimmer-name").text().trim();
                         $("tr").each(function(i, tr){
                             var children = $(this).children();
                             var row = {
@@ -274,7 +304,7 @@ controller.createRecruit = function(req, res) {
                             };
                             data.push(row);
                         });
-                        var recruit = {"name": name, "powerIndex": powerIndex, "collegeSwimmingId": req.body.csId, "gender": req.body.gender}
+                        var recruit = {"name": name, "collegeSwimmingId": req.body.csId, "gender": req.body.gender}
                         Recruit.create(recruit, function(err, recruit){
                             if (err){
                                 res.status(500).send(err);
@@ -295,7 +325,13 @@ controller.createRecruit = function(req, res) {
                                 recruit.save(function (err, recruit){
                                     if (err) res.status(500).send(err);
                                     else{
-                                        res.status(201).send(recruit);
+                                        updatePowerIndex(recruit, function(err, r){
+                                            if (err){
+                                                res.status(500).send(err);
+                                            } else{
+                                                res.status(201).send(r);
+                                            }
+                                        });
                                     }
                                 });
                             }

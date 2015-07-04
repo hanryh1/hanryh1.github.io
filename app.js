@@ -29,6 +29,15 @@ app.use(cookieParser());
 app.use(session({secret: process.env.SMR_SESSION_SECRET, resave: true, saveUninitialized: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//redirect to actual domain
+app.get('*', function(req, res, next) {
+    if (req.headers.host != process.env.HOST_NAME) {
+        res.redirect(301, 'http://' + process.env.HOST_NAME + req.url);
+    } else {
+        next();
+    }
+});
+
 app.use('/', routes);
 app.use('/recruits', recruits);
 app.use('/events', events);

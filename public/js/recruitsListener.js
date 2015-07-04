@@ -114,18 +114,6 @@ $(document).ready(function(){
       });
     })
 
-    $("#update-all-btn").click(function(){
-        $.ajax({
-          url: "/recruits",
-          type: "PUT",
-          success: function(){
-            window.location.reload(true);
-          }, error: function(jqXHR, textStatus, err) {
-              $("#new-recruit-error").text("Oops, something went horribly wrong.");
-            }
-        });
-    });
-
     $(".delete-deny-btn").click(function(){
       $(this).closest(".are-you-sure").hide();
     });

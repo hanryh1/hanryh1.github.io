@@ -2,7 +2,6 @@ var Recruit = require("../models/recruit");
 var request = require("request");
 var Time = require("../models/time");
 var helpers = require("./helpers");
-var async = require('async');
 
 controller = {};
 
@@ -16,7 +15,7 @@ var findMatchingEvent = function(events, eventName){
     return -1;
 }
 
-var updateTime = function(recruit, callback){
+controller.updateTime = function(recruit, callback){
     request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId + "/powerindex/", function(error, response, body){
         if (error){
             console.log(error);
@@ -79,7 +78,7 @@ var updateTime = function(recruit, callback){
     });
 }
 
-var updatePowerIndex = function(recruit, callback){
+controller.updatePowerIndex = function(recruit, callback){
     request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId, function(error, response, body){
         if (error){
             console.log(error);
@@ -129,36 +128,6 @@ controller.getArchivedRecruits = function(req, res) {
         }
     });
 };
-
-controller.updateAllRecruits = function(req, res){
-    Recruit.find({}, function(err, recruits){
-        var calls = [];
-        recruits.forEach(function(recruit){
-            calls.push(function(callback){
-                updateTime(recruit, function(err, r){
-                    if (err){
-                        return callback(err);
-                    } else{
-                        updatePowerIndex(r, function(err, r){
-                            if (err){
-                                return callback(err);
-                            } else{
-                                return callback(null, r);
-                            }
-                        });
-                    }
-                });
-            });
-        });
-        async.parallel(calls, function(err, result) {
-            if (err){
-                res.status(500).send(err)
-            } else {
-                res.status(200).send({"message": "Successful update"});
-            }
-        });
-    });
-}
 
 controller.getTimesForRecruit = function(req, res){
     Time.find({"recruit": req.params.recruitId}, function(err, times){

@@ -30,13 +30,15 @@ app.use(session({secret: process.env.SMR_SESSION_SECRET, resave: true, saveUnini
 app.use(express.static(path.join(__dirname, 'public')));
 
 //redirect to actual domain
-app.get('*', function(req, res, next) {
-    if (req.headers.host != process.env.HOST_NAME) {
-        res.redirect(301, 'http://' + process.env.HOST_NAME + req.url);
-    } else {
-        next();
-    }
-});
+if (process.env.NODE_ENV === 'production'){
+    app.get('*', function(req, res, next) {
+        if (req.headers.host != process.env.HOST_NAME) {
+            res.redirect(301, 'http://' + process.env.HOST_NAME + req.url);
+        } else {
+            next();
+        }
+    });
+}
 
 app.use('/', routes);
 app.use('/recruits', recruits);
@@ -71,6 +73,9 @@ app.use(function(err, req, res, next) {
     });
 });
 
+// include background jobs
+require('./jobs');
+
 var debug = require('debug')('stalkmyrecruit');
 
 app.set('port', process.env.PORT || 3000);
@@ -78,6 +83,5 @@ app.set('port', process.env.PORT || 3000);
 var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
-
 
 module.exports = app;

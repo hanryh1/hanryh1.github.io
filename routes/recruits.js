@@ -24,8 +24,6 @@ router.post('/:recruitId/times', isAuthenticated, RecruitController.addTimeManua
 
 router.put('/:recruitId', isAuthenticated, RecruitController.archiveRecruit);
 
-router.put('/', isAuthenticated, RecruitController.updateAllRecruits);
-
 router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);
 
 router.delete('/times/:timeId', isAuthenticated, RecruitController.deleteTime);

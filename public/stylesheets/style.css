@@ -85,12 +85,6 @@ table{
 
 .archive-btn, .unarchive-btn{
   margin: 10px 10px 10px 0;
-  opacity:.7;
-  -webkit-transition: opacity 0.5s;
-}
-
-.archive-btn:hover, .unarchive-btn:hover{
-  opacity: 1;
 }
 
 .are-you-sure, .are-you-sure-archive{

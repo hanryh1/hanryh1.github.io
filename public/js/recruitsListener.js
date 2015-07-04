@@ -131,7 +131,7 @@ $(document).ready(function(){
     });
 
     $(".archive-deny-btn").click(function(){
-      $(this).closest(".are-you-sure").hide();
+      $(this).closest(".are-you-sure-archive").hide();
     });
 
     $('#logout-link').click(function(){

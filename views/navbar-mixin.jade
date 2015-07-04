@@ -3,9 +3,11 @@ mixin navbar-mixin()
     div.container-fluid.navbar-container
       ul.nav.navbar-nav.navbar-right
         li#event-link
-          a(href="/events") Rank By Event
+          a(href="/events") Event Rank
         li#recruits-link
-          a(href="/recruits") All Recruits
+          a(href="/recruits") Current Recruits
+        li#archived-recruits-link
+          a(href="/recruits/archived") Archived
         li#logout-link
           a(href="#") Logout
 

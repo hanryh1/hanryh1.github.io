@@ -14,13 +14,15 @@ router.post('/', isAuthenticated, RecruitController.createRecruit);
 
 router.get('/', isAuthenticated, RecruitController.getAllRecruits);
 
+router.get('/archived', isAuthenticated, RecruitController.getArchivedRecruits);
+
 router.get('/:id', isAuthenticated, RecruitController.getRecruit);
 
 router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRecruit);
 
 router.post('/:recruitId/times', isAuthenticated, RecruitController.addTimeManually);
 
-router.put('/:recruitId', isAuthenticated, RecruitController.updateRecruitTimes);
+router.put('/:recruitId', isAuthenticated, RecruitController.archiveRecruit);
 
 router.put('/', isAuthenticated, RecruitController.updateAllRecruits);
 

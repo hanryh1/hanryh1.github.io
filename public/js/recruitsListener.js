@@ -1,5 +1,6 @@
 $(document).ready(function(){
     $(".are-you-sure").hide();
+    $(".are-you-sure-archive").hide();
     $(".add-manual-time").hide();
 
     $("#create-recruit-btn").click(function(evt){
@@ -42,6 +43,23 @@ $(document).ready(function(){
             window.location.reload(true);
           }, error: function(jqXHR, textStatus, err) {
               $("#container-" + recruitId).find(".recruit-error").text("Could not delete recruit.");
+            }
+        });
+    });
+
+    $(".archive-btn").click(function(){
+        $(this).closest(".recruit-container").find(".are-you-sure-archive").show();
+    });
+
+    $(".archive-confirm-btn").click(function(){
+        var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
+        $.ajax({
+          url: "/recruits/" + recruitId + "?archive=true",
+          type: "PUT",
+          success: function(){
+            window.location.reload(true);
+          }, error: function(jqXHR, textStatus, err) {
+              $("#container-" + recruitId).find(".recruit-error").text("Could not archive recruit.");
             }
         });
     });
@@ -109,6 +127,10 @@ $(document).ready(function(){
     });
 
     $(".delete-deny-btn").click(function(){
+      $(this).closest(".are-you-sure").hide();
+    });
+
+    $(".archive-deny-btn").click(function(){
       $(this).closest(".are-you-sure").hide();
     });
 

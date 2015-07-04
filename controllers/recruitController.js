@@ -99,15 +99,31 @@ var updatePowerIndex = function(recruit, callback){
 }
 
 controller.getAllRecruits = function(req, res) {
-    Recruit.find({"gender": "M"}).sort({powerIndex:1}).populate("times").exec(function(err, mRecruits){
+    Recruit.find({"gender": "M", "archived": { $ne: true }}).sort({powerIndex:1}).populate("times").exec(function(err, mRecruits){
         if (err){
             res.render("error", {"error": error});
         } else{
-            Recruit.find({"gender": "F"}).sort({powerIndex:1}).populate("times").exec(function(err, fRecruits){
+            Recruit.find({"gender": "F", "archived": { $ne: true }}).sort({powerIndex:1}).populate("times").exec(function(err, fRecruits){
                 if (err){
                     res.render("error", {"error": error});
                 } else{
                     res.render("recruits", {"maleRecruits": mRecruits, "femaleRecruits": fRecruits});
+                }   
+            });
+        }
+    });
+};
+
+controller.getArchivedRecruits = function(req, res) {
+    Recruit.find({"gender": "M", "archived": true}).sort({powerIndex:1, classYear: 1}).populate("times").exec(function(err, mRecruits){
+        if (err){
+            res.render("error", {"error": error});
+        } else{
+            Recruit.find({"gender": "F", "archived": true }).sort({powerIndex:1, classYear: 1}).populate("times").exec(function(err, fRecruits){
+                if (err){
+                    res.render("error", {"error": error});
+                } else{
+                    res.render("archived", {"maleRecruits": mRecruits, "femaleRecruits": fRecruits});
                 }   
             });
         }
@@ -141,30 +157,6 @@ controller.updateAllRecruits = function(req, res){
                 res.status(200).send({"message": "Successful update"});
             }
         });
-    });
-}
-//get new times for recruit
-controller.updateRecruitTimes = function(req, res){
-    Recruit.findById(req.params.recruitId, function(err, recruit){
-        if (err){
-            res.status(500).send(err)
-        } else if (!recruit){
-            res.status(404).send({"error":"This recruit does not exist."});
-        } else{
-            updateTime(recruit, function(err, recruit){
-             if (err){
-                    res.status(500).send(err);
-                } else{
-                    updatePowerIndex(r, function(err, r){
-                        if (err){
-                            res.status(500).send(err);
-                        } else{
-                            res.status(200).send(r);
-                        }
-                    });
-                }
-            }); 
-        }
     });
 }
 
@@ -206,6 +198,7 @@ controller.deleteTime = function(req, res){
         }
     });
 }
+
 controller.addTimeManually = function(req, res){
     Recruit.findById(req.params.recruitId, function(err, recruit){
         if (err){
@@ -274,6 +267,30 @@ controller.deleteRecruit = function(req, res){
     });
 }
 
+controller.archiveRecruit = function(req, res) {
+    Recruit.findById(req.params.recruitId, function(err, recruit){
+        if (err) {
+            res.status(500).send(err); 
+        } else if (!recruit){
+            res.status(404).send({"error": "This recruit does not exist!"})
+        } else {
+            Time.update({"recruit": recruit._id}, {$set: {"archived": req.query.archive}}, {multi: true}, function(err){
+                if (err) {
+                    res.status(500).send(err); 
+                } else {
+                    recruit.update({$set: {"archived": req.query.archive}}, function(err){
+                        if (err) {
+                            res.status(500).send(err); 
+                        } else {
+                            res.status(200).send({"message": "Recruit successfully updated."});
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
 //get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
     Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit){
@@ -283,7 +300,6 @@ controller.createRecruit = function(req, res) {
             res.status(200).send(recruit); //already exists, don"t need to make new one
         } else {
             request("http://www.collegeswimming.com/swimmer/" + req.body.csId + "/powerindex/", function(error, response, body){
-                console.log(body);
                 if (error){
                     console.log(error);
                 } else if (response.statusCode == 200){
@@ -294,6 +310,7 @@ controller.createRecruit = function(req, res) {
                     } else{
                         var data = [];
                         var name = $(".swimmer-name").text().trim();
+                        var classYear = parseInt($(".swimmer-class").find("strong").text()) + 4;
                         $("tr").each(function(i, tr){
                             var children = $(this).children();
                             var row = {
@@ -304,7 +321,10 @@ controller.createRecruit = function(req, res) {
                             };
                             data.push(row);
                         });
-                        var recruit = {"name": name, "collegeSwimmingId": req.body.csId, "gender": req.body.gender}
+                        var recruit = {"name": name, 
+                                       "collegeSwimmingId": req.body.csId,
+                                       "gender": req.body.gender,
+                                       "classYear": classYear}
                         Recruit.create(recruit, function(err, recruit){
                             if (err){
                                 res.status(500).send(err);

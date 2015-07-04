@@ -1,0 +1,29 @@
+mixin archived-recruit-mixin(recruit)
+  div(id="container-" + recruit._id).recruit-container
+    h3=recruit.name
+    h5="Class Year: " + recruit.classYear
+    h5="Power Index: " + recruit.powerIndex
+    a(href="http://www.collegeswimming.com/swimmer/"+recruit.collegeSwimmingId)
+      span.glyphicon.glyphicon-link
+      |  CollegeSwimming Profile
+    table.table-striped
+      tr
+        th Event
+        th Time
+        th Points
+      for time in recruit.times
+        tr(id="time-"+time._id)
+          td=time.eventName
+          td=time.timeString
+          if time.points
+            td=time.points
+          else 
+            td -
+    div.recruit-error.error
+    button.btn.btn-danger.delete-btn Delete
+    button.btn.unarchive-btn Unarchive
+    div.are-you-sure
+      p="Are you sure you want to delete "+recruit.name+"?"
+      button.btn.btn-danger.delete-confirm-btn.margin-right.margin-bottom Yes
+      button.btn.btn-default.delete-deny-btn.margin-bottom No!
+

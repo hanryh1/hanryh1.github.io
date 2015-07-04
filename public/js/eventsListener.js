@@ -11,10 +11,11 @@ var generateHtml = function(eventName, data){
 var selectNewEvent = function(){
       var selectedEvent = $("#select-event").find("option:selected").text();
       var selectedGender = $("#select-gender").find("option:selected").text()[0];
+      var isArchived = $("#include-archive").find("option:selected").attr("value");
       $.ajax({
         url: "/events/rank",
         type: 'GET',
-        data: {eventName: selectedEvent, gender: selectedGender},
+        data: {eventName: selectedEvent, gender: selectedGender, archived: isArchived},
         success: function(data){
             var newHTML = generateHtml(selectedEvent, data);
             $("#event-rank").html(newHTML);
@@ -24,11 +25,12 @@ var selectNewEvent = function(){
           }
       });
 }
+
 $(document).ready(function(){
     $.ajax({
         url: "/events/rank",
         type: 'GET',
-        data: {eventName: "50 Y Free", gender: "M"},
+        data: {eventName: "50 Y Free", gender: "M", archived: 0},
         success: function(data){
             var newHTML = generateHtml("50 Y Free", data);
             $("#event-rank").html(newHTML);
@@ -40,7 +42,7 @@ $(document).ready(function(){
 
     $('#select-event').change(selectNewEvent);
     $('#select-gender').change(selectNewEvent);
-
+    $('#include-archive').change(selectNewEvent);
 
     $('#logout-link').click(function(){
       $.ajax({

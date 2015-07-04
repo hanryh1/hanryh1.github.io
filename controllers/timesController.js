@@ -7,10 +7,15 @@ timeController = {};
 timeController.getTimesByEventAndGender = function(req, res){
     if (!req.query.eventName || !req.query.gender){
         res.status(400).send({'error': 'Missing query parameters.'});
-    } else{
-        var eventName = req.query.eventName;
+    } else {
+        var query = {"eventName": req.query.eventName}
+
+        if (req.query.archived == 0) {
+            query["archived"] =  { $ne: true };
+        }
+        
         var gender = req.query.gender;
-        Time.find({"eventName": eventName}).sort({time: 1}).populate('recruit', 'name collegeSwimmingId gender').exec(function(err, times){
+        Time.find(query).sort({time: 1}).populate('recruit', 'name collegeSwimmingId gender').exec(function(err, times){
             if (err){
                 res.status(500).send(err);
             } else{

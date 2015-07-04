@@ -1,6 +1,7 @@
 mixin recruit-mixin(recruit)
   div(id="container-" + recruit._id).recruit-container
     h3=recruit.name
+    h5="Class Year: " + recruit.classYear
     h5="Power Index: " + recruit.powerIndex
     a(href="http://www.collegeswimming.com/swimmer/"+recruit.collegeSwimmingId)
       span.glyphicon.glyphicon-link
@@ -48,10 +49,15 @@ mixin recruit-mixin(recruit)
           span.glyphicon.glyphicon-plus
         button(id="new-time-"+recruit._id).new-time-btn.btn.btn-danger.time-cancel-btn
           span.glyphicon.glyphicon-remove
-    button.btn.btn-danger.delete-btn Delete Recruit
+    button.btn.btn-danger.delete-btn Delete
+    button.btn.archive-btn Archive
     button.btn.add-update-btn.update-btn Add New Time
     div.are-you-sure
       p="Are you sure you want to delete "+recruit.name+"?"
       button.btn.btn-danger.delete-confirm-btn.margin-right.margin-bottom Yes
       button.btn.btn-default.delete-deny-btn.margin-bottom No!
+    div.are-you-sure-archive
+      p="Are you sure you want to archive "+recruit.name+"? You can no longer edit archived recruits."
+      button.btn.btn-danger.archive-confirm-btn.margin-right.margin-bottom Yes
+      button.btn.btn-default.archive-deny-btn.margin-bottom No!
 

@@ -7,6 +7,19 @@ block content
   div.container
     div.centered
         h1.uppercase Archived Recruits
+    div.error
+        if error
+            p error
+    div#years.centered
+        label Select Year
+        form
+        select.form-control#select-year
+            option(value = "") All years
+            for year in classYears
+                if defaultYear == year
+                   option(value = year selected)= year
+                else
+                    option(value = year)= year
     div#recruits
         div.row
             div.col-md-1

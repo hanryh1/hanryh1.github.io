@@ -64,7 +64,7 @@ th{
 table{
     width:100%;
 }
-#add-recruit{
+#add-recruit, #years{
     width:350px;
     background-color:#FAFAFA;
     border: 1px solid #D8E6E6;

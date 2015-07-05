@@ -2,6 +2,11 @@ $(document).ready(function(){
     $(".are-you-sure").hide();
     $(".are-you-sure-archive").hide();
 
+    $("#select-year").change(function(){
+      var classYear = $("#select-year").find("option:selected").attr("value");
+      window.location = "/recruits/archived/" + classYear;
+    });
+
     $(".delete-btn").click(function(){
         $(this).closest(".recruit-container").find(".are-you-sure").show();
     });

@@ -117,12 +117,50 @@ controller.getArchivedRecruits = function(req, res) {
     Recruit.find({"gender": "M", "archived": true}).sort({powerIndex:1, classYear: 1}).populate("times").exec(function(err, mRecruits){
         if (err){
             res.render("error", {"error": error});
-        } else{
+        } else {
             Recruit.find({"gender": "F", "archived": true }).sort({powerIndex:1, classYear: 1}).populate("times").exec(function(err, fRecruits){
                 if (err){
                     res.render("error", {"error": error});
                 } else{
-                    res.render("archived", {"maleRecruits": mRecruits, "femaleRecruits": fRecruits});
+                     Recruit.find({"archived": "true"}).distinct("classYear", function(err, classYears){
+                        if (err){
+                            res.render("error", {"error": error});
+                        } else {
+                            res.render("archived", {"maleRecruits": mRecruits, 
+                                                    "femaleRecruits": fRecruits,
+                                                    "classYears": classYears});
+                        }
+                    });
+                }
+
+            });
+        }
+    });
+};
+
+controller.getArchivedRecruitsByYear = function(req, res) {
+    if (!/[0-9]{4}/.test(req.params.classYear)){
+        res.render("archived", {"error": "Invalid class year"});
+    }
+    var classYear = parseInt(req.params.classYear);
+    Recruit.find({"gender": "M", "archived": true, "classYear": classYear }).sort({powerIndex:1, classYear: 1}).populate("times").exec(function(err, mRecruits){
+        if (err){
+            res.render("error", {"error": error});
+        } else{
+            Recruit.find({"gender": "F", "archived": true, "classYear": classYear }).sort({powerIndex:1, classYear: 1}).populate("times").exec(function(err, fRecruits){
+                if (err){
+                    res.render("error", {"error": error});
+                } else{
+                    Recruit.find({"archived": "true"}).distinct("classYear", function(err, classYears){
+                        if (err){
+                            res.render("error", {"error": error});
+                        } else {
+                            res.render("archived", {"maleRecruits": mRecruits,
+                                                    "femaleRecruits": fRecruits,
+                                                    "classYears": classYears,
+                                                    "defaultYear": classYear});
+                        }
+                    });
                 }   
             });
         }

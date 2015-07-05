@@ -314,7 +314,7 @@ controller.createRecruit = function(req, res) {
                                 recruit.save(function (err, recruit){
                                     if (err) res.status(500).send(err);
                                     else{
-                                        updatePowerIndex(recruit, function(err, r){
+                                        controller.updatePowerIndex(recruit, function(err, r){
                                             if (err){
                                                 res.status(500).send(err);
                                             } else{

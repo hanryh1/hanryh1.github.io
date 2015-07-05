@@ -4,18 +4,22 @@ var async = require('async');
 var cronjob = require('cron').CronJob;
 
 var updateAllRecruits = function(){
+    console.log("Updating all recruits.");
     mongoose.model('Recruit').find({"archived": false}, function(err, recruits){
         var calls = [];
         recruits.forEach(function(recruit){
             calls.push(function(callback){
                 controller.updateTime(recruit, function(err, r){
                     if (err){
+                        console.log("Error updating times for "+ recruit.name);
                         return callback(err);
                     } else{
                         controller.updatePowerIndex(r, function(err, r){
                             if (err){
+                                console.log("Error updating power index for " + recruit.name);
                                 return callback(err);
                             } else{
+                                console.log("Successfully updated " + recruit.name);
                                 return callback(null, r);
                             }
                         });
@@ -33,10 +37,10 @@ var updateAllRecruits = function(){
     });
 }
 
-var job = new cronjob({cronTime: '00 00 8 * * *',
+var job = new cronjob({cronTime: '00 30 13 * * *',
   onTick: updateAllRecruits,
     /*
-     * Runs every day at 8:00 AM (EST)
+     * Runs every day at 1:30 PM (EST)
      */
   start: false,
   timeZone: 'America/New_York'

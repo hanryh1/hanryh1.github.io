@@ -16,7 +16,7 @@ router.get('/', isAuthenticated, RecruitController.getAllRecruits);
 
 router.get('/archived', isAuthenticated, RecruitController.getArchivedRecruits);
 
-router.get('/archived/:classYear', isAuthenticated, RecruitController.getArchivedRecruitsByYear);
+router.get('/archived/:classYear', isAuthenticated, RecruitController.getArchivedRecruits);
 
 router.get('/:id', isAuthenticated, RecruitController.getRecruit);
 

@@ -24,6 +24,8 @@ router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRe
 
 router.post('/:recruitId/times', isAuthenticated, RecruitController.addTimeManually);
 
+router.put('/', isAuthenticated, RecruitController.archiveAllRecruits);
+
 router.put('/:recruitId', isAuthenticated, RecruitController.archiveRecruit);
 
 router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);

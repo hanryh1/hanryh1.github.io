@@ -64,6 +64,22 @@ th{
 table{
     width:100%;
 }
+
+#archive-all-btn{
+  margin: auto;
+  background-color: #FFFFFF;
+  border: 1px solid #019875;
+  color: #019875;
+  text-transform: uppercase;
+  -webkit-transition: color 1s;
+  -webkit-transition: background-color 1s;
+}
+
+#archive-all-btn:hover, #archive-all-btn:focus, #archive-all-btn:active{
+  color:#FFFFFF;
+  background-color: #019875;
+}
+
 #add-recruit, #years{
     width:350px;
     background-color:#FAFAFA;
@@ -87,7 +103,7 @@ table{
   margin: 10px 10px 10px 0;
 }
 
-.are-you-sure, .are-you-sure-archive{
+.are-you-sure, .are-you-sure-archive, #are-you-sure-archive-all, .add-manual-time{
   display:none;
 }
 

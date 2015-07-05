@@ -330,6 +330,26 @@ controller.archiveRecruit = function(req, res) {
     });
 }
 
+controller.archiveAllRecruits = function(req, res) {
+    if (!req.query.archive){
+        res.status(200).send({});
+    } else {
+        Recruit.update({}, {$set: {"archived": true}}, {multi: true}, function(err){
+            if (err){
+                res.status(500).send(err);
+            } else {
+                Time.update({}, {$set: {"archived": true}}, {multi: true}, function(err){
+                    if (err){
+                        res.status(500).send(err);
+                    } else {
+                        res.status(200).send({"message": "Recruits successfully archived."});
+                    }
+                });
+            }
+        });
+    }
+}
+
 //get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
     Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit){

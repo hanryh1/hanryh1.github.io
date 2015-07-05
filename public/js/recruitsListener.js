@@ -2,6 +2,7 @@ $(document).ready(function(){
     $(".are-you-sure").hide();
     $(".are-you-sure-archive").hide();
     $(".add-manual-time").hide();
+    $("#are-you-sure-archive-all").hide();
 
     $("#create-recruit-btn").click(function(evt){
       evt.preventDefault();
@@ -120,6 +121,26 @@ $(document).ready(function(){
 
     $(".archive-deny-btn").click(function(){
       $(this).closest(".are-you-sure-archive").hide();
+    });
+
+    $("#archive-all-btn").click(function(){
+      $("#are-you-sure-archive-all").show();
+    });
+
+    $("#archive-all-confirm-btn").click(function(){
+      $.ajax({
+        url: "/recruits?&archive=true",
+        type: "PUT",
+        success: function(){
+          window.location.reload(true);
+        }, error: function(jqXHR, textStatus, err) {
+            $("#new-recruit-error").text("Oops, something went horribly wrong.");
+          }
+      });
+    });
+
+    $("#archive-all-deny-btn").click(function(){
+      $("#are-you-sure-archive-all").hide();
     });
 
     $('#logout-link').click(function(){

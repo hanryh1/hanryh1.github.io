@@ -172,6 +172,7 @@ controller.getArchivedRecruits = function(req, res) {
                                                 if (err){
                                                     res.render("error", {"error": err});
                                                 } else {
+                                                    classYears.sort();
                                                     res.render("archived", {"maleRecruits": mRecruits, 
                                                                             "femaleRecruits": fRecruits,
                                                                             "classYears": classYears,

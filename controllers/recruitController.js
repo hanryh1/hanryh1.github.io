@@ -66,9 +66,6 @@ controller.updateTime = function(recruit, callback){
                     var times = [];
                     for (var i = 1; i < data.length; i ++){
                         var time = data[i];
-                        if (time.points > 70){
-                            continue;
-                        }
                         //only care about yard times
                         if (time.eventName.indexOf(" Y ") >= 0){
                             var manualEvent = findMatchingEvent(manualTimes, time.eventName);
@@ -360,7 +357,7 @@ controller.createRecruit = function(req, res) {
                                     t.save();
                                     times.push(t);
                                 }
-                                if (times.length > 5) break;
+                                if (times.length > 6) break;
                             }
                             recruit.times = times;
                             recruit.save(function (err, recruit){

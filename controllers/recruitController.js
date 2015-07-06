@@ -1,4 +1,5 @@
 var Recruit = require("../models/recruit");
+var csv = require("csv");
 var request = require("request");
 var Time = require("../models/time");
 var helpers = require("./helpers");
@@ -118,25 +119,35 @@ controller.updatePowerIndex = function(recruit, callback){
     });
 }
 
-controller.getAllRecruits = function(req, res) {
+var getRecruitsByGender = function(callback){
     Recruit.find({"gender": "M", "archived": { $ne: true }})
            .sort({powerIndex:1}).populate("times")
            .exec(function(err, mRecruits){
                 if (err){
-                    res.render("error", {"error": error});
+                    callback(err);
                 } else{
                     Recruit.find({"gender": "F", "archived": { $ne: true }})
                            .sort({powerIndex:1}).populate("times")
                            .exec(function(err, fRecruits){
                                 if (err){
-                                    res.render("error", {"error": error});
+                                    callback(err)
                                 } else{
-                                    res.render("recruits", {"maleRecruits": mRecruits,
-                                                            "femaleRecruits": fRecruits});
+                                    callback(err, {"maleRecruits": mRecruits,
+                                                   "femaleRecruits": fRecruits});
                                 }   
                             });
                 }
             });
+}
+
+controller.getAllRecruits = function(req, res) {
+    getRecruitsByGender(function(err, recruits) {
+        if (err){
+            res.render("error", {"error": err});
+        } else {
+            res.render("recruits", recruits);
+        }
+    });
 };
 
 controller.getArchivedRecruits = function(req, res) {
@@ -402,5 +413,64 @@ controller.createRecruit = function(req, res) {
     });
 };
 
+var EVENTS = [ "50 Y Free",
+               "100 Y Free",
+               "200 Y Free",
+               "500 Y Free",
+               "1000 Y Free",
+               "1650 Y Free",
+               "100 Y Back",
+               "200 Y Back",
+               "100 Y Breast",
+               "200 Y Breast",
+               "100 Y Fly",
+               "200 Y Fly",
+               "200 Y IM",
+               "400 Y IM" ];
+
+var generateCsvRow = function(recruit, data) {
+    var row = [recruit.name, recruit.powerIndex];
+    for (var i = 0; i < EVENTS.length; i++){
+        for (var j = 0; j < recruit.times.length; j++){
+            if (recruit.times[j].eventName == EVENTS[i]){
+                row.push(recruit.times[j].timeString);
+                break;
+            }
+        }
+        if (row.length - 2 == i) {
+            row.push("");
+        }
+    }
+    data.push(row);
+}
+var generateRecruitCsv = function(callback){
+    getRecruitsByGender(function(err, recruits){
+        if (err) {
+            callback(err);
+        } else {
+            var headers = ["Name", "Power Points"].concat(EVENTS);
+            var data = [headers, ["Men"]];
+            for (var i = 0; i < recruits.maleRecruits.length; i ++){
+                generateCsvRow(recruits.maleRecruits[i], data);
+            }
+            data = data.concat([[""],["Women"]])
+            for (var i = 0; i < recruits.femaleRecruits.length; i ++){
+                generateCsvRow(recruits.femaleRecruits[i], data);
+            }
+            callback(null, data);
+        }
+    });
+}
+
+controller.downloadRecruitCsv = function(req, res){
+    generateRecruitCsv(function(err, data){
+        if (err){
+            res.status(500).send(err)
+        } else {
+            res.attachment('recruits.csv');
+            csv().from(data).to(res);
+        }
+    });
+}
 
 module.exports = controller;

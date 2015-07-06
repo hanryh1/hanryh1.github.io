@@ -14,6 +14,8 @@ router.post('/', isAuthenticated, RecruitController.createRecruit);
 
 router.get('/', isAuthenticated, RecruitController.getAllRecruits);
 
+router.get('/csv', isAuthenticated, RecruitController.downloadRecruitCsv);
+
 router.get('/archived', isAuthenticated, RecruitController.getArchivedRecruits);
 
 router.get('/archived/:classYear', isAuthenticated, RecruitController.getArchivedRecruits);

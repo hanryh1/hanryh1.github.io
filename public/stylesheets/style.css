@@ -65,8 +65,9 @@ table{
     width:100%;
 }
 
-#archive-all-btn{
+.main-btn {
   margin: auto;
+  margin-right:5px;
   background-color: #FFFFFF;
   border: 1px solid #019875;
   color: #019875;
@@ -75,7 +76,7 @@ table{
   -webkit-transition: background-color 1s;
 }
 
-#archive-all-btn:hover, #archive-all-btn:focus, #archive-all-btn:active{
+.main-btn:hover, .main-btn:focus, .main-btn:active{
   color:#FFFFFF;
   background-color: #019875;
 }

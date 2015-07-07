@@ -43,6 +43,11 @@ app.use('/', routes);
 app.use('/recruits', recruits);
 app.use('/events', events);
 
+//include models
+require('./models/recruit');
+require('./models/referenceTime');
+require('./models/time');
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     res.render('404');

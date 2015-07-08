@@ -42,21 +42,25 @@ var getTeamTimesForEvent = function(event, payload, callback) {
 
 var getTeamTimes = function() {
     console.log("Updating team reference times");
-    var payload = { "orgcode":"3",
-                    "team":process.env.TEAM_ID
-                  }
     var today = new Date();
     var year = today.getFullYear()-1;
-    payload["season"] = String(year) + "-" + String(year + 1);
-    payload["startdate"] = String(year) + "-07-01";
-    payload["enddate"] = String(year) + "-06-31";
+    var season = String(year) + "-" + String(year + 1);
+    var startdate = String(year) + "-07-01";
+    var enddate = String(year) + "-06-31";
     var genders = ["M", "F"];
 
     var calls = [];
     for (var i = 0; i < genders.length; i++) {
         for (var j = 0; j < EVENTS.length; j ++){
             (function(index, calls, gender){
-                payload["eventgender"] = gender;
+                var payload = {
+                                "orgcode":"3",
+                                "team": process.env.TEAM_ID,
+                                "season": season,
+                                "startdate": startdate,
+                                "enddate": enddate,
+                                "eventgender": gender
+                              }
                 var e = EVENTS[j];
                 calls.push(function(callback){
                     getTeamTimesForEvent(e, payload, function(err, body){
@@ -107,7 +111,7 @@ var getTeamTimes = function() {
     });
 }
 
-var updateReferenceTimesJob = new cronjob({cronTime: '00 00 00 15 3 *',
+var updateReferenceTimesJob = new cronjob({cronTime: '15 18 2 8 6 *',
   onTick: getTeamTimes,
     /*
      * Runs once a year after the season is over on April 15.

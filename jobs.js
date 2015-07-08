@@ -98,9 +98,9 @@ var getTeamTimes = function() {
 
     var calls = [];
     for (var i = 0; i < genders.length; i++) {
-        payload["eventgender"] = genders[i];
         for (var j = 0; j < EVENTS.length; j ++){
-            (function(index, calls){
+            (function(index, calls, gender){
+                payload["eventgender"] = gender;
                 var e = EVENTS[j];
                 calls.push(function(callback){
                     getTeamTimesForEvent(e, payload, function(err, body){
@@ -131,7 +131,7 @@ var getTeamTimes = function() {
                         }
                     });
                 });
-            })(j, calls);
+            })(j, calls, genders[i]);
         }
     }
 

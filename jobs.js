@@ -135,7 +135,7 @@ var getTeamTimes = function() {
         }
     }
 
-    mongoose.model('ReferenceTime').remove(function(err){
+    mongoose.model('ReferenceTime').remove({"type": "Team"}, function(err){
         if (err) {
             console.log("Error removing old reference times: ", err);
         } else {
@@ -151,7 +151,7 @@ var getTeamTimes = function() {
     });
 }
 
-var updateTeamReferenceTimesJob = new cronjob({cronTime: '00 00 00 15 4 *',
+var updateReferenceTimesJob = new cronjob({cronTime: '00 00 00 15 4 *',
   onTick: getTeamTimes,
     /*
      * Runs once a year after the season is over on April 15.
@@ -161,7 +161,7 @@ var updateTeamReferenceTimesJob = new cronjob({cronTime: '00 00 00 15 4 *',
 });
 
 updateRecruitsJob.start();
-updateTeamReferenceTimesJob.start()
+updateReferenceTimesJob.start();
 
 
 

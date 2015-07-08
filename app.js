@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var recruits = require('./routes/recruits');
 var events = require('./routes/events');
+var admin = require('./routes/admin');
+
 var session = require('express-session');
 
 var mongoose = require('mongoose');
@@ -42,6 +44,7 @@ if (process.env.NODE_ENV === 'production'){
 app.use('/', routes);
 app.use('/recruits', recruits);
 app.use('/events', events);
+app.use('/admin', admin);
 
 //include models
 require('./models/recruit');

@@ -11,7 +11,11 @@ router.get('/', function(req, res) {
 });
 
 router.post('/authenticate', function(req, res){
-    if (req.body.password == process.env.SMR_PASSWORD){
+    if (req.body.password == process.env.ADMIN_PASSWORD){
+        req.session.admin = true;
+        req.session.authenticated = true;
+        res.redirect('/recruits');
+    } else if (req.body.password == process.env.SMR_PASSWORD){
         req.session.authenticated = true;
         res.redirect('/recruits');
     } else {

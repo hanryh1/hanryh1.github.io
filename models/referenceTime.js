@@ -11,6 +11,6 @@ var referenceTimeSchema = new mongoose.Schema({
 
 referenceTimeSchema.set('autoIndex', false);
 
-referenceTimeSchema.index({ gender: 1, eventName: 1, time: -1 });
+referenceTimeSchema.index({ type: 1, gender: 1, eventName: 1, time: -1 });
 
 module.exports = mongoose.model('ReferenceTime', referenceTimeSchema);

@@ -1,0 +1,14 @@
+extends layout
+block scripts
+    script(src='/js/configs.js') 
+block content
+  mixin navbar-mixin()
+  div.container
+    div.error
+    div.nationals-results
+        div.form-group
+            label Enter the Collegeswimming link for the reference meet (http://www.collegeswimming.com/results/{number}/)
+            input(type="text", name="meetUrl" id="meet-url").form-control
+        button.btn.btn-default#submit-meet-link Submit
+    div.national-cuts
+    include navbar-mixin

@@ -16,6 +16,21 @@ var findMatchingEvent = function(events, eventName){
     return -1;
 }
 
+var EVENTS = [ "50 Y Free",
+               "100 Y Free",
+               "200 Y Free",
+               "500 Y Free",
+               "1000 Y Free",
+               "1650 Y Free",
+               "100 Y Back",
+               "200 Y Back",
+               "100 Y Breast",
+               "200 Y Breast",
+               "100 Y Fly",
+               "200 Y Fly",
+               "200 Y IM",
+               "400 Y IM" ];
+
 // scrape collegeswimming for the stuff we want
 var getRecruitData = function(collegeSwimmingId, callback) {
     request("http://www.collegeswimming.com/swimmer/" +
@@ -243,6 +258,13 @@ controller.deleteTime = function(req, res){
 }
 
 controller.addTimeManually = function(req, res){
+    if (EVENTS.indexOf(req.body.eventName) == -1){
+        return res.status(400).send({"error": "This is not a real event."});
+    }
+    var newTime = helpers.convertTimeToNumber(req.body.time);
+    if (newTime < 15) {
+        return res.status(400).send({"error": "This does not seem like a real time."});
+    }
     Recruit.findById(req.params.recruitId, function(err, recruit){
         if (err){
             res.status(500).send(err)
@@ -252,7 +274,6 @@ controller.addTimeManually = function(req, res){
                     if (err){
                         res.status(500).send(err)
                     } else {
-                        var newTime = helpers.convertTimeToNumber(req.body.time);
                         if (time){
                             if (time.time <= newTime){
                                 return res.status(400)
@@ -418,21 +439,6 @@ controller.createRecruit = function(req, res) {
         }
     });
 };
-
-var EVENTS = [ "50 Y Free",
-               "100 Y Free",
-               "200 Y Free",
-               "500 Y Free",
-               "1000 Y Free",
-               "1650 Y Free",
-               "100 Y Back",
-               "200 Y Back",
-               "100 Y Breast",
-               "200 Y Breast",
-               "100 Y Fly",
-               "200 Y Fly",
-               "200 Y IM",
-               "400 Y IM" ];
 
 var generateCsvRow = function(recruit, data) {
     var row = [recruit.name, recruit.powerIndex];

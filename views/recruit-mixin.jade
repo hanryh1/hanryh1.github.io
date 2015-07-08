@@ -11,15 +11,25 @@ mixin recruit-mixin(recruit)
         th Event
         th Time
         th Points
+        th NR
+        th TR
       for time in recruit.times
         tr(id="time-"+time._id)
           td=time.eventName
           td=time.timeString
           if time.points
             td=time.points
+          else
+            td -
+          if time.nationalRank
+            td=time.nationalRank
+          else
+            td -
+          if time.teamRank
+            td=time.teamRank
               button.btn.delete-time-btn
                 span.glyphicon.glyphicon-remove
-          else 
+          else
             td -
               button.btn.delete-time-btn
                 span.glyphicon.glyphicon-remove

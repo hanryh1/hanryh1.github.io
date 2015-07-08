@@ -17,11 +17,11 @@ mixin recruit-mixin(recruit)
           td=time.timeString
           if time.points
             td=time.points
-              button.btn.btn-circle.btn-danger.delete-time-btn
+              button.btn.delete-time-btn
                 span.glyphicon.glyphicon-remove
           else 
             td -
-              button.btn.btn-circle.btn-danger.delete-time-btn
+              button.btn.delete-time-btn
                 span.glyphicon.glyphicon-remove
     div.recruit-error.error
     div.add-manual-time.margin-top

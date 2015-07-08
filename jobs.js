@@ -151,7 +151,7 @@ var getTeamTimes = function() {
     });
 }
 
-var updateReferenceTimesJob = new cronjob({cronTime: '00 00 00 15 4 *',
+var updateReferenceTimesJob = new cronjob({cronTime: '00 00 00 15 3 *',
   onTick: getTeamTimes,
     /*
      * Runs once a year after the season is over on April 15.

@@ -10,7 +10,7 @@ var recruits = require('./routes/recruits');
 var events = require('./routes/events');
 var admin = require('./routes/admin');
 
-var session = require('express-session');
+var cookieSession = require('cookie-session');
 
 var mongoose = require('mongoose');
 
@@ -27,7 +27,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret: process.env.SMR_SESSION_SECRET, resave: true, saveUninitialized: true }));
+app.use(cookieSession({secret: process.env.SMR_SESSION_SECRET}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
@@ -70,7 +70,7 @@ app.use(function(err, req, res, next) {
 });
 
 // include background jobs
-require('./jobs/startJobs');
+require('./jobs/startCronJobs');
 
 var debug = require('debug')('stalkmyrecruit');
 

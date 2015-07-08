@@ -1,7 +1,7 @@
 extends layout
 block scripts
     script(src='js/helpers.js')
-    script(src='js/recruitsListener.js')  
+    script(src='js/recruits.js')  
 block content
   mixin navbar-mixin()
   div.container
@@ -30,8 +30,8 @@ block content
                     button.btn.main-btn#download-csv-btn Download As CSV
             div#are-you-sure-archive-all.margin-top
                 p Are you sure you want to archive all the recruits? It would be annoying to undo this.
-                    button.btn.btn-danger#archive-all-confirm-btn.margin-right.margin-bottom Yes
-                    button.btn.btn-default#archive-all-deny-btn.margin-bottom No!
+                button.btn.btn-danger#archive-all-confirm-btn.margin-right.margin-bottom Yes
+                button.btn.btn-default#archive-all-deny-btn.margin-bottom No!
         div.row
             div.col-md-1
             div#maleRecruits.col-md-5

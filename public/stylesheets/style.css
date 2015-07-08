@@ -135,17 +135,17 @@ table{
 }
 
 .delete-time-btn{
-  display:none;
+  width: 20px;
+  height: 20px;
+  visibility: hidden;
+  float: right;
+  border: none;
+  background:none;
 }
 
 td:hover .delete-time-btn{
-  display: block;
+  visibility:visible;
   color: #d9534f;
-  border: none;
-  background:none;
-  float: right;
-  width: 20px;
-  height:20px;
 }
 
 .update-btn:hover, .update-btn:focus, .update-btn:active{

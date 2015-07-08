@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 
 var referenceTimeSchema = new mongoose.Schema({
-  time: {type: 'Number', required: true},
-  eventName: {type: 'String', required: true, index: true},
-  rank: {type: 'Number', required: true},
-  gender: {type: 'String', enum: ['M', 'F'], required: true},
-  meet: {type: 'String'},
-  type: {type: 'String', enum: ['Meet', 'Team'], required: true}
+    time: {type: 'Number', required: true},
+    eventName: {type: 'String', required: true, index: true},
+    rank: {type: 'Number', required: true},
+    gender: {type: 'String', enum: ['M', 'F'], required: true},
+    created: {type: 'Date', default: Date.now},
+    type: {type: 'String', enum: ['Team', 'Nationals'], required: true}
 });
 
 referenceTimeSchema.set('autoIndex', false);

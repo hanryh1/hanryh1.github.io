@@ -70,7 +70,7 @@ app.use(function(err, req, res, next) {
 });
 
 // include background jobs
-require('./jobs');
+require('./jobs/startJobs');
 
 var debug = require('debug')('stalkmyrecruit');
 

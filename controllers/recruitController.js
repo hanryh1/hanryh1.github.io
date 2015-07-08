@@ -54,7 +54,7 @@ var getRecruitData = function(collegeSwimmingId, callback) {
 }
 
 // update recruit times
-controller.updateTime = function(recruit, callback){
+var updateTime = function(recruit, callback){
     getRecruitData(recruit.collegeSwimmingId, function(err, recruitData, data){
         if (err){
             var status = err.status == 404 ? 404 : 500;
@@ -105,7 +105,7 @@ controller.updateTime = function(recruit, callback){
     });
 }
 
-controller.updatePowerIndex = function(recruit, callback){
+var updatePowerIndex = function(recruit, callback){
     request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId,
         function(error, response, body){
             if (error){
@@ -401,7 +401,7 @@ controller.createRecruit = function(req, res) {
                             recruit.save(function (err, recruit){
                                 if (err) res.status(500).send(err);
                                 else{
-                                    controller.updatePowerIndex(recruit, function(err, r){
+                                    updatePowerIndex(recruit, function(err, r){
                                         if (err){
                                             res.status(500).send(err);
                                         } else{
@@ -478,5 +478,8 @@ controller.downloadRecruitCsv = function(req, res){
         }
     });
 }
+
+controller.updateTime = updateTime;
+controller.updatePowerIndex = updatePowerIndex;
 
 module.exports = controller;

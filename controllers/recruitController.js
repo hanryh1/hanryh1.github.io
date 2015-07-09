@@ -315,6 +315,7 @@ controller.getRecruit = function(req, res) {
                                     recruit.times = times;
                                     res.render("single-recruit",
                                                {"recruit": recruit,
+                                                "timeToString": helpers.convertNumberToString,
                                                 "isAdmin": req.session.admin});
                                  });
             }

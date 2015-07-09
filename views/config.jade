@@ -13,7 +13,7 @@ block content
             label Meet URL
             input(type="text", name="meetUrl").form-control#meet-url
         button.btn.update-btn#submit-meet-link Submit
-    hr
+    hr.hr-margin
     div.national-cuts
         h3 Time Standards
         p
@@ -37,7 +37,7 @@ block content
                 option(value="M") Male
                 option(value="F") Female
         button.btn.update-btn#submit-time-standards Submit
-    hr
+    hr.hr-margin
     div.team-results
         h3 Team Times
         div.form-group
@@ -51,7 +51,7 @@ block content
                 option(value=currentYear - 1 selected) #{currentYear-1}-#{currentYear}
                 option(value=currentYear) #{currentYear}-#{currentYear+1}
         button.btn.update-btn#submit-team-info Submit
-    hr
+    hr.hr-margin
     div.update-all-recruits
         h3 Recruits
         p Don't want to wait until Monday to update all the recruits? Click this button to update all of them now.

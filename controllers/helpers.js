@@ -14,8 +14,8 @@ helpers.convertTimeToNumber = function(timeString){
 
 helpers.convertNumberToString = function(timeNumber){
     var minutes = Math.floor(timeNumber/60);
-    var timeString = minutes > 0 ? toString(minutes) : "";
-    return timeString + toString(timeNumber % 60);
+    var timeString = minutes > 0 ? String(minutes)+":" : "";
+    return timeString + String((timeNumber % 60).toFixed(2));
 }
 
 module.exports = helpers;

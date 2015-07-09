@@ -32,7 +32,7 @@ block content
                   textarea(name="comments").form-control#recruit-comments= recruit.comments
               button.btn.update-btn.btn-sm#submit-recruit-update.margin-right-5 Update
               button.btn.btn-default.btn-sm#cancel-update Cancel
-      hr
+      hr.hr-margin
       div.times
           h3 Times
           div.times-table-wrapper
@@ -53,12 +53,12 @@ block content
                     if time.teamRank
                       if time.behind || time.inFrontOf
                         td.mobile-hidden
-                          if time.behind && time.inFrontOf
-                            - content = "Behind " + time.behind.swimmer + " (" + String((time.time - time.behind.time).toFixed(2)) + ")<br> Ahead of " + time.inFrontOf.swimmer + " (" + String((time.time - time.inFrontOf.time).toFixed(2)) + ")"
-                          else if time.inFrontOf
-                            - content = "Ahead of " + time.inFrontOf.swimmer + " (" + String((time.time - time.inFrontOf.time).toFixed(2)) + ")"
-                          else
-                            - content = "Behind " + time.behind.swimmer + " (" + String((time.time - time.behind.time).toFixed(2)) + ")"
+                          - content = ""
+                          if time.behind
+                            - content = content + time.behind.swimmer+" ("+timeToString(time.behind.time)+")<hr>"
+                          - content = content + recruit.name+ " ("+time.timeString+")"
+                          if time.inFrontOf
+                            - content = content + "<hr>"+time.inFrontOf.swimmer+ " ("+timeToString(time.inFrontOf.time)+")"
                           span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
                       else
                         td.mobile-hidden= time.teamRank

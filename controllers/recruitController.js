@@ -309,7 +309,14 @@ controller.getRecruit = function(req, res) {
             } else if (!recruit){
                 res.status(404).send({"message": "recruit not found"});
             } else {
-                res.render("single-recruit", {"recruit": recruit, isAdmin: req.session.admin});
+                Time.populate(recruit.times,
+                                 {path: "behind inFrontOf", model: "ReferenceTime"},
+                                 function(err, times){
+                                    recruit.times = times;
+                                    res.render("single-recruit",
+                                               {"recruit": recruit,
+                                                "isAdmin": req.session.admin});
+                                 });
             }
         });
 };

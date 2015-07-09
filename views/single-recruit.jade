@@ -1,6 +1,7 @@
 extends layout
 block scripts
     script(src='/js/singleRecruit.js')
+    script(src='/js/bootstrap.min.js')
 block content
   mixin navbar-mixin()
   div.container.max-width-600
@@ -49,6 +50,19 @@ block content
                     td=time.timeString
                     td=time.points || "-"
                     td.mobile-hidden=time.nationalRank || "-"
-                    td.mobile-hidden= time.teamRank || "-"
+                    if time.teamRank
+                      if time.behind || time.inFrontOf
+                        td.mobile-hidden
+                          if time.behind && time.inFrontOf
+                            - content = "Behind " + time.behind.swimmer + " (" + String((time.time - time.behind.time).toFixed(2)) + ")<br> Ahead of " + time.inFrontOf.swimmer + " (" + String((time.time - time.inFrontOf.time).toFixed(2)) + ")"
+                          else if time.inFrontOf
+                            - content = "Ahead of " + time.inFrontOf.swimmer + " (" + String((time.time - time.inFrontOf.time).toFixed(2)) + ")"
+                          else
+                            - content = "Behind " + time.behind.swimmer + " (" + String((time.time - time.behind.time).toFixed(2)) + ")"
+                          span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
+                      else
+                        td.mobile-hidden= time.teamRank
+                    else
+                      td.mobile-hidden -
                     td.mobile-hidden= time.standard || "-"
     include navbar-mixin

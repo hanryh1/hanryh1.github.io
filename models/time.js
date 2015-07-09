@@ -24,6 +24,8 @@ var timeSchema = new mongoose.Schema({
     recruit: {type: mongoose.Schema.Types.ObjectId, ref: 'Recruit'},
     archived: {type: 'Boolean', default:false},
     teamRank: {type: 'Number'},
+    inFrontOf: {type: mongoose.Schema.Types.ObjectId, ref: 'ReferenceTime'},
+    behind: {type: mongoose.Schema.Types.ObjectId, ref: 'ReferenceTime'},
     nationalRank: {type: 'Number'},
     standard: {type: 'String', enum: ['A', 'B', 'Inv']}
 });
@@ -37,37 +39,49 @@ timeSchema.pre('save', function(next){
         .findById(self.recruit, "gender")
         .exec(function(err, recruit){
             var gender = recruit.gender;
-             mongoose.model('ReferenceTime')
+            mongoose.model('ReferenceTime')
                 .findOne({ "eventName": self.eventName,
                         "gender": gender,
                         "time": { $gt: self.time },
                         "type": "Team" })
                 .sort({ "time" : 1})
-                .exec(function(err, teamTime){
-                    if (teamTime) {
-                        self.teamRank = teamTime.rank;
+                .exec(function(err, slower){
+                    if (slower) {
+                        self.teamRank = slower.rank;
+                        self.inFrontOf = slower._id;
                     }
                     mongoose.model('ReferenceTime')
                         .findOne({ "eventName": self.eventName,
                                 "gender": gender,
-                                "time": { $gt: self.time },
-                                "type": "Nationals" })
-                        .sort({ "time" : 1})
-                        .exec(function(err, nationalTime){
-                            if (nationalTime) {
-                                self.nationalRank = nationalTime.rank;
+                                "time": { $lt: self.time },
+                                "type": "Team" })
+                        .sort({ "time" : -1})
+                        .exec(function(err, faster){
+                            if (faster) {
+                                self.behind = faster._id;
                             }
-                            mongoose.model('StandardTime')
-                              .findOne({ "eventName": self.eventName,
-                                "gender": gender,
-                                "time": { $gt: self.time }})
+                            mongoose.model('ReferenceTime')
+                                .findOne({ "eventName": self.eventName,
+                                        "gender": gender,
+                                        "time": { $gt: self.time },
+                                        "type": "Nationals" })
                                 .sort({ "time" : 1})
-                                .exec(function(err, standardTime){
-                                    if (standardTime){
-                                      self.standard = standardTime.type;
+                                .exec(function(err, nationalTime){
+                                    if (nationalTime) {
+                                        self.nationalRank = nationalTime.rank;
                                     }
-                                    next();
-                                });
+                                    mongoose.model('StandardTime')
+                                      .findOne({ "eventName": self.eventName,
+                                        "gender": gender,
+                                        "time": { $gt: self.time }})
+                                        .sort({ "time" : 1})
+                                        .exec(function(err, standardTime){
+                                            if (standardTime){
+                                              self.standard = standardTime.type;
+                                            }
+                                            next();
+                                        });
+                            });
                         });
                 });
             });

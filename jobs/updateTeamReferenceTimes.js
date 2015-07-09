@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var async = require('async');
 var request = require('request');
+var updateAllRecruits = require("./updateRecruits").updateAllRecruits;
 
 // eventdistance, eventstroke
 var EVENTS = [["50",1],
@@ -109,6 +110,8 @@ var getTeamTimes = function(teamId, seasonYear) {
                     console.log("Something went wrong while creating reference times.");
                 } else {
                     console.log("Reference times successfully created.");
+                    console.log("Updating all recruits.");
+                    updateAllRecruits();
                 }
             });
         }

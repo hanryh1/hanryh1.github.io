@@ -115,6 +115,8 @@ controller.createReferenceTimesForMeet = function(req, res) {
                         console.log("Something went wrong while creating times for meet.");
                     } else {
                         console.log("Times successfully created");
+                        console.log("Updating all recruit times");
+                        updateAllRecruits();
                     }
                 });
             }
@@ -162,6 +164,8 @@ controller.createTimeStandards = function(req, res) {
                     res.status(500).send(err);
                 } else {
                     res.status(201).send({"message": "New standards created."});
+                    console.log("Updating all recruit times");
+                    updateAllRecruits();
                 }
             });
         }

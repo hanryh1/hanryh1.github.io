@@ -1,11 +1,15 @@
 mixin recruit-mixin(recruit)
   div(id="container-" + recruit._id).recruit-container
     h3=recruit.name
-    h5="Class Year: " + recruit.classYear
-    h5="Power Index: " + recruit.powerIndex
-    a(href="http://www.collegeswimming.com/swimmer/"+recruit.collegeSwimmingId)
-      span.glyphicon.glyphicon-link
-      |  CollegeSwimming Profile
+    p
+      em Class of #{recruit.classYear}
+      span  | 
+      em Power Index #{recruit.powerIndex} 
+    p
+      a(href="/recruits/#{recruit._id}") Profile
+      span  | 
+      a(href="http://www.collegeswimming.com/swimmer/"+recruit.collegeSwimmingId)
+        |  CollegeSwimming
     table.table-striped.recruit-times
       tr
         th Event

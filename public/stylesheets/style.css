@@ -31,6 +31,10 @@ th{
   margin-bottom:50px;
 }
 
+.max-width-600 {
+  max-width:600px;
+}
+
 .centered {
     margin:auto;
     width:50%;
@@ -192,10 +196,26 @@ td, th{
   margin-right:30px;
 }
 
-/*Config page*/
+/*Single recruit page*/
+.recruit-info strong, .recruit-info span{
+  font-size:16px;
+}
 
-.max-width-500 {
-  max-width:500px;
+.recruit-info {
+  border: 1px solid #D8E6E6;
+  border-radius:10px;
+  padding:30px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.times-table-wrapper {
+  background-color: #FFFFFF;
+  border-radius:5px;
+  border: 1px solid #D8E6E6;
+}
+
+.update-form-container {
+  display: none;
 }
 
 @media (max-width: 768px) { 

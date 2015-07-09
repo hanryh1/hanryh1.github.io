@@ -3,13 +3,14 @@ block scripts
     script(src='/js/configs.js') 
 block content
   mixin navbar-mixin()
-  div.container.max-width-500
+  div.container.max-width-600
     h1 Configuration Page
     div.error
     div.nationals-results
         h3 Nationals Results
         div.form-group
-            label Enter the Collegeswimming link for the reference meet (http://www.collegeswimming.com/results/{number})
+            p Enter the Collegeswimming link for the reference meet. (http://www.collegeswimming.com/results/{number})
+            label Meet URL
             input(type="text", name="meetUrl").form-control#meet-url
         button.btn.update-btn#submit-meet-link Submit
     hr

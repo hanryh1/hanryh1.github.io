@@ -10,6 +10,14 @@ var isAuthenticated = function(req, res, next){
     }
 }
 
+var isAdmin = function(req, res, next){
+    if (req.session.admin) {
+        return next();
+    } else{
+        res.redirect('/');
+    }
+}
+
 router.post('/', isAuthenticated, RecruitController.createRecruit);
 
 router.get('/', isAuthenticated, RecruitController.getAllRecruits);
@@ -20,7 +28,7 @@ router.get('/archived', isAuthenticated, RecruitController.getArchivedRecruits);
 
 router.get('/archived/:classYear', isAuthenticated, RecruitController.getArchivedRecruits);
 
-router.get('/:id', isAuthenticated, RecruitController.getRecruit);
+router.get('/:recruitId', isAuthenticated, RecruitController.getRecruit);
 
 router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRecruit);
 
@@ -29,6 +37,8 @@ router.post('/:recruitId/times', isAuthenticated, RecruitController.addTimeManua
 router.put('/', isAuthenticated, RecruitController.archiveAllRecruits);
 
 router.put('/:recruitId', isAuthenticated, RecruitController.archiveRecruit);
+
+router.put('/:recruitId/info', isAdmin, RecruitController.updateRecruit);
 
 router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);
 

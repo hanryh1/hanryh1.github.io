@@ -301,15 +301,17 @@ controller.addTimeManually = function(req, res){
 }
 
 controller.getRecruit = function(req, res) {
-    Recruit.findOne({"collegeSwimmingId": req.params.csId}, function(err, recruit){
-        if (err){
-            res.status(500).send(err);
-        } else if (!recruit){
-            res.status(404).send({"message": "recruit not found"});
-        } else {
-            res.status(200).send(recruits);
-        }
-    });
+    Recruit.findById(req.params.recruitId)
+        .populate("times")
+        .exec(function(err, recruit){
+            if (err){
+                res.status(500).send(err);
+            } else if (!recruit){
+                res.status(404).send({"message": "recruit not found"});
+            } else {
+                res.render("single-recruit", {"recruit": recruit, isAdmin: req.session.admin});
+            }
+        });
 };
 
 controller.deleteRecruit = function(req, res){
@@ -322,6 +324,27 @@ controller.deleteRecruit = function(req, res){
             Time.remove({"recruit": recruit._id}, function(err){
                 recruit.remove();
                 res.status(200).send({"message": "Recruit successfully deleted."});
+            });
+        }
+    });
+}
+
+controller.updateRecruit = function(req, res) {
+    if (!req.body.email || !req.body.comments){
+        return res.status(400).send({"error": "Missing parameters."});
+    }
+    Recruit.findById(req.params.recruitId, function(err, recruit){
+        if (err){
+            res.status(500).send(err);
+        } else {
+            recruit.email = req.body.email;
+            recruit.comments = req.body.comments;
+            recruit.save(function(err){
+                if (err){
+                    res.status(500).send(err);
+                } else {
+                    res.status(200).send({"message": "Update successful."});
+                }
             });
         }
     });

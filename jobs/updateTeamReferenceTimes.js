@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var async = require('async');
-var cronjob = require('cron').CronJob;
 var request = require('request');
 
 // eventdistance, eventstroke
@@ -24,6 +23,12 @@ var mapNumbersToEventName = function(eventDistance, eventStroke) {
     return eventDistance + " Y " + STROKES[eventStroke];
 }
 
+// Turn "Bitdiddle, Ben" into "Ben Bitdiddle"
+var formatSwimmerName = function(name){
+  var names = name.split(", ");
+  return names[1] + " " + names[0];
+}
+
 var getTeamTimesForEvent = function(event, payload, callback) {
     payload["eventdistance"] = event[0];
     payload["eventstroke"] = String(event[1]);
@@ -40,10 +45,8 @@ var getTeamTimesForEvent = function(event, payload, callback) {
     });
 }
 
-var getTeamTimes = function() {
-    console.log("Updating team reference times");
-    var today = new Date();
-    var year = today.getFullYear()-1;
+var getTeamTimes = function(teamId, seasonYear) {
+    var year = parseInt(seasonYear);
     var season = String(year) + "-" + String(year + 1);
     var startdate = String(year) + "-07-01";
     var enddate = String(year) + "-06-31";
@@ -55,7 +58,7 @@ var getTeamTimes = function() {
             (function(index, calls, gender){
                 var payload = {
                                 "orgcode":"3",
-                                "team": process.env.TEAM_ID,
+                                "team": teamId,
                                 "season": season,
                                 "startdate": startdate,
                                 "enddate": enddate,
@@ -77,7 +80,8 @@ var getTeamTimes = function() {
                                              "rank": results[k]["pos"],
                                              "eventName": mapNumbersToEventName(eventDist, eventStroke),
                                              "gender": results[k]["eventgender"],
-                                             "type": "Team"
+                                             "type": "Team",
+                                             "swimmer": formatSwimmerName(results[k]["swimmer_name"])
                                             };
                                 times.push(time);
                             }
@@ -111,13 +115,4 @@ var getTeamTimes = function() {
     });
 }
 
-var updateReferenceTimesJob = new cronjob({cronTime: '0 0 0 15 3 *',
-  onTick: getTeamTimes,
-    /*
-     * Runs once a year after the season is over on April 15.
-     */
-  start: false,
-  timeZone: 'America/New_York'
-});
-
-module.exports = updateReferenceTimesJob;
+module.exports = getTeamTimes;

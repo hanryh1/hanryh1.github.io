@@ -4,11 +4,22 @@ var eventMap = require("../eventMap");
 var async = require("async");
 var request = require("request");
 var helpers = require("./helpers");
+var updateTeamReferenceTimes = require("../jobs/updateTeamReferenceTimes");
 var EVENTS = require("../models/time").schema.path("eventName").enumValues;
 
 controller = {}
 
 /* Controller for getting times to compare against requiring some extra configuration */
+
+controller.updateTeamReferenceTimes = function(req, res){
+    if (!req.body.teamId || !req.body.season){
+        return res.status(400).send({"error":"Missing parameters."});
+    }
+    res.status(200).send({"error": "Starting update"});
+    updateTeamReferenceTimes(req.body.teamId, req.body.season);
+}
+
+//// Functions for getting times from meets ////
 
 // This is necessary because cheerio is weird
 var generateSelector = function(tableIndex, rowIndex, columnIndex){
@@ -109,6 +120,8 @@ controller.createReferenceTimesForMeet = function(req, res) {
         });
     }
 }
+
+//// Functions for making time standards ////
 
 // converts casing to Xxxxx format
 var toTitleCase = function(str){

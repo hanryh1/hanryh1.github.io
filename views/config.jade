@@ -3,16 +3,17 @@ block scripts
     script(src='/js/configs.js') 
 block content
   mixin navbar-mixin()
-  div.container
+  div.container.max-width-500
     h1 Configuration Page
     div.error
-    div.nationals-results.max-width-500
+    div.nationals-results
         h3 Nationals Results
         div.form-group
             label Enter the Collegeswimming link for the reference meet (http://www.collegeswimming.com/results/{number})
-            input(type="text", name="meetUrl" id="meet-url").form-control
-        button.btn.btn-default#submit-meet-link Submit
-    div.national-cuts.max-width-500
+            input(type="text", name="meetUrl").form-control#meet-url
+        button.btn.update-btn#submit-meet-link Submit
+    hr
+    div.national-cuts
         h3 Time Standards
         p
             span Find a document like 
@@ -34,5 +35,19 @@ block content
             select.form-control#select-gender
                 option(value="M") Male
                 option(value="F") Female
-        button.btn.btn-default#submit-time-standards Submit
+        button.btn.update-btn#submit-time-standards Submit
+    hr
+    div.team-results
+        h3 Team Times
+        div.form-group
+            label Collegeswimming Team ID
+            input(type="number", name="teamId", min=1, max=9999).form-control#team-id
+        div.form-group
+            label Season
+            select.form-control#select-season
+                - currentYear = new Date().getFullYear()
+                option(value=currentYear - 2) #{currentYear-2}-#{currentYear-1}
+                option(value=currentYear - 1 selected) #{currentYear-1}-#{currentYear}
+                option(value=currentYear) #{currentYear}-#{currentYear+1}
+        button.btn.update-btn#submit-team-info Submit
     include navbar-mixin

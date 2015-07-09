@@ -19,4 +19,6 @@ router.post('/config/meet', isAdmin, configController.createReferenceTimesForMee
 
 router.post('/config/standards', isAdmin, configController.createTimeStandards);
 
+router.post('/config/team', isAdmin, configController.updateTeamReferenceTimes);
+
 module.exports = router;

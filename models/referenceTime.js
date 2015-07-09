@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var referenceTimeSchema = new mongoose.Schema({
     time: {type: 'Number', required: true},
+    swimmer: {type: 'String'},
     eventName: {type: 'String', required: true, index: true},
     rank: {type: 'Number', required: true},
     gender: {type: 'String', enum: ['M', 'F'], required: true},

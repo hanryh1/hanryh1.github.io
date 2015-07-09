@@ -47,6 +47,26 @@ $(document).ready(function(){
       });
   });
 
+  $("#submit-team-info").click(function(evt){
+    evt.preventDefault();
+    var teamId = $("#team-id").val();
+    var season = $("#select-season").val();
+    if (!/^[0-9]+$/.test(teamId)){
+      $(".error").text("Invalid Team Id");
+    }
+    $.ajax({
+      url: "/admin/config/team",
+      type: "POST",
+      data: {"teamId": teamId, "season": season},
+      success: function(){
+          window.location.reload(true);
+        },
+      error: function(jqXHR, textStatus, err) {
+          $(".error").text("Oops, something went wrong.");
+        }
+      });
+  });
+
   $('#logout-link').click(function(){
     $.ajax({
       url: '/logout',

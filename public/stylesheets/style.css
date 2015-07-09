@@ -26,6 +26,11 @@ th{
   text-transform:uppercase;
 }
 
+.container {
+  margin:auto;
+  margin-bottom:50px;
+}
+
 .centered {
     margin:auto;
     width:50%;

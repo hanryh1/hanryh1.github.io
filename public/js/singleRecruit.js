@@ -21,6 +21,7 @@ $(document).ready(function(){
 
   $("#cancel-update").click(function(evt){
     $(".update-form-container").hide();
+    $(".error").hide();
     $(".updateable-information").show();
   });
 
@@ -28,6 +29,10 @@ $(document).ready(function(){
     evt.preventDefault();
     var email = $("#recruit-email").val();
     var comments = $("#recruit-comments").val();
+    if (!email.trim() || !comments.trim()){
+      $(".error").text("Fields cannot be blank.");
+      return;
+    }
     $.ajax({
       url: window.location.pathname + "/info",
       type: "PUT",
@@ -41,71 +46,6 @@ $(document).ready(function(){
           $(".error").text("Oops, something went wrong.");
         }
       });
-  });
-
-  $(".delete-btn").click(function(){
-      $(this).closest(".recruit-container").find(".are-you-sure").show();
-  });
-
-  $(".delete-confirm-btn").click(function(){
-      var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
-      $.ajax({
-        url: "/recruits/" + recruitId,
-        type: "DELETE",
-        success: function(){
-          window.location.reload(true);
-        }, error: function(jqXHR, textStatus, err) {
-            $("#container-" + recruitId).find(".recruit-error").text("Could not delete recruit.");
-          }
-      });
-  });
-
-  $(".archive-btn").click(function(){
-      $(this).closest(".recruit-container").find(".are-you-sure-archive").show();
-  });
-
-  $(".archive-confirm-btn").click(function(){
-      var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
-      $.ajax({
-        url: "/recruits/" + recruitId + "?archive=true",
-        type: "PUT",
-        success: function(){
-          window.location.reload(true);
-        }, error: function(jqXHR, textStatus, err) {
-            $("#container-" + recruitId).find(".recruit-error").text("Could not archive recruit.");
-          }
-      });
-  });
-
-  $(".time-cancel-btn").click(function(){
-      $(this).closest(".recruit-container").find(".add-manual-time").hide();
-      $(".error").hide();
-      $(".add-update-btn").show();
-  });
-
-  $(".delete-time-btn").click(function(){
-    var timeId = $(this).closest("tr").attr("id").substring(5);
-    $.ajax({
-      url: "/recruits/times/"+timeId,
-      type: "DELETE",
-      success: function(){
-        $("#time-"+timeId).hide();
-      }, error: function(jqXHR, textStatus, err){
-        console.log("You messed up somehow");
-      }
-    });
-  })
-
-  $(".delete-deny-btn").click(function(){
-    $(this).closest(".are-you-sure").hide();
-  });
-
-  $(".archive-deny-btn").click(function(){
-    $(this).closest(".are-you-sure-archive").hide();
-  });
-
-  $("#archive-all-deny-btn").click(function(){
-    $("#are-you-sure-archive-all").hide();
   });
 
   $('#logout-link').click(function(){

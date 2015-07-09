@@ -1,6 +1,6 @@
 var generateHtml = function(eventName, data){
   var newHtml = "<h2>"+eventName+"</h2><table class=\"table-striped\">" +
-                "<tr><th>Recruit Name</th><th>Class</th><th>Time</th>" + 
+                "<tr><th>Name</th><th>Class</th><th>Time</th>" +
                 "<th>Natl</th><th>Team</th></tr>";
   for (var i = 0; i < data.length; i++){
     var time = data[i];

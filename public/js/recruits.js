@@ -94,8 +94,12 @@ $(document).ready(function(){
           success: function(time){
             $(".error").hide();
             var timesTable = $("#container-" + recruitId).find(".table-striped");
+            var nationalRank = time.nationalRank || "-";
+            var teamRank = time.teamRank || "-";
             var html = timesTable.html().substring(0,timesTable.html().length-8);
-            html += "<tr><td>"+time.eventName+"</td><td>"+time.timeString+"</td><td>-</td></tr></table>"
+            html += "<tr><td>" + time.eventName + "</td><td>"+time.timeString +
+                    "</td><td>-</td><td>" + nationalRank +
+                    "<td>" + teamRank + "</td></tr></table>";
             timesTable.html(html);
           }, error: function(jqXHR, textStatus, err) {
               var errMsg = JSON.parse(jqXHR.responseText).error;
@@ -105,7 +109,7 @@ $(document).ready(function(){
     });
 
     $(".time-cancel-btn").click(function(){
-        var recruitId = $(this).closest(".recruit-container").find(".add-manual-time").hide();
+        $(this).closest(".recruit-container").find(".add-manual-time").hide();
         $(".error").hide();
         $(".add-update-btn").show();
     });

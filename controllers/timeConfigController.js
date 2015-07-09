@@ -125,6 +125,7 @@ controller.createReferenceTimesForMeet = function(req, res) {
 
 // converts casing to Xxxxx format
 var toTitleCase = function(str){
+    if (str == "IM") return str;
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 

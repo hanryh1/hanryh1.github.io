@@ -17,4 +17,6 @@ router.get('/config', isAdmin, function(req, res) {
 
 router.post('/config/meet', isAdmin, configController.createReferenceTimesForMeet);
 
+router.post('/config/standards', isAdmin, configController.createTimeStandards);
+
 module.exports = router;

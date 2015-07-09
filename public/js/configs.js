@@ -27,6 +27,25 @@ $(document).ready(function(){
       });
   });
 
+  $("#submit-time-standards").click(function(evt){
+    evt.preventDefault();
+    var standards = $("#time-standards").val();
+    if (!standards.trim()){
+      return;
+    }
+    var gender = $("#select-gender").val();
+    $.ajax({
+      url: "/admin/config/standards",
+      type: "POST",
+      data: {"timeStandards": standards, "gender": gender},
+      success: function(){
+          window.location.reload(true);
+        },
+      error: function(jqXHR, textStatus, err) {
+          $(".error").text("Oops, something went wrong.");
+        }
+      });
+  });
 
   $('#logout-link').click(function(){
     $.ajax({

@@ -187,6 +187,12 @@ td, th{
   margin-right:30px;
 }
 
+/*Config page*/
+
+.max-width-500 {
+  max-width:500px;
+}
+
 @media (max-width: 768px) { 
   .navbar-collapse.collapse {
     display: block!important;

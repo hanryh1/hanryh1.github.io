@@ -4,11 +4,35 @@ block scripts
 block content
   mixin navbar-mixin()
   div.container
+    h1 Configuration Page
     div.error
-    div.nationals-results
+    div.nationals-results.max-width-500
+        h3 Nationals Results
         div.form-group
-            label Enter the Collegeswimming link for the reference meet (http://www.collegeswimming.com/results/{number}/)
+            label Enter the Collegeswimming link for the reference meet (http://www.collegeswimming.com/results/{number})
             input(type="text", name="meetUrl" id="meet-url").form-control
         button.btn.btn-default#submit-meet-link Submit
-    div.national-cuts
+    div.national-cuts.max-width-500
+        h3 Time Standards
+        p
+            span Find a document like 
+            span
+                a(href="/assets/QualifyingStandardsWomen2016.pdf") this
+            span  from the NCAA and copy and paste the contents of the table in the textbox as follows:
+        pre.
+            50 FREE :22.84 :23.88 :23.60
+            100 FREE :49.65 :52.14 :51.54
+
+            ...
+
+            200 M.R. 1:45.96 1:45.16
+            400 M.R. 3:51.95 3:50.40
+        div.form-group
+            label Pasted Times
+            textarea(name="timeStandards").form-control#time-standards
+        div.form-group
+            select.form-control#select-gender
+                option(value="M") Male
+                option(value="F") Female
+        button.btn.btn-default#submit-time-standards Submit
     include navbar-mixin

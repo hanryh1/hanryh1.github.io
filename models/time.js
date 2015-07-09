@@ -25,10 +25,12 @@ var timeSchema = new mongoose.Schema({
     archived: {type: 'Boolean', default:false},
     teamRank: {type: 'Number'},
     nationalRank: {type: 'Number'},
+    standard: {type: 'String', enum: ['A', 'B', 'Inv']}
 });
 
 timeSchema.set('autoIndex', false);
 
+// set rankings and time standards
 timeSchema.pre('save', function(next){
     var self = this;
     mongoose.model('Recruit')
@@ -55,7 +57,17 @@ timeSchema.pre('save', function(next){
                             if (nationalTime) {
                                 self.nationalRank = nationalTime.rank;
                             }
-                            next();
+                            mongoose.model('StandardTime')
+                              .findOne({ "eventName": self.eventName,
+                                "gender": gender,
+                                "time": { $gt: self.time }})
+                                .sort({ "time" : 1})
+                                .exec(function(err, standardTime){
+                                    if (standardTime){
+                                      self.standard = standardTime.type;
+                                    }
+                                    next();
+                                });
                         });
                 });
             });

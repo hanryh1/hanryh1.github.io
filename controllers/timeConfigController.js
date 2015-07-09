@@ -4,6 +4,7 @@ var eventMap = require("../eventMap");
 var async = require("async");
 var request = require("request");
 var helpers = require("./helpers");
+var EVENTS = require("../models/time").schema.path("eventName").enumValues;
 
 controller = {}
 
@@ -107,6 +108,49 @@ controller.createReferenceTimesForMeet = function(req, res) {
             }
         });
     }
+}
+
+// converts casing to Xxxxx format
+var toTitleCase = function(str){
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+controller.createTimeStandards = function(req, res) {
+    if (!req.body.timeStandards || !req.body.gender) {
+        return res.status(400).send({"error": "Missing parameters."});
+    }
+    var types = StandardTime.schema.path("type").enumValues;
+    var lines = req.body.timeStandards.match(/[^\r\n]+/g);
+    var standards = [];
+    for (var i = 0; i < lines.length; i++){
+        var tokens = lines[i].split(" ");
+        var eventName = tokens[0] + " Y " + toTitleCase(tokens[1]);
+        if (EVENTS.indexOf(eventName) == -1){
+            continue; //it's not an event we care about
+        }
+        for (var j = 2; j < 5; j++){
+            var standard = {
+                             "time": helpers.convertTimeToNumber(tokens[j]),
+                             "type": types[j-2],
+                             "gender": req.body.gender,
+                             "eventName": eventName
+                            };
+            standards.push(standard);
+        }
+    }
+    StandardTime.remove({"gender": req.body.gender}, function(err){
+        if (err){
+            res.status(500).send(err);
+        } else {
+            StandardTime.create(standards, function(err){
+                if (err){
+                    res.status(500).send(err);
+                } else {
+                    res.status(201).send({"message": "New standards created."});
+                }
+            });
+        }
+    });
 }
 
 module.exports = controller;

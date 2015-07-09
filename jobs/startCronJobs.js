@@ -1,1 +1,1 @@
-require('./updateRecruits').start();
+require('./updateRecruits').updateRecruitsJob.start();

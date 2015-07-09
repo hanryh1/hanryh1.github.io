@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var async = require('async');
 var cronjob = require('cron').CronJob;
 
+var job = {};
 var updateAllRecruits = function(){
     console.log("Updating all recruits.");
     mongoose.model('Recruit').find({"archived": false}, function(err, recruits){
@@ -37,7 +38,7 @@ var updateAllRecruits = function(){
     });
 }
 
-var updateRecruitsJob = new cronjob({cronTime: '00 30 13 * * 1',
+job.updateRecruitsJob = new cronjob({cronTime: '00 30 13 * * 1',
   onTick: updateAllRecruits,
     /*
      * Runs every Monday at 1:30 PM (EST)
@@ -46,4 +47,6 @@ var updateRecruitsJob = new cronjob({cronTime: '00 30 13 * * 1',
   timeZone: 'America/New_York'
 });
 
-module.exports = updateRecruitsJob;
+job.updateAllRecruits = updateAllRecruits;
+
+module.exports = job;

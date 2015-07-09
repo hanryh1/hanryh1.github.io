@@ -6,9 +6,9 @@ helpers.convertTimeToNumber = function(timeString){
     }
     var interim = timeString.split(":");
     if (interim.length > 1) {
-        return parseInt(interim[0])*60 + parseFloat(interim[1]);
+        return parseInt(interim[0])*60 + parseFloat(interim[1]).toFixed(2);
     } else{
-        return parseFloat(interim[0]);
+        return parseFloat(interim[0]).toFixed(2);
     }
 };
 

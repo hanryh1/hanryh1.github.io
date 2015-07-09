@@ -76,7 +76,7 @@ var getTeamTimes = function(teamId, seasonYear) {
                                 var eventDist = e[0];
                                 var eventStroke = e[1]-1;
                                 var time = {
-                                             "time": parseFloat(results[k]["time"]),
+                                             "time": parseFloat(results[k]["time"]).toFixed(2),
                                              "rank": results[k]["pos"],
                                              "eventName": mapNumbersToEventName(eventDist, eventStroke),
                                              "gender": results[k]["eventgender"],

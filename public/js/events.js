@@ -1,16 +1,14 @@
 var generateHtml = function(eventName, data){
   var newHtml = "<h2>"+eventName+"</h2><table class=\"table-striped\">" +
                 "<tr><th>Name</th><th>Class</th><th>Time</th>" +
-                "<th>Natl</th><th>Team</th></tr>";
+                "<th>Standard</th></tr>";
   for (var i = 0; i < data.length; i++){
     var time = data[i];
-    var nationalRank = time.nationalRank || "-";
-    var teamRank = time.teamRank || "-";
+    var standard = time.standard || "-";
     newHtml += "<tr><td><a href=\"/recruits/" +
                time.recruit._id+"\">" + time.recruit.name +
                "</a><td>" + time.recruit.classYear + "<td>" +
-               time.timeString +"</td><td>" + nationalRank +
-               "<td>" + teamRank + "</td></tr>";
+               time.timeString +"</td><td>" + standard + "</td></tr>";
   }  
   newHtml += "</table>"
   return newHtml

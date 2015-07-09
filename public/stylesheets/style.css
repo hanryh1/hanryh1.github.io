@@ -218,6 +218,10 @@ td, th{
   display: none;
 }
 
+.archived-label {
+  float:right;
+}
+
 @media (max-width: 768px) { 
   .navbar-collapse.collapse {
     display: block!important;

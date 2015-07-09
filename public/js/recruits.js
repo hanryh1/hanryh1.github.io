@@ -164,4 +164,17 @@ $(document).ready(function(){
         }
       });
     });
+
+    // hide extraneous things so mobile doesn't look as bad
+    if ($(window).width() < 480){
+        $(".mobile-hidden").hide()
+    }
+
+    $(window).resize(function(){
+      if ($(window).width() < 480){
+        $(".mobile-hidden").hide()
+      } else {
+        $(".mobile-hidden").show()
+      }
+    });
 });

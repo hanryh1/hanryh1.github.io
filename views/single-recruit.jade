@@ -5,48 +5,50 @@ block content
   mixin navbar-mixin()
   div.container.max-width-600
     div.recruit-info
-        h2= recruit.name
-        p
-            em Class of #{recruit.classYear}
-            span  | 
-            em Power Index #{recruit.powerIndex}
-        div.updateable-information
-            p
-                strong Email 
-                em= recruit.email || "None"
-            strong Comments
-            p= recruit.comments || "None"
-            if isAdmin
-                button.btn.update-btn.btn-sm#update-form-btn Update Info
-        if isAdmin
-            div.update-form-container
-                div.error
-                div.form-group
-                    label Email
-                    input(type="email", name="email", value=recruit.email).form-control#recruit-email
-                div.form-group
-                    label Comments
-                    textarea(name="comments").form-control#recruit-comments= recruit.comments
-                button.btn.update-btn.btn-sm#submit-recruit-update.margin-right-5 Update
-                button.btn.btn-default.btn-sm#cancel-update Cancel
-        hr
-        div.times
-            h3 Times
-            div.times-table-wrapper
-                table.table-striped.single-recruit-times
+      if recruit.archived
+        span.label.label-default.archived-label Archived
+      h2= recruit.name
+      p
+          em Class of #{recruit.classYear}
+          span  | 
+          em Power Index #{recruit.powerIndex}
+      div.updateable-information
+          p
+              strong Email 
+              em= recruit.email || "None"
+          strong Comments
+          p= recruit.comments || "None"
+          if isAdmin
+              button.btn.update-btn.btn-sm#update-form-btn Update Info
+      if isAdmin
+          div.update-form-container
+              div.error
+              div.form-group
+                  label Email
+                  input(type="email", name="email", value=recruit.email).form-control#recruit-email
+              div.form-group
+                  label Comments
+                  textarea(name="comments").form-control#recruit-comments= recruit.comments
+              button.btn.update-btn.btn-sm#submit-recruit-update.margin-right-5 Update
+              button.btn.btn-default.btn-sm#cancel-update Cancel
+      hr
+      div.times
+          h3 Times
+          div.times-table-wrapper
+              table.table-striped.single-recruit-times
+                tr
+                  th Event
+                  th Time
+                  th Points
+                  th.mobile-hidden Natl
+                  th.mobile-hidden Team
+                  th.mobile-hidden Standard
+                for time in recruit.times
                   tr
-                    th Event
-                    th Time
-                    th Points
-                    th Natl
-                    th Team
-                    th Standard
-                  for time in recruit.times
-                    tr
-                      td=time.eventName
-                      td=time.timeString
-                      td=time.points || "-"
-                      td=time.nationalRank || "-"
-                      td= time.teamRank || "-"
-                      td= time.standard || "-"
+                    td=time.eventName
+                    td=time.timeString
+                    td=time.points || "-"
+                    td.mobile-hidden=time.nationalRank || "-"
+                    td.mobile-hidden= time.teamRank || "-"
+                    td.mobile-hidden= time.standard || "-"
     include navbar-mixin

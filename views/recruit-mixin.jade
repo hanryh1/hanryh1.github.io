@@ -15,16 +15,16 @@ mixin recruit-mixin(recruit)
         th Event
         th Time
         th Points
-        th NR
-        th TR
+        th.mobile-hidden NR
+        th.mobile-hidden TR
       for time in recruit.times
         tr(id="time-"+time._id)
           td=time.eventName
           td=time.timeString
           
           td=time.points || "-"
-          td=time.nationalRank || "-"
-          td=time.teamRank || "-"
+          td.mobile-hidden=time.nationalRank || "-"
+          td.mobile-hidden=time.teamRank || "-"
             button.btn.delete-time-btn
               span.glyphicon.glyphicon-remove
     div.recruit-error.error

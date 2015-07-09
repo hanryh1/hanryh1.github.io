@@ -6,8 +6,8 @@ var generateHtml = function(eventName, data){
     var time = data[i];
     var nationalRank = time.nationalRank || "-";
     var teamRank = time.teamRank || "-";
-    newHtml += "<tr><td><a href=\"http://www.collegeswimming.com/swimmer/" +
-               time.recruit.collegeSwimmingId+"\">" + time.recruit.name +
+    newHtml += "<tr><td><a href=\"/recruits/" +
+               time.recruit._id+"\">" + time.recruit.name +
                "</a><td>" + time.recruit.classYear + "<td>" +
                time.timeString +"</td><td>" + nationalRank +
                "<td>" + teamRank + "</td></tr>";

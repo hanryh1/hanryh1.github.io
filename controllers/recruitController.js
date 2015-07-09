@@ -459,7 +459,7 @@ controller.createRecruit = function(req, res) {
 };
 
 var generateCsvRow = function(recruit, data) {
-    var row = [recruit.name, recruit.powerIndex];
+    var row = [recruit.name, recruit.email, recruit.powerIndex];
     for (var i = 0; i < EVENTS.length; i++){
         for (var j = 0; j < recruit.times.length; j++){
             if (recruit.times[j].eventName == EVENTS[i]){
@@ -478,7 +478,7 @@ var generateRecruitCsv = function(callback){
         if (err) {
             callback(err);
         } else {
-            var headers = ["Name", "Power Points"].concat(EVENTS);
+            var headers = ["Name", "Email", "Power Points"].concat(EVENTS);
             var data = [headers, ["Men"]];
             for (var i = 0; i < recruits.maleRecruits.length; i ++){
                 generateCsvRow(recruits.maleRecruits[i], data);

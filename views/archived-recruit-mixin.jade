@@ -15,10 +15,7 @@ mixin archived-recruit-mixin(recruit)
         tr(id="time-"+time._id)
           td=time.eventName
           td=time.timeString
-          if time.points
-            td=time.points
-          else 
-            td -
+          td=time.points || "-"
     div.recruit-error.error
     button.btn.btn-danger.delete-btn Delete
     button.btn.btn-default.unarchive-btn Unarchive

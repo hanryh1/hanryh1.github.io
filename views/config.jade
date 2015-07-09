@@ -51,4 +51,9 @@ block content
                 option(value=currentYear - 1 selected) #{currentYear-1}-#{currentYear}
                 option(value=currentYear) #{currentYear}-#{currentYear+1}
         button.btn.update-btn#submit-team-info Submit
+    hr
+    div.update-all-recruits
+        h3 Recruits
+        p Don't want to wait until Monday to update all the recruits? Click this button to update all of them now.
+        button.btn.update-btn#update-all-recruits-btn Update All
     include navbar-mixin

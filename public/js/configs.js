@@ -67,6 +67,19 @@ $(document).ready(function(){
       });
   });
 
+  $("#update-all-recruits-btn").click(function(){
+    $.ajax({
+      url: "/admin/recruits",
+      type: "POST",
+      success: function(){
+          window.location.reload(true);
+        },
+      error: function(jqXHR, textStatus, err) {
+          $(".error").text("Oops, something went wrong.");
+        }
+      });
+  });
+
   $('#logout-link').click(function(){
     $.ajax({
       url: '/logout',

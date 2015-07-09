@@ -6,6 +6,7 @@ var request = require("request");
 var helpers = require("./helpers");
 var updateTeamReferenceTimes = require("../jobs/updateTeamReferenceTimes");
 var EVENTS = require("../models/time").schema.path("eventName").enumValues;
+var updateAllRecruits = require("../jobs/updateRecruits").updateAllRecruits;
 
 controller = {}
 
@@ -165,6 +166,12 @@ controller.createTimeStandards = function(req, res) {
             });
         }
     });
+}
+
+// admin interface to updating all the recruits so we don't have to wait until every monday
+controller.updateAllRecruits = function(req, res){
+    res.status(200).send({"message": "Starting update"});
+    updateAllRecruits();
 }
 
 module.exports = controller;

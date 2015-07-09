@@ -21,4 +21,6 @@ router.post('/config/standards', isAdmin, configController.createTimeStandards);
 
 router.post('/config/team', isAdmin, configController.updateTeamReferenceTimes);
 
+router.post('/recruits', isAdmin, configController.updateAllRecruits);
+
 module.exports = router;

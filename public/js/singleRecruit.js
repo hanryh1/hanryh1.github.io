@@ -29,8 +29,8 @@ $(document).ready(function(){
     evt.preventDefault();
     var email = $("#recruit-email").val();
     var comments = $("#recruit-comments").val();
-    if (!email.trim() || !comments.trim()){
-      $(".error").text("Fields cannot be blank.");
+    if (!email.trim() && !comments.trim()){
+      $(".error").text("Both fields cannot be blank.");
       return;
     }
     $.ajax({

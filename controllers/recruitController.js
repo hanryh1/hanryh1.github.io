@@ -338,8 +338,8 @@ controller.deleteRecruit = function(req, res){
 }
 
 controller.updateRecruit = function(req, res) {
-    if (!req.body.email || !req.body.comments){
-        return res.status(400).send({"error": "Missing parameters."});
+    if (!req.body.email && !req.body.comments){
+        return res.status(400).send({"error": "Both fields can't be blank!"});
     }
     Recruit.findById(req.params.recruitId, function(err, recruit){
         if (err){

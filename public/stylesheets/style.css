@@ -62,8 +62,12 @@ th{
 }
 
 .vertical-centered{
-  margin-top:15%;
-  height:50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
 }
 
 .btn-default{
@@ -75,9 +79,11 @@ th{
 
 /* Login */
 .login-container{
-  position: relative;
-  top: 50%;
   max-width:500px;
+}
+
+.title {
+  font-size:3em;
 }
 
 /*Recruits*/

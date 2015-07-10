@@ -53,11 +53,11 @@ block content
                     if time.teamRank
                       if time.behind || time.inFrontOf
                         td.mobile-hidden
-                          - content = ""
-                          if time.behind
-                            - content = content + (time.time - time.behind.time).toFixed(2) + "s slower than " + time.behind.swimmer+ "<br>"
+                          - content = "<b>" + time.eventName + "</b><br>"
                           if time.inFrontOf
                             - content = content + (time.inFrontOf.time - time.time).toFixed(2) + "s faster than " + time.inFrontOf.swimmer
+                          if time.behind
+                            - content = content + "<br>" + (time.time - time.behind.time).toFixed(2) + "s slower than " + time.behind.swimmer
                           span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
                       else
                         td.mobile-hidden= time.teamRank

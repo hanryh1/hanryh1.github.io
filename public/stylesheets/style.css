@@ -73,6 +73,13 @@ th{
   background-color:#BDC3C7;
 }
 
+/* Login */
+.login-container{
+  position: relative;
+  top: 50%;
+  max-width:500px;
+}
+
 /*Recruits*/
 table{
     width:100%;

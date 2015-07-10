@@ -1,12 +1,10 @@
 extends layout
-
 block content
-  div.centered.vertical-centered
-    h1 StalkMyRecruit
+  div.centered.vertical-centered.login-container
+    h1.title StalkMyRecruit
     form(name="login", action="/authenticate", method="post", id="login-form")
         if error
             h4=error
         div.form-group
-            h3 Enter Password
-            input(type="password", name="password", id="login-password").form-control
-        button(type="submit").btn.btn-default.btn-lg.submit-login Log In
+            input(type="password", name="password", id="login-password", placeholder="Enter password").form-control
+        button(type="submit").btn.update-btn.btn-lg.submit-login Log In

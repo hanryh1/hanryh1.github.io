@@ -55,10 +55,10 @@ block content
                         td.mobile-hidden
                           - content = ""
                           if time.behind
-                            - content = content + time.behind.swimmer+" ("+timeToString(time.behind.time)+")<hr>"
-                          - content = content + recruit.name+ " ("+time.timeString+")"
+                            - content = content + (time.teamRank - 1) + " " + time.behind.swimmer+" (-" + (time.time - time.behind.time).toFixed(2) + ")<hr>"
+                          - content = content + (time.teamRank) + " " + recruit.name
                           if time.inFrontOf
-                            - content = content + "<hr>"+time.inFrontOf.swimmer+ " ("+timeToString(time.inFrontOf.time)+")"
+                            - content = content +"<hr>"+ (time.teamRank + 1) + " " + time.inFrontOf.swimmer+ " (+" + (time.inFrontOf.time - time.time).toFixed(2) + ")"
                           span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
                       else
                         td.mobile-hidden= time.teamRank

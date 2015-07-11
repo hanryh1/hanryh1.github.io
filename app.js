@@ -27,7 +27,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cookieSession({secret: process.env.SMR_SESSION_SECRET}));
+
+// only send cookies over https if not in development
+var cookieSessionArgs = {secret: process.env.SMR_SESSION_SECRET};
+if (app.get('env') !== 'development') {
+    cookieSessionArgs["secureProxy"] = true;
+}
+app.use(cookieSession(cookieSessionArgs));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

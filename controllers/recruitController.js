@@ -467,7 +467,7 @@ var generateCsvRow = function(recruit, data) {
                 break;
             }
         }
-        if (row.length - 2 == i) {
+        if (row.length - 3 == i) {
             row.push("");
         }
     }

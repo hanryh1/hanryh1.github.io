@@ -23,7 +23,18 @@ app.set('view engine', 'jade');
 db = mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/stalkmyrecruit");
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+
+var filter = function(middleware) {
+    return function(req, res, next) {
+        if (/\/js|\/stylesheets|\/fonts/.test(req.path)) {
+            return next();
+        } else {
+            return middleware(req, res, next);
+        }
+    };
+};
+
+app.use(filter(logger('short')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

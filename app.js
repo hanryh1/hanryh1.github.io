@@ -43,6 +43,7 @@ app.use(cookieParser());
 var cookieSessionArgs = {secret: process.env.SMR_SESSION_SECRET};
 if (app.get('env') !== 'development') {
     cookieSessionArgs["secureProxy"] = true;
+    app.enable("trust proxy");
 }
 app.use(cookieSession(cookieSessionArgs));
 app.use(express.static(path.join(__dirname, 'public')));

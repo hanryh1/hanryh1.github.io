@@ -34,7 +34,7 @@ var filter = function(middleware) {
     };
 };
 
-app.use(filter(logger('short')));
+app.use(filter(logger('common')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

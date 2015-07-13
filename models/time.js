@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Promise = require("bluebird");
 
 var EVENTS = [ "50 Y Free",
                "100 Y Free",
@@ -32,59 +33,79 @@ var timeSchema = new mongoose.Schema({
 
 timeSchema.set('autoIndex', false);
 
-// set rankings and time standards
+// // set rankings and time standards
 timeSchema.pre('save', function(next){
     var self = this;
     mongoose.model('Recruit')
         .findById(self.recruit, "gender")
         .exec(function(err, recruit){
             var gender = recruit.gender;
-            mongoose.model('ReferenceTime')
-                .findOne({ "eventName": self.eventName,
-                        "gender": gender,
-                        "time": { $gt: self.time },
-                        "type": "Team" })
-                .sort({ "time" : 1})
-                .exec(function(err, slower){
-                    if (slower) {
-                        self.teamRank = slower.rank;
-                        self.inFrontOf = slower._id;
-                    }
-                    mongoose.model('ReferenceTime')
-                        .findOne({ "eventName": self.eventName,
-                                "gender": gender,
-                                "time": { $lt: self.time },
-                                "type": "Team" })
-                        .sort({ "time" : -1})
-                        .exec(function(err, faster){
-                            if (faster) {
-                                self.behind = faster._id;
-                            }
-                            mongoose.model('ReferenceTime')
-                                .findOne({ "eventName": self.eventName,
-                                        "gender": gender,
-                                        "time": { $gt: self.time },
-                                        "type": "Nationals" })
-                                .sort({ "time" : 1})
-                                .exec(function(err, nationalTime){
-                                    if (nationalTime) {
-                                        self.nationalRank = nationalTime.rank;
-                                    }
-                                    mongoose.model('StandardTime')
-                                      .findOne({ "eventName": self.eventName,
-                                        "gender": gender,
-                                        "time": { $gt: self.time }})
-                                        .sort({ "time" : 1})
-                                        .exec(function(err, standardTime){
-                                            if (standardTime){
-                                              self.standard = standardTime.type;
-                                            }
-                                            next();
-                                        });
-                            });
-                        });
+
+            var setTeamRank = new Promise(function(f, r){
+                mongoose.model('ReferenceTime')
+                    .findOne({ "eventName": self.eventName,
+                            "gender": gender,
+                            "time": { $gt: self.time },
+                            "type": "Team" })
+                    .sort({ "time" : 1})
+                    .exec(function(err, slower){  
+                        if (slower) {
+                            self.teamRank = slower.rank;
+                            self.inFrontOf = slower._id;
+                        }
+                        f(self);
+                    });
                 });
-            });
+
+            var setFaster = new Promise(function(f, r){
+                mongoose.model('ReferenceTime')
+                    .findOne({ "eventName": self.eventName,
+                            "gender": gender,
+                            "time": { $lt: self.time },
+                            "type": "Team" })
+                    .sort({ "time" : -1})
+                    .exec(function(err, faster){
+                        if (faster) {
+                            self.behind = faster._id;
+                        }
+                        f(self);
+                    });
+                });
+
+            var setNationalRank = new Promise(function(f, r){
+                mongoose.model('ReferenceTime')
+                    .findOne({ "eventName": self.eventName,
+                            "gender": gender,
+                            "time": { $gt: self.time },
+                            "type": "Nationals" })
+                    .sort({ "time" : 1})
+                    .exec(function(err, nationalTime){
+                        if (nationalTime) {
+                            self.nationalRank = nationalTime.rank;
+                        }
+                        f(self);
+                    });
+                });
+
+            var setStandard = new Promise(function(f, r){
+                mongoose.model('StandardTime')
+                  .findOne({ "eventName": self.eventName,
+                    "gender": gender,
+                    "time": { $gt: self.time }})
+                    .sort({ "time" : 1})
+                    .exec(function(err, standardTime){
+                        if (standardTime){
+                          self.standard = standardTime.type;
+                        }
+                        f(self);
+                    });
+                });
+
+            Promise.all([setTeamRank, setFaster, setNationalRank, setStandard])
+                   .then(function(result){
+                        next();
+                   });
+        });
 });
 
 module.exports = mongoose.model('Time', timeSchema);

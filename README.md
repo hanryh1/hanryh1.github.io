@@ -6,6 +6,7 @@
 - `SMR_PASSWORD`: password for everyone
 - `ADMIN_PASSWORD`: password for admins
 - `SMR_SESSION_SECRET`: secret for cookie sessions
+- `SECURE_PROXY` (Optional): If you want this app to be run over a secure proxy over HTTPS
 - `MONGOLAB_URI` (Optional): URI to external mongo instance
 - `PORT` (Optional): Port to run the server on
 

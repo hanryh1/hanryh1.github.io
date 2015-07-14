@@ -39,9 +39,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// only send cookies over https if not in development
+// only send cookies over https if SECURE_PROXY env variable set
 var cookieSessionArgs = {secret: process.env.SMR_SESSION_SECRET};
-if (app.get('env') !== 'development') {
+if (process.env.SECURE_PROXY) {
     cookieSessionArgs["secureProxy"] = true;
     app.enable("trust proxy");
 }

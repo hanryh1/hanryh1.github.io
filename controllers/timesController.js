@@ -1,12 +1,13 @@
 var Recruit = require("../models/recruit");
 var Time = require("../models/time");
+var EVENTS = Time.schema.path("eventName").enumValues;
 
 timeController = {};
 
 //takes in an event name and a gender
 timeController.getTimesByEventAndGender = function(req, res){
-    if (!req.query.eventName || !req.query.gender){
-        res.status(400).send({'error': 'Missing query parameters.'});
+    if (EVENTS.indexOf(req.query.eventName) == -1 || ["M", "F"].indexOf(req.query.gender) == -1 ){
+        res.status(400).send({'error': 'Invalid query parameters.'});
     } else {
         var query = {"eventName": req.query.eventName}
 

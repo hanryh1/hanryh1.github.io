@@ -359,6 +359,9 @@ controller.updateRecruit = function(req, res) {
 }
 
 controller.archiveRecruit = function(req, res) {
+    if (["true", "false"].indexOf(req.query.archive) == -1){
+        return res.status(400).send({"error": "Invalid query parameters."});
+    }
     Recruit.findById(req.params.recruitId, function(err, recruit){
         if (err) {
             res.status(500).send(err); 

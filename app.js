@@ -63,6 +63,9 @@ app.use(function(req, res, next) {
     res.render('404');
 });
 
+//don't send X-Powered-By header
+app.disable('x-powered-by');
+
 // error handlers
 
 // development error handler

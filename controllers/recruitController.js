@@ -2,7 +2,7 @@ var Recruit = require("../models/recruit");
 var csv = require("csv");
 var request = require("request");
 var Time = require("../models/time");
-var helpers = require("./helpers");
+var helpers = require("../lib/helpers");
 
 controller = {};
 

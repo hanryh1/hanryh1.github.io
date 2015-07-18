@@ -91,7 +91,7 @@ app.use(function(err, req, res, next) {
 });
 
 // include background jobs
-require('./jobs/startCronJobs');
+require('./lib/updateRecruits').updateRecruitsJob.start();
 
 var debug = require('debug')('stalkmyrecruit');
 

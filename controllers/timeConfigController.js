@@ -3,10 +3,10 @@ var ReferenceTime = require('../models/referenceTime');
 var eventMap = require("../eventMap");
 var async = require("async");
 var request = require("request");
-var helpers = require("./helpers");
-var updateTeamReferenceTimes = require("../jobs/updateTeamReferenceTimes");
+var helpers = require("../lib/helpers");
+var updateTeamReferenceTimes = require("../lib/updateTeamReferenceTimes");
 var EVENTS = require("../models/time").schema.path("eventName").enumValues;
-var updateAllRecruits = require("../jobs/updateRecruits").updateAllRecruits;
+var updateAllRecruits = require("../lib/updateRecruits").updateAllRecruits;
 
 controller = {}
 

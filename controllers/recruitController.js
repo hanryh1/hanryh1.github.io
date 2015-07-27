@@ -300,6 +300,20 @@ controller.addTimeManually = function(req, res){
     });
 }
 
+/* Helper functions for body length calculation */
+var inchesToHeightString = function(numInches) {
+    var feet = Math.floor(numInches/12);
+    var inches = numInches % 12;
+    return String(feet) + "'" + String(inches) + "\"";
+}
+
+var differenceInBodylengths = function(time, height, inFrontOf) {
+    var diff = inFrontOf ? time.inFrontOf.time - time.time : time.time - time.behind.time;
+    var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
+    var heightInYards = height / 36;
+    return (avgSpeed * diff / heightInYards).toFixed(2);
+}
+
 controller.getRecruit = function(req, res) {
     Recruit.findById(req.params.recruitId)
         .populate("times")
@@ -316,6 +330,9 @@ controller.getRecruit = function(req, res) {
                                     res.render("single-recruit",
                                                {"recruit": recruit,
                                                 "timeToString": helpers.convertNumberToString,
+                                                "inchesToHeightString": inchesToHeightString,
+                                                "showBodylengths": req.query.bodylengths == 1,
+                                                "differenceInBodylengths": differenceInBodylengths,
                                                 "isAdmin": req.session.admin});
                                  });
             }
@@ -338,8 +355,8 @@ controller.deleteRecruit = function(req, res){
 }
 
 controller.updateRecruit = function(req, res) {
-    if (!req.body.email && !req.body.comments){
-        return res.status(400).send({"error": "Both fields can't be blank!"});
+    if (!req.body.email && !req.body.comments && !req.body.height){
+        return res.status(400).send({"error": "Not all fields can be blank!"});
     }
     Recruit.findById(req.params.recruitId, function(err, recruit){
         if (err){
@@ -347,6 +364,7 @@ controller.updateRecruit = function(req, res) {
         } else {
             recruit.email = req.body.email;
             recruit.comments = req.body.comments;
+            recruit.height = req.body.height;
             recruit.save(function(err){
                 if (err){
                     res.status(500).send(err);

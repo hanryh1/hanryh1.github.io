@@ -17,6 +17,9 @@ block content
           p
               strong Email 
               em= recruit.email || "None"
+          if recruit.height
+            strong Height
+            p= inchesToHeightString(recruit.height)
           strong Comments
           p= recruit.comments || "None"
           if isAdmin
@@ -30,11 +33,18 @@ block content
               div.form-group
                   label Comments
                   textarea(name="comments").form-control#recruit-comments= recruit.comments
+              div.form-group
+                  label Height (inches)
+                  input(type="number", name="height", min=48, max=96).form-control#recruit-height
               button.btn.update-btn.btn-sm#submit-recruit-update.margin-right-5 Update
               button.btn.btn-default.btn-sm#cancel-update Cancel
       hr.hr-margin
       div.times
           h3 Times
+          if recruit.height
+            div.btn-group.margin-bottom
+              button(class = "#{ showBodylengths ? 'btn btn-default btn-sm' : 'btn btn-default btn-sm active' }")#toggle-seconds Seconds
+              button(class = "#{ showBodylengths ? 'btn btn-default btn-sm active': 'btn btn-default btn-sm' }")#toggle-body-lengths Body Lengths
           div.times-table-wrapper
               table.table-striped.single-recruit-times
                 tr
@@ -55,9 +65,15 @@ block content
                         td.mobile-hidden
                           - content = "<b>" + time.eventName + "</b><br>"
                           if time.inFrontOf
-                            - content = content + (time.inFrontOf.time - time.time).toFixed(2) + "s faster than " + time.inFrontOf.swimmer
+                            if showBodylengths && recruit.height
+                              - content = content + differenceInBodylengths(time, recruit.height, true) + " body lengths ahead of " + time.inFrontOf.swimmer
+                            else
+                              - content = content + (time.inFrontOf.time - time.time).toFixed(2) + "s faster than " + time.inFrontOf.swimmer
                           if time.behind
-                            - content = content + "<br>" + (time.time - time.behind.time).toFixed(2) + "s slower than " + time.behind.swimmer
+                            if showBodylengths && recruit.height
+                               - content = content + "<br>" + differenceInBodylengths(time, recruit.height, false) + " body lengths behind " + time.behind.swimmer
+                            else
+                              - content = content + "<br>" + (time.time - time.behind.time).toFixed(2) + "s slower than " + time.behind.swimmer
                           span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
                       else
                         td.mobile-hidden= time.teamRank

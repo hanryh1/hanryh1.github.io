@@ -29,15 +29,17 @@ $(document).ready(function(){
     evt.preventDefault();
     var email = $("#recruit-email").val();
     var comments = $("#recruit-comments").val();
-    if (!email.trim() && !comments.trim()){
-      $(".error").text("Both fields cannot be blank.");
+    var height = $("#recruit-height").val();
+    if (!email.trim() && !comments.trim() && !height){
+      $(".error").text("Not all fields can be blank.");
       return;
     }
     $.ajax({
       url: window.location.pathname + "/info",
       type: "PUT",
       data: { "email": email,
-              "comments": comments
+              "comments": comments,
+              "height": height
       },
       success: function(){
           window.location.reload(true);
@@ -46,6 +48,14 @@ $(document).ready(function(){
           $(".error").text("Oops, something went wrong.");
         }
       });
+  });
+
+  $("#toggle-seconds").click(function(){
+    window.location = window.location.pathname;
+  });
+
+  $("#toggle-body-lengths").click(function(){
+    window.location = window.location.pathname + "?bodylengths=1";
   });
 
   $('#logout-link').click(function(){

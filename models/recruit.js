@@ -9,7 +9,8 @@ var recruitSchema = new mongoose.Schema({
     archived: {type: 'Boolean', default: false},
     classYear: {type: 'Number', index: true},
     email: {type: 'String'},
-    comments: {type: 'String'}
+    comments: {type: 'String'},
+    height: {type: 'Number', min: 48, max: 96} // in inches
 });
 
 recruitSchema.set('autoIndex', false);

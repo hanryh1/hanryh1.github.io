@@ -66,14 +66,14 @@ block content
                           - content = "<b>" + time.eventName + "</b><br>"
                           if time.inFrontOf
                             if showBodylengths && recruit.height
-                              - content = content + differenceInBodylengths(time, recruit.height, true) + " body lengths ahead of " + time.inFrontOf.swimmer
+                              - content = content + time.getInFrontOfBodyLengthsMessage(recruit.height)
                             else
-                              - content = content + (time.inFrontOf.time - time.time).toFixed(2) + "s faster than " + time.inFrontOf.swimmer
+                              - content = content + time.getInFrontOfMessage()
                           if time.behind
                             if showBodylengths && recruit.height
-                               - content = content + "<br>" + differenceInBodylengths(time, recruit.height, false) + " body lengths behind " + time.behind.swimmer
+                               - content = content + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
                             else
-                              - content = content + "<br>" + (time.time - time.behind.time).toFixed(2) + "s slower than " + time.behind.swimmer
+                              - content = content + "<br>" + time.getBehindMessage()
                           span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
                       else
                         td.mobile-hidden= time.teamRank

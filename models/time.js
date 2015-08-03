@@ -108,4 +108,27 @@ timeSchema.pre('save', function(next){
         });
 });
 
+var differenceInBodylengths = function(time, height, inFrontOf) {
+    var diff = inFrontOf ? time.inFrontOf.time - time.time : time.time - time.behind.time;
+    var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
+    var heightInYards = height / 36;
+    return (avgSpeed * diff / heightInYards).toFixed(2);
+}
+
+timeSchema.method('getInFrontOfMessage', function(){
+    return (this.inFrontOf.time - this.time).toFixed(2) + "s faster than " + this.inFrontOf.swimmer;
+});
+
+timeSchema.method('getBehindMessage', function(){
+    return (this.time - this.behind.time).toFixed(2) + "s slower than " + this.behind.swimmer;
+});
+
+timeSchema.method('getInFrontOfBodyLengthsMessage', function(height){
+    return differenceInBodylengths(this, height, true) + " body lengths ahead of " + this.inFrontOf.swimmer
+});
+
+timeSchema.method('getBehindBodyLengthsMessage', function(height){
+    return differenceInBodylengths(this, height, false) + " body lengths behind " + this.behind.swimmer;
+});
+
 module.exports = mongoose.model('Time', timeSchema);

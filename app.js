@@ -1,3 +1,4 @@
+"use strict";
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -20,7 +21,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-db = mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/stalkmyrecruit");
+var db = mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/stalkmyrecruit");
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 

@@ -45,11 +45,9 @@ var getRecruitData = function(collegeSwimmingId, callback) {
                             };
                             data.push(row);
                         });
-                        var recruit = {
-                                        "name": name, 
+                        var recruit = { "name": name,
                                         "collegeSwimmingId": collegeSwimmingId,
-                                        "classYear": classYear
-                                      };
+                                        "classYear": classYear };
                         callback(null, recruit, data);
                     }
                 }
@@ -161,8 +159,8 @@ var getRecruitsByGender = function(callback){
             callback(err);
        })
        .then(function(results){
-            callback(null, {"maleRecruits": results[0],
-                            "femaleRecruits": results[1]});
+            callback(null, { "maleRecruits": results[0],
+                             "femaleRecruits": results[1] });
        });
 }
 
@@ -231,10 +229,10 @@ controller.getArchivedRecruits = function(req, res) {
 
     Promise.all([getMales, getFemales, getClassYears])
        .then(function(results){
-            res.render("archived", {"maleRecruits": results[0],
-                                    "femaleRecruits": results[1],
-                                    "classYears": results[2],
-                                    "defaultYear": classYear});
+            res.render("archived", { "maleRecruits": results[0],
+                                     "femaleRecruits": results[1],
+                                     "classYears": results[2],
+                                     "defaultYear": classYear });
        });
 }
 
@@ -308,14 +306,12 @@ controller.addTimeManually = function(req, res){
                                 time.remove();
                             }
                         }
-                        var t = new Time({ 
-                                           "timeString": req.body.time,
+                        var t = new Time({ "timeString": req.body.time,
                                            "time": newTime,
                                            "eventName": req.body.eventName,
                                            "powerPoints": 0,
                                            "manual": true,
-                                           "recruit": recruit._id
-                                          });
+                                           "recruit": recruit._id });
                         t.save(function(err, time){
                             if (err){
                                 res.status(500).send(err);
@@ -353,16 +349,16 @@ controller.getRecruit = function(req, res) {
                 res.status(404).send({"message": "recruit not found"});
             } else {
                 Time.populate(recruit.times,
-                                 {path: "behind inFrontOf", model: "ReferenceTime"},
-                                 function(err, times){
-                                    recruit.times = times;
-                                    res.render("single-recruit",
-                                               {"recruit": recruit,
-                                                "timeToString": helpers.convertNumberToString,
-                                                "showBodylengths": req.query.bodylengths == 1,
-                                                "differenceInBodylengths": differenceInBodylengths,
-                                                "isAdmin": req.session.admin});
-                                 });
+                              {path: "behind inFrontOf", model: "ReferenceTime"},
+                              function(err, times){
+                                recruit.times = times;
+                                res.render("single-recruit",
+                                           {"recruit": recruit,
+                                            "timeToString": helpers.convertNumberToString,
+                                            "showBodylengths": req.query.bodylengths == 1,
+                                            "differenceInBodylengths": differenceInBodylengths,
+                                            "isAdmin": req.session.admin});
+                              });
             }
         });
 };

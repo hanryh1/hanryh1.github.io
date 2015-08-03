@@ -19,7 +19,7 @@ block content
               em= recruit.email || "None"
           if recruit.height
             strong Height
-            p= inchesToHeightString(recruit.height)
+            p= recruit.getHeightAsString()
           strong Comments
           p= recruit.comments || "None"
           if isAdmin

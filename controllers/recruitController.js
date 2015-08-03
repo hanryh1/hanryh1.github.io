@@ -127,6 +127,9 @@ var updatePowerIndex = function(recruit, callback){
     });
 }
 
+/**
+*Various functions to query for recruits
+**/
 var getRecruitsByGender = function(callback){
     Recruit.find({"gender": "M", "archived": { $ne: true }})
            .sort({powerIndex:1}).populate("times")
@@ -215,6 +218,9 @@ controller.getTimesForRecruit = function(req, res){
     });
 }
 
+/**
+* Functions to modify a recruit's times
+*/
 controller.deleteTime = function(req, res){
     Time.findById(req.params.timeId, function(err, time){
         if (err){
@@ -300,13 +306,6 @@ controller.addTimeManually = function(req, res){
     });
 }
 
-/* Helper functions for body length calculation */
-var inchesToHeightString = function(numInches) {
-    var feet = Math.floor(numInches/12);
-    var inches = numInches % 12;
-    return String(feet) + "'" + String(inches) + "\"";
-}
-
 var differenceInBodylengths = function(time, height, inFrontOf) {
     var diff = inFrontOf ? time.inFrontOf.time - time.time : time.time - time.behind.time;
     var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
@@ -330,7 +329,6 @@ controller.getRecruit = function(req, res) {
                                     res.render("single-recruit",
                                                {"recruit": recruit,
                                                 "timeToString": helpers.convertNumberToString,
-                                                "inchesToHeightString": inchesToHeightString,
                                                 "showBodylengths": req.query.bodylengths == 1,
                                                 "differenceInBodylengths": differenceInBodylengths,
                                                 "isAdmin": req.session.admin});
@@ -376,6 +374,9 @@ controller.updateRecruit = function(req, res) {
     });
 }
 
+/**
+* Archiving Recruits
+**/
 controller.archiveRecruit = function(req, res) {
     if (["true", "false"].indexOf(req.query.archive) == -1){
         return res.status(400).send({"error": "Invalid query parameters."});
@@ -479,8 +480,12 @@ controller.createRecruit = function(req, res) {
     });
 };
 
+
+/**
+* CSV Generation
+**/
 var generateCsvRow = function(recruit, data) {
-    var row = [recruit.name, recruit.email, recruit.powerIndex];
+    var row = [recruit.name, recruit.email, recruit.getHeightAsString(), recruit.powerIndex];
     for (var i = 0; i < EVENTS.length; i++){
         for (var j = 0; j < recruit.times.length; j++){
             if (recruit.times[j].eventName == EVENTS[i]){
@@ -488,7 +493,7 @@ var generateCsvRow = function(recruit, data) {
                 break;
             }
         }
-        if (row.length - 3 == i) {
+        if (row.length - 4 == i) { //number of non-time headers
             row.push("");
         }
     }
@@ -499,7 +504,7 @@ var generateRecruitCsv = function(callback){
         if (err) {
             callback(err);
         } else {
-            var headers = ["Name", "Email", "Power Points"].concat(EVENTS);
+            var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS);
             var data = [headers, ["Men"]];
             for (var i = 0; i < recruits.maleRecruits.length; i ++){
                 generateCsvRow(recruits.maleRecruits[i], data);

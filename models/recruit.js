@@ -15,5 +15,14 @@ var recruitSchema = new mongoose.Schema({
 
 recruitSchema.set('autoIndex', false);
 
+recruitSchema.method('getHeightAsString', function(){
+    if (!this.height) {
+        return "";
+    }
+    var feet = Math.floor(this.height/12);
+    var inches = this.height % 12;
+    return String(feet) + "'" + String(inches) + "\"";
+});
+
 module.exports = mongoose.model('Recruit', recruitSchema);
 

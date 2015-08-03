@@ -7,53 +7,53 @@ block content
     h1 Configuration Page
     div.error
     div.nationals-results
-        h3 Nationals Results
-        div.form-group
-            p Enter the Collegeswimming link for the reference meet. (http://www.collegeswimming.com/results/{number})
-            label Meet URL
-            input(type="text", name="meetUrl").form-control#meet-url
-        button.btn.update-btn#submit-meet-link Submit
+      h3 Nationals Results
+      div.form-group
+        p Enter the Collegeswimming link for the reference meet. (http://www.collegeswimming.com/results/{number})
+        label Meet URL
+        input(type="text", name="meetUrl").form-control#meet-url
+      button.btn.update-btn#submit-meet-link Submit
     hr.hr-margin
     div.national-cuts
-        h3 Time Standards
-        p
-            span Find a document like 
-            span
-                a(href="/assets/QualifyingStandardsWomen2016.pdf") this
-            span  from the NCAA and copy and paste the contents of the table in the textbox as follows:
-        pre.
-            50 FREE :22.84 :23.88 :23.60
-            100 FREE :49.65 :52.14 :51.54
+    h3 Time Standards
+      p
+        span Find a document like 
+        span
+          a(href="/assets/QualifyingStandardsWomen2016.pdf") this
+        span  from the NCAA and copy and paste the contents of the table in the textbox as follows:
+      pre.
+        50 FREE :22.84 :23.88 :23.60
+        100 FREE :49.65 :52.14 :51.54
 
-            ...
+        ...
 
-            200 M.R. 1:45.96 1:45.16
-            400 M.R. 3:51.95 3:50.40
-        div.form-group
-            label Pasted Times
-            textarea(name="timeStandards").form-control#time-standards
-        div.form-group
-            select.form-control#select-gender
-                option(value="M") Male
-                option(value="F") Female
-        button.btn.update-btn#submit-time-standards Submit
+        200 M.R. 1:45.96 1:45.16
+        400 M.R. 3:51.95 3:50.40
+      div.form-group
+        label Pasted Times
+        textarea(name="timeStandards").form-control#time-standards
+      div.form-group
+        select.form-control#select-gender
+          option(value="M") Male
+          option(value="F") Female
+    button.btn.update-btn#submit-time-standards Submit
     hr.hr-margin
     div.team-results
-        h3 Team Times
-        div.form-group
-            label Collegeswimming Team ID
-            input(type="number", name="teamId", min=1, max=9999).form-control#team-id
-        div.form-group
-            label Season
-            select.form-control#select-season
-                - currentYear = new Date().getFullYear()
-                option(value=currentYear - 2) #{currentYear-2}-#{currentYear-1}
-                option(value=currentYear - 1 selected) #{currentYear-1}-#{currentYear}
-                option(value=currentYear) #{currentYear}-#{currentYear+1}
-        button.btn.update-btn#submit-team-info Submit
+      h3 Team Times
+      div.form-group
+        label Collegeswimming Team ID
+        input(type="number", name="teamId", min=1, max=9999).form-control#team-id
+      div.form-group
+        label Season
+        select.form-control#select-season
+          - currentYear = new Date().getFullYear()
+          option(value=currentYear - 2) #{currentYear-2}-#{currentYear-1}
+          option(value=currentYear - 1 selected) #{currentYear-1}-#{currentYear}
+          option(value=currentYear) #{currentYear}-#{currentYear+1}
+      button.btn.update-btn#submit-team-info Submit
     hr.hr-margin
     div.update-all-recruits
-        h3 Recruits
-        p Don't want to wait until Monday to update all the recruits? Click this button to update all of them now.
-        button.btn.update-btn#update-all-recruits-btn Update All
+      h3 Recruits
+      p Don't want to wait until Monday to update all the recruits? Click this button to update all of them now.
+      button.btn.update-btn#update-all-recruits-btn Update All
     include navbar-mixin

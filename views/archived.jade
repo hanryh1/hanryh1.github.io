@@ -5,31 +5,31 @@ block content
   mixin navbar-mixin()
   div.container
     div.centered
-        h1.uppercase Archived Recruits
+      h1.uppercase Archived Recruits
     div.error
-        if error
-            p= error
+      if error
+        p= error
     div#years.centered
-        label Select Year
-        form
-        select.form-control#select-year
-            option(value = "") All years
-            for year in classYears
-                if defaultYear == year
-                   option(value = year selected)= year
-                else
-                    option(value = year)= year
+      label Select Year
+      form
+      select.form-control#select-year
+        option(value = "") All years
+        for year in classYears
+          if defaultYear == year
+           option(value = year selected)= year
+          else
+            option(value = year)= year
     div#recruits
-        div.row
-            div.col-md-1
-            div#maleRecruits.col-md-5
-                h2 Male
-                for m in maleRecruits
-                    mixin archived-recruit-mixin(m)
-            div#femaleRecruits.col-md-5
-                h2 Female
-                for f in femaleRecruits
-                    mixin archived-recruit-mixin(f)
-            div.col-md-1
+      div.row
+        div.col-md-1
+        div#maleRecruits.col-md-5
+          h2 Male
+          for m in maleRecruits
+            mixin archived-recruit-mixin(m)
+        div#femaleRecruits.col-md-5
+          h2 Female
+          for f in femaleRecruits
+            mixin archived-recruit-mixin(f)
+        div.col-md-1
     include archived-recruit-mixin
     include navbar-mixin

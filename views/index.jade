@@ -3,8 +3,8 @@ block content
   div.centered.vertical-centered.login-container
     h1.title StalkMyRecruit
     form(name="login", action="/authenticate", method="post", id="login-form")
-        if error
-            h4=error
-        div.form-group
-            input(type="password", name="password", id="login-password", placeholder="Enter password").form-control
-        button(type="submit").btn.update-btn.btn-lg.submit-login Log In
+      if error
+        h4=error
+      div.form-group
+        input(type="password", name="password", id="login-password", placeholder="Enter password").form-control
+      button(type="submit").btn.update-btn.btn-lg.submit-login Log In

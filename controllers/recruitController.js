@@ -1,6 +1,7 @@
-var Recruit = require("../models/recruit");
+var Promise = require("bluebird");
 var csv = require("csv");
 var request = require("request");
+var Recruit = require("../models/recruit");
 var Time = require("../models/time");
 var helpers = require("../lib/helpers");
 
@@ -131,24 +132,38 @@ var updatePowerIndex = function(recruit, callback){
 *Various functions to query for recruits
 **/
 var getRecruitsByGender = function(callback){
-    Recruit.find({"gender": "M", "archived": { $ne: true }})
+    var getMales = new Promise(function(f, r){
+        Recruit.find({"gender": "M", "archived": { $ne: true }})
            .sort({powerIndex:1}).populate("times")
-           .exec(function(err, mRecruits){
+           .exec(function(err, recruits){
                 if (err){
-                    callback(err);
-                } else{
-                    Recruit.find({"gender": "F", "archived": { $ne: true }})
-                           .sort({powerIndex:1}).populate("times")
-                           .exec(function(err, fRecruits){
-                                if (err){
-                                    callback(err)
-                                } else{
-                                    callback(err, {"maleRecruits": mRecruits,
-                                                   "femaleRecruits": fRecruits});
-                                }   
-                            });
+                    r(err);
+                } else {
+                    f(recruits);
                 }
             });
+    });
+
+    var getFemales = new Promise(function(f, r){
+        Recruit.find({"gender": "F", "archived": { $ne: true }})
+           .sort({powerIndex:1}).populate("times")
+           .exec(function(err, recruits){
+                if (err){
+                    r(err);
+                } else {
+                    f(recruits);
+                }
+            });
+    });
+
+    Promise.all([getMales, getFemales])
+       .catch(function(err){
+            callback(err);
+       })
+       .then(function(results){
+            callback(null, {"maleRecruits": results[0],
+                            "femaleRecruits": results[1]});
+       });
 }
 
 controller.getAllRecruits = function(req, res) {
@@ -174,39 +189,54 @@ controller.getArchivedRecruits = function(req, res) {
             femaleQuery["classYear"] = classYear;
         }  
     }
-    Recruit.find(maleQuery)
+
+    var getMales = new Promise(function(f, r){
+        Recruit.find(maleQuery)
            .sort({powerIndex:1, classYear: 1})
            .populate("times")
-           .exec(function(err, mRecruits){
+           .exec(function(err, recruits){
                 if (err){
-                    res.render("error", {"error": error});
+                    r(err);
                 } else {
-                    Recruit.find(femaleQuery)
-                           .sort({powerIndex:1, classYear: 1})
-                           .populate("times")
-                           .exec(function(err, fRecruits){
-                                if (err){
-                                    res.render("error", {"error": err});
-                                } else{
-                                     Recruit.find({"archived": "true"})
-                                            .distinct("classYear"
-                                            , function(err, classYears){
-                                                if (err){
-                                                    res.render("error", {"error": err});
-                                                } else {
-                                                    classYears.sort();
-                                                    res.render("archived", {"maleRecruits": mRecruits, 
-                                                                            "femaleRecruits": fRecruits,
-                                                                            "classYears": classYears,
-                                                                            "defaultYear": classYear});
-                                                }
-                                    });
-                                }
-
-                        });
+                    f(recruits);
                 }
             });
-};
+    });
+
+    var getFemales = new Promise(function(f, r){
+        Recruit.find(femaleQuery)
+           .sort({powerIndex:1, classYear: 1})
+           .populate("times")
+           .exec(function(err, recruits){
+                if (err){
+                    r(err);
+                } else {
+                    f(recruits);
+                }
+            });
+    });
+
+    var getClassYears = new Promise(function(f, r){
+        Recruit.find({"archived": "true"})
+            .distinct("classYear"
+            , function(err, classYears){
+                if (err){
+                    r(err);
+                } else {
+                    classYears.sort();
+                    f(classYears);
+                }
+            });
+    });
+
+    Promise.all([getMales, getFemales, getClassYears])
+       .then(function(results){
+            res.render("archived", {"maleRecruits": results[0],
+                                    "femaleRecruits": results[1],
+                                    "classYears": results[2],
+                                    "defaultYear": classYear});
+       });
+}
 
 controller.getTimesForRecruit = function(req, res){
     Time.find({"recruit": req.params.recruitId}, function(err, times){

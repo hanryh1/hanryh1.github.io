@@ -39,8 +39,6 @@ controller.compareSwimmerToTeamMember = function(req, res) {
             })
             .then(function(results){
                 var recruitTimes = results[0].times;
-                var height = results[0].height;
-                var recruitId = results[0]._id;
                 var reference = results[1];
                 if (!recruitTimes) {
                     return res.status(400).send({"error": "This recruit does not exist."});
@@ -48,23 +46,22 @@ controller.compareSwimmerToTeamMember = function(req, res) {
                 if (reference.length == 0) {
                     return res.status(400).send({"error": "This team member does not exist."});
                 }
-                var deltas = [];
+                var commonRecruitTimes = [];
+                var commonReferenceTimes = [];
                 for (var i = 0; i < recruitTimes.length; i++){
                     var t = recruitTimes[i];
                     var delta = null;
                     for (var j = 0; j < reference.length; j++){
                         if ( reference[j].eventName === t.eventName ){
-                            delta = (reference[j].time - t.time).toFixed(2);
+                            commonReferenceTimes.push(reference[j]);
+                            commonRecruitTimes.push(t);
                             break;
                         }
                     }
-                    deltas.push(delta);
                 }
-                console.log(height);
-                res.status(200).send({ times: recruitTimes,
-                                       deltas: deltas,
-                                       height: height,
-                                       recruitId: recruitId });
+                res.status(200).send({ recruitTimes: commonRecruitTimes,
+                                       referenceTimes: commonReferenceTimes,
+                                       recruit: results[0] });
             });
     }
 }

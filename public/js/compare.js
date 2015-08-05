@@ -4,36 +4,44 @@ var differenceInBodylengths = function(time, diff, height) {
     return Math.abs(avgSpeed * diff / heightInYards).toFixed(2);
 }
 
-var generateHtml = function(recruit, swimmer, data){
-  var times = data.times;
-  var deltas = data.deltas;
-  var height = data.height;
-  var newHtml = "<a href='/recruits/" + data.recruitId + "'><h2>" +
-                recruit + "</h2></a><p><p>Compared with " +
-                swimmer + "<p><table class=\"table-striped\">" +
-                "<tr><th>Event</th><th>Time</th><th>Standard</th></tr>";
-  for (var i = 0; i < times.length; i++){
-    var time = times[i];
-    newHtml += "<tr><td>" + time.eventName + "<td>";
-
-    var delta = deltas[i];
-    if (delta){
-      var content = "<b>" + time.eventName + "</b><br>";
-      var timeDiffMsg = delta > 0 ? delta + "s faster than " + swimmer : Math.abs(delta) + "s slower than " + swimmer;
-      content += timeDiffMsg;
-      if (height) {
-        var bodyLengths = differenceInBodylengths(time, delta, height);
-        var bodyLengthsMsg = delta > 0 ? bodyLengths + " body lengths ahead of" : bodyLengths + " body lengths behind";   
-        content += "<br>" + bodyLengthsMsg + " " + swimmer;
-      }
-      newHtml += "<span class=\"compared\" data-toggle=\"hover\", data-content='" +
-                 content + "'>" +
-                 time.timeString + "</span></td>";
-    } else {
-      newHtml += time.timeString + "</td>";
+var convertNumberToString = function(timeNumber){
+    var minutes = Math.floor(timeNumber/60);
+    var timeString = minutes > 0 ? String(minutes)+":" : "";
+    var seconds = (timeNumber % 60);
+    var secondsString = String(seconds.toFixed(2));
+    if (seconds < 10){
+        secondsString = "0" + secondsString;
     }
-    var standard = time.standard || "-"
-    newHtml += "<td>" + standard + "</td></tr>";
+    return timeString + secondsString;
+}
+
+var generateHtml = function(recruit, swimmer, data){
+  var recruitTimes = data.recruitTimes;
+  var referenceTimes = data.referenceTimes;
+  var height = data.recruit.height;
+  var recruitFirstName = recruit.split(" ")[0];
+  var teamMemberFirstName = swimmer.split(" ")[0]
+  var newHtml = "<a href='/recruits/" + data.recruit._id + "'><h2>" +
+                recruit + "</h2></a><p><p>Compared with " +
+                swimmer + "<p><table>" +
+                "<tr><th>Event</th><th>" + recruitFirstName +
+                "</th><th>" + teamMemberFirstName + "</th></tr>";
+  for (var i = 0; i < recruitTimes.length; i++){
+    var time = recruitTimes[i];
+    var refTime = referenceTimes[i];
+    var delta = (refTime.time - time.time).toFixed(2);
+    var faster = delta > 0 ? recruitFirstName : teamMemberFirstName;
+    var slower = delta > 0 ? teamMemberFirstName : recruitFirstName;
+    var content = "<b>" + time.eventName + "</b><br>" + faster + " beats " + slower + " by<br>";
+    content += Math.abs(delta) + " seconds";
+    if (height) {
+      var bodyLengths = differenceInBodylengths(time, delta, height);
+      content += "<br>" + bodyLengths + " body lengths";
+    }
+    newHtml += "<tr class=\"compare-row\" data-toggle=\"hover\" data-placement=\"left\" data-content='" +
+               content + "'><td>" + time.eventName + "</td>" +
+               "<td>" + time.timeString + "</td>" +
+               "<td>" + convertNumberToString(refTime.time) + "</td></tr>";
   }  
   newHtml += "</table>"
   return newHtml
@@ -51,7 +59,7 @@ var getNewComparison = function(){
             $("#comparison-results").html(newHTML);
             //enable popover
             $('[data-toggle="hover"]').popover({
-                  placement: 'right',
+                  placement: 'left',
                   trigger: 'hover',
                   html: true
             });

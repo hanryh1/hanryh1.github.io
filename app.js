@@ -10,6 +10,7 @@ var routes = require('./routes/index');
 var recruits = require('./routes/recruits');
 var events = require('./routes/events');
 var admin = require('./routes/admin');
+var compare = require('./routes/compare');
 
 var cookieSession = require('cookie-session');
 
@@ -53,6 +54,7 @@ app.use('/', routes);
 app.use('/recruits', recruits);
 app.use('/events', events);
 app.use('/admin', admin);
+app.use('/compare', compare);
 
 //include models
 require('./models/recruit');

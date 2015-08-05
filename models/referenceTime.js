@@ -14,4 +14,12 @@ referenceTimeSchema.set('autoIndex', false);
 
 referenceTimeSchema.index({ type: 1, gender: 1, eventName: 1, time: -1 });
 
+referenceTimeSchema.statics.getTimesForSwimmer = function(name, callback) {
+    this.find({ type: 'Team', swimmer: name }, callback);
+}
+
+referenceTimeSchema.statics.getTeamRoster = function(callback) {
+    this.find({ type: 'Team' }).distinct('swimmer', callback);
+}
+
 module.exports = mongoose.model('ReferenceTime', referenceTimeSchema);

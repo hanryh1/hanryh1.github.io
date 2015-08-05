@@ -1,0 +1,26 @@
+extends layout
+block scripts
+  script(src='/js/compare.js')
+  script(src='/js/bootstrap.min.js')
+block content
+  mixin navbar-mixin()
+  div.container
+      h1.centered Compare
+    div.row
+      div.col-md-2
+      div#error
+      div#select-people.col-md-4
+        form
+        div.form-group
+          label Recruit
+          select.form-control#select-recruit
+            for recruit in recruits
+              option(value = recruit)= recruit
+        div.form-group
+          label Team Member
+          select.form-control#select-team-member
+            for swimmer in roster
+              option(value = swimmer)= swimmer
+      div#comparison-results.col-md-4
+      div.col-md-2
+    include navbar-mixin

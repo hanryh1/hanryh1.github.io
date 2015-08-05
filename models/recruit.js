@@ -24,5 +24,9 @@ recruitSchema.method('getHeightAsString', function(){
     return String(feet) + "'" + String(inches) + "\"";
 });
 
+recruitSchema.statics.getFullList = function(callback) {
+    this.find().distinct('name', callback);
+}
+
 module.exports = mongoose.model('Recruit', recruitSchema);
 

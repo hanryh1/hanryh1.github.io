@@ -47,6 +47,10 @@ var generateHtml = function(recruit, swimmer, data){
   return newHtml
 }
 
+var popoverPlacement = function(){
+  return $(window).width() < 975 ? 'top' : 'left';
+}
+
 var getNewComparison = function(){
       var selectedRecruit = $("#select-recruit").find("option:selected").text();
       var selectedTeamMember = $("#select-team-member").find("option:selected").text();
@@ -59,7 +63,7 @@ var getNewComparison = function(){
             $("#comparison-results").html(newHTML);
             //enable popover
             $('[data-toggle="hover"]').popover({
-                  placement: 'left',
+                  placement: popoverPlacement,
                   trigger: 'hover',
                   html: true
             });

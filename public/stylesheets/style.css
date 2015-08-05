@@ -4,7 +4,7 @@
 }
 * {
   font-family: Lato, "Lucida Grande", Helvetica, Arial, sans-serif;
-  font-size:14px;
+  font-size: 14px;
 }
 a {
   color: #52B3D9;
@@ -19,46 +19,46 @@ hr { margin: 2px; }
 .hr-margin { margin-top:20px; }
 
 .btn{
-  text-transform:uppercase;
+  text-transform: uppercase;
 }
 
 .uppercase {
-  text-transform:uppercase;
+  text-transform: uppercase;
 }
 
 th{
-  text-transform:uppercase;
+  text-transform: uppercase;
 }
 
 .container {
-  margin:auto;
-  margin-bottom:50px;
+  margin: auto;
+  margin-bottom: 50px;
 }
 
 .max-width-600 {
-  max-width:600px;
+  max-width: 600px;
 }
 
 .centered {
-    margin:auto;
-    width:50%;
+    margin: auto;
+    width: 50%;
     text-align: center;
 }
 
 .margin-right-5 {
-    margin-right:5px;
+    margin-right: 5px;
 }
 
 .margin-right {
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 .margin-bottom {
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 
 .margin-top{
-  margin-top:10px;
+  margin-top: 10px;
 }
 
 .vertical-centered{
@@ -74,27 +74,27 @@ th{
   -webkit-transition: background-color 0.5s;
 }
 .btn-default:hover{
-  background-color:#BDC3C7;
+  background-color: #BDC3C7;
 }
 
 /* Login */
 .login-container{
-  max-width:500px;
+  max-width: 500px;
 }
 
 .title {
-  font-size:3em;
+  font-size: 3em;
 }
 
 /*Recruits*/
 table{
-    width:100%;
+    width: 100%;
 }
 
 .main-btn {
   margin: auto;
-  margin-right:5px;
-  margin-top:5px;
+  margin-right: 5px;
+  margin-top: 5px;
   background-color: #FFFFFF;
   border: 1px solid #019875;
   color: #019875;
@@ -104,22 +104,22 @@ table{
 }
 
 .main-btn:hover, .main-btn:focus, .main-btn:active{
-  color:#FFFFFF;
+  color: #FFFFFF;
   background-color: #019875;
 }
 
 #add-recruit, #years{
-    width:350px;
-    background-color:#FAFAFA;
+    width: 350px;
+    background-color: #FAFAFA;
     border: 1px solid #D8E6E6;
-    border-radius:10px;
-    padding:20px;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .recruit-container{
     border-top: 1px solid #D8E6E6;
-    margin:20px;
-    width:350px;
+    margin: 20px;
+    width: 350px;
 }
 
 .delete-btn{
@@ -132,7 +132,7 @@ table{
 }
 
 .are-you-sure, .are-you-sure-archive, #are-you-sure-archive-all, .add-manual-time{
-  display:none;
+  display: none;
 }
 
 .error{
@@ -141,8 +141,8 @@ table{
 }
 
 .inline{
-  display:inline-block;
-  padding-right:5px;
+  display: inline-block;
+  padding-right: 5px;
 }
 
 #recruits{
@@ -150,13 +150,13 @@ table{
 }
 
 .title-404 {
-  font-size:8em;
+  font-size: 8em;
 }
 
 .update-btn{
   background-color: #019875;
-  color:#FFFFFF;
-  opacity:.7;
+  color: #FFFFFF;
+  opacity: .7;
   -webkit-transition: opacity 0.5s;
 }
 
@@ -166,17 +166,17 @@ table{
   visibility: hidden;
   float: right;
   border: none;
-  background:none;
+  background: none;
 }
 
 td:hover .delete-time-btn{
-  visibility:visible;
+  visibility: visible;
   color: #d9534f;
 }
 
 .update-btn:hover, .update-btn:focus, .update-btn:active{
-  color:#FFFFFF;
-  opacity:1;
+  color: #FFFFFF;
+  opacity: 1;
 }
 
 /*Events*/
@@ -195,14 +195,14 @@ td, th{
 }
 
 .navbar li a:hover{
-  background-color:#FAFAFA;
-  color:#019875;
+  background-color: #FAFAFA;
+  color: #019875;
 }
 .navbar-container{
   border-bottom: 1px solid #D8E6E6;
-  background-color:#FAFAFA;
-  height:55px;
-  margin-bottom:50px;
+  background-color: #FAFAFA;
+  height: 55px;
+  margin-bottom: 50px;
 }
 
 .navbar-nav > li > a {
@@ -210,18 +210,18 @@ td, th{
 }
 
 #logout-link{
-  margin-right:30px;
+  margin-right: 30px;
 }
 
 /*Single recruit page*/
 .recruit-info strong, .recruit-info span{
-  font-size:16px;
+  font-size: 16px;
 }
 
 .recruit-info {
   border: 1px solid #D8E6E6;
-  border-radius:10px;
-  padding:30px;
+  border-radius: 10px;
+  padding: 30px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
@@ -236,7 +236,7 @@ td, th{
 }
 
 .archived-label {
-  float:right;
+  float: right;
 }
 
 .teamRank {
@@ -246,7 +246,7 @@ td, th{
 /*Comparison page*/
 .compare-row:hover {
   background-color: #52B3D9;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 th {
@@ -273,17 +273,17 @@ th {
 
 @media screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2){
   .inline{
-    display:inline-block;
-    margin-bottom:5px;
+    display: inline-block;
+    margin-bottom: 5px;
   }
   .recruit-container {
-    width:92%;
+    width: 92%;
   }
   .centered{
-    width:90%;
+    width: 90%;
   }
 
   .events-container{
-    margin-bottom:100px;
+    margin-bottom: 100px;
   }
 }

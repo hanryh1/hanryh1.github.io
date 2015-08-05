@@ -239,6 +239,10 @@ td, th{
   float:right;
 }
 
+.teamRank {
+  cursor: pointer;
+}
+
 /*Comparison page*/
 .compare-row:hover {
   background-color: #52B3D9;

@@ -75,7 +75,7 @@ block content
                           - content = content + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
                         else
                           - content = content + "<br>" + time.getBehindMessage()
-                      span(data-toggle="hover", data-content=content, style="cursor: pointer")=time.teamRank
+                      span(data-toggle="hover", data-content=content, class="teamRank")=time.teamRank
                   else
                     td.mobile-hidden= time.teamRank
                 else

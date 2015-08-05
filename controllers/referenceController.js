@@ -75,7 +75,7 @@ controller.getComparisonPage = function(req, res) {
             if (err) {
                 r(err);
             } else {
-                f(list);
+                f(list.sort());
             }
         });
     });
@@ -85,7 +85,7 @@ controller.getComparisonPage = function(req, res) {
             if (err) {
                 r(err);
             } else {
-                f(roster);
+                f(roster.sort());
             }
         });
     });

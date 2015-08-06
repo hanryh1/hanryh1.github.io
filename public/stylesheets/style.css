@@ -61,6 +61,10 @@ th{
   margin-top: 10px;
 }
 
+.margin-20-10 {
+  margin: 20px 10px;
+}
+
 .vertical-centered{
   position: absolute;
   top: 50%;
@@ -188,6 +192,7 @@ td, th{
   font-size: 16px;
   padding:5px;
 }
+
 /*Navbar*/
 .navbar li a{
   font-size:16px;
@@ -260,6 +265,11 @@ th {
 
   .navbar-nav>li, .navbar-nav {
     float: left !important;
+  }
+
+  .navbar li a{
+    font-size:14px;
+    padding: 10px 6px;
   }
 
   .navbar-nav.navbar-right:last-child {

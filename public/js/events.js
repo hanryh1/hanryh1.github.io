@@ -16,8 +16,8 @@ var generateHtml = function(eventName, data){
 
 var selectNewEvent = function(){
       var selectedEvent = $("#select-event").find("option:selected").text();
-      var selectedGender = $("#select-gender").find("option:selected").text()[0];
-      var isArchived = $("#include-archive").find("option:selected").attr("value");
+      var selectedGender = $("input[name='gender']:checked").val();
+      var isArchived = $("input[name='archived']:checked").val();
       $.ajax({
         url: "/events/rank",
         type: 'GET',

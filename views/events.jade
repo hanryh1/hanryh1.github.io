@@ -4,12 +4,13 @@ block scripts
 block content
   mixin sidebar-mixin()
   div.container.events-container
+    h1 Event Rank
     div.row
       div.col-md-1
       div#event-selection.col-md-5
         div.error#event-error
-        h3 Select an event and gender
         div.form-group
+          label Event
           select.form-control#select-event
             option(value="50 Y Free") 50 Y Free
             option(value="100 Y Free") 100 Y Free
@@ -26,14 +27,23 @@ block content
             option(value="200 Y IM") 200 Y IM
             option(value="400 Y IM") 400 Y IM
         div.form-group
-          select.form-control#select-gender
-            option(value="M") Male
-            option(value="F") Female
+          label Gender
+          div#select-gender
+            label.radio-inline
+              input(type="radio" value="M" name="gender" checked="checked")
+              span Male
+            label.radio-inline
+              input(type="radio" value="F" name="gender")
+              span Female
         div.form-group
           label Include Archived Swimmers?
-          select.form-control#include-archive
-            option(value=0) No
-            option(value=1) Yes
+          div#include-archive
+            label.radio-inline
+              input(type="radio" value="0" name="archived" checked="checked")
+              span No
+            label.radio-inline
+              input(type="radio" value="1" name="archived")
+              span Yes
       div#event-rank.col-md-5
         h2#event-header Event Rank
       div.col-md-1

@@ -3,7 +3,7 @@ block scripts
   link(rel='stylesheet', href='/stylesheets/bootstrap-glyphicons.css')
   script(src='/js/recruits.js')
 block content
-  mixin navbar-mixin()
+  mixin sidebar-mixin()
   div.container
     div#add-recruit.centered
       h2 Add a new recruit
@@ -44,4 +44,4 @@ block content
             mixin recruit-mixin(f)
         div.col-md-1
     include recruit-mixin
-    include navbar-mixin
+    include sidebar-mixin

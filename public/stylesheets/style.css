@@ -8,10 +8,7 @@
 }
 a {
   color: #52B3D9;
-}
-
-a:hover, a:active, a:focus{
-    text-decoration: none;
+  text-decoration: none!important;
 }
 
 hr { margin: 2px; }
@@ -32,6 +29,7 @@ th{
 
 .container {
   margin: auto;
+  padding-left:245px;
   margin-bottom: 50px;
 }
 
@@ -216,6 +214,58 @@ td, th{
 
 #logout-link{
   margin-right: 30px;
+}
+
+/*
+Sidebar
+*/
+
+#sidebar {
+  height: 100%;
+  position: fixed;
+  background: #00b5ad;
+  color: #fff;
+  width: 245px;
+  z-index: 999;
+  overflow: auto;
+}
+
+#sidebar .item {
+  width: 100%;
+  padding: 16px;
+  transition: border-left,.5s,linear;
+  border-bottom: 1px solid #65C6BB;
+  opacity: .7;
+  border-left: 0 solid transparent;
+}
+
+#recruits-link {
+  border-top: 1px solid #65C6BB;
+}
+
+#sidebar a .item span{
+  color: #FFFFFF;
+  font-size:16px;
+}
+
+#sidebar a .item span:hover{
+  text-decoration: none;
+}
+
+#sidebar .item:hover{
+  cursor:pointer;
+  opacity:1;
+}
+
+#sidebar .item:active, #sidebar .item.active {
+  cursor:pointer;
+  opacity:1;
+  background: #65C6BB;
+  border-left: 5px solid #A2DED0;
+}
+
+#items {
+  margin-top:200px;
 }
 
 /*Single recruit page*/

@@ -75,6 +75,7 @@ var getNewComparison = function(){
 }
 
 $(document).ready(function(){
+    $('#compare-link').addClass("active");
     $('#select-team-member').change(getNewComparison);
     $('#select-recruit').change(getNewComparison);
 

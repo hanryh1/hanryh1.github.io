@@ -46,6 +46,7 @@ $(document).ready(function(){
           }
     });
 
+    $('#events-link').addClass("active");
     $('#select-event').change(selectNewEvent);
     $('#select-gender').change(selectNewEvent);
     $('#include-archive').change(selectNewEvent);

@@ -12,6 +12,8 @@ $(document).ready(function(){
     $(".add-manual-time").hide();
     $("#are-you-sure-archive-all").hide();
 
+    $("#recruits-link").addClass("active");
+
     $("#create-recruit-btn").click(function(evt){
       evt.preventDefault();
       var formData = getFormData("#add-recruit-form");

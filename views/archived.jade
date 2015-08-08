@@ -2,7 +2,7 @@ extends layout
 block scripts 
     script(src='/js/archivedRecruits.js')
 block content
-  mixin navbar-mixin()
+  mixin sidebar-mixin()
   div.container
     div.centered
       h1.uppercase Archived Recruits
@@ -32,4 +32,4 @@ block content
             mixin archived-recruit-mixin(f)
         div.col-md-1
     include archived-recruit-mixin
-    include navbar-mixin
+    include sidebar-mixin

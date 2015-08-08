@@ -2,7 +2,7 @@ extends layout
 block scripts
     script(src='/js/configs.js') 
 block content
-  mixin navbar-mixin()
+  mixin sidebar-mixin()
   div.container.max-width-600
     h1 Configuration Page
     div.error
@@ -56,4 +56,4 @@ block content
       h3 Recruits
       p Don't want to wait until Monday to update all the recruits? Click this button to update all of them now.
       button.btn.update-btn#update-all-recruits-btn Update All
-    include navbar-mixin
+    include sidebar-mixin

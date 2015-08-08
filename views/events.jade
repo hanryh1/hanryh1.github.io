@@ -2,7 +2,7 @@ extends layout
 block scripts
     script(src='js/events.js')  
 block content
-  mixin navbar-mixin()
+  mixin sidebar-mixin()
   div.container.events-container
     div.row
       div.col-md-1
@@ -38,4 +38,4 @@ block content
         h2#event-header Event Rank
       div.col-md-1
 
-    include navbar-mixin
+    include sidebar-mixin

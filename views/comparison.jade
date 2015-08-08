@@ -3,13 +3,13 @@ block scripts
   script(src='/js/compare.js')
   script(src='/js/bootstrap.min.js')
 block content
-  mixin navbar-mixin()
+  mixin sidebar-mixin()
   div.container
-      h1.centered Compare
+    h1.centered Compare
     div.row.margin-20-10
-      div.col-md-2
+      div.col-md-1
       div#error
-      div#select-people.col-md-4
+      div#select-people.col-md-5
         form
         div.form-group
           label Recruit
@@ -21,6 +21,6 @@ block content
           select.form-control#select-team-member
             for swimmer in roster
               option(value = swimmer)= swimmer
-      div#comparison-results.col-md-4
-      div.col-md-2
-    include navbar-mixin
+      div#comparison-results.col-md-5
+      div.col-md-1
+    include sidebar-mixin

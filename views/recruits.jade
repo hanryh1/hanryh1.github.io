@@ -42,8 +42,6 @@ block content
               p#delete-recruit-message
               button.btn.btn-danger#delete-confirm-btn.margin-right.margin-bottom Yes
               button(data-dismiss="modal").btn.btn-default#delete-deny-btn.margin-bottom No!
-        div#recruit-information.modal.fade.vertical-centered
-          div.modal-content
       div.row
         div.col-md-1
         div.col-md-10
@@ -66,6 +64,7 @@ block content
                   span.glyphicon.glyphicon-download
                 div.action-label
                   span Download As CSV
+          div#recruit-error
           h2 Male
           table.male-recruits
             tr
@@ -105,5 +104,4 @@ block content
                   button.sm-circular-btn.archive-recruit-btn
                     span.glyphicon.glyphicon-inbox
         div.col-md-1
-    include recruit-mixin
     include sidebar-mixin

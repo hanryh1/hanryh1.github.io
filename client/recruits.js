@@ -55,7 +55,7 @@ $(document).ready(function(){
       success: function(){
         window.location.reload(true);
       }, error: function(jqXHR, textStatus, err) {
-          $("#container-" + recruitId).find("#delete-recruit-error").text("Could not delete recruit.");
+          $("#recruit-error").text("Could not delete recruit.");
         }
     });
   });
@@ -70,7 +70,7 @@ $(document).ready(function(){
       success: function(){
         recruitRow.remove();
       }, error: function(jqXHR, textStatus, err) {
-          $("#container-" + recruitId).find(".recruit-error").text("Could not archive recruit.");
+          $("#recruit-error").text("Could not archive recruit.");
         }
     });
   });

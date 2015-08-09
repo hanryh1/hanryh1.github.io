@@ -8,38 +8,41 @@ $(document).ready(function(){
     window.location = "/recruits/archived/" + classYear;
   });
 
-  $(".delete-btn").click(function(){
-      $(this).closest(".recruit-container").find(".are-you-sure").show();
+  $(".delete-recruit-btn").click(function(evt){
+    evt.stopPropagation();
+    var recruitRow = $(this).closest(".recruit-row");
+    var recruitName = recruitRow.find(".name").text();
+    $("#delete-recruit-message").text("Are you sure you want to delete " + recruitName + "?");
+    $("#delete-confirm-btn").attr("recruitid", recruitRow.attr("recruitid"));
+    $("#are-you-sure-delete").modal("show");
   });
 
-  $(".delete-confirm-btn").click(function(){
-      var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
-      $.ajax({
-        url: "/recruits/" + recruitId,
-        type: "DELETE",
-        success: function(){
-          window.location.reload(true);
-        }, error: function(jqXHR, textStatus, err) {
-            $("#container-" + recruitId).find(".recruit-error").text("Could not delete recruit.");
-          }
-      });
+  $("#delete-confirm-btn").click(function(){
+    var recruitId = $(this).attr("recruitid");
+    $.ajax({
+      url: "/recruits/" + recruitId,
+      type: "DELETE",
+      success: function(){
+        window.location.reload(true);
+      }, error: function(jqXHR, textStatus, err) {
+          $("#recruit-error").text("Could not delete recruit.");
+        }
+    });
   });
 
-  $(".unarchive-btn").click(function(){
-      var recruitId = $(this).closest(".recruit-container").attr("id").substring(10);
-      $.ajax({
-        url: "/recruits/" + recruitId + "?archive=false",
-        type: "PUT",
-        success: function(){
-          window.location.reload(true);
-        }, error: function(jqXHR, textStatus, err) {
-            $("#container-" + recruitId).find(".recruit-error").text("Could not unarchive recruit.");
-          }
-      });
-  });
-
-  $(".delete-deny-btn").click(function(){
-    $(this).closest(".are-you-sure").hide();
+  $(".unarchive-recruit-btn").click(function(evt){
+    evt.stopPropagation();
+    var recruitRow = $(this).closest(".recruit-row");
+    var recruitId = recruitRow.attr("recruitid");
+    $.ajax({
+      url: "/recruits/" + recruitId + "?archive=false",
+      type: "PUT",
+      success: function(){
+        recruitRow.remove();
+      }, error: function(jqXHR, textStatus, err) {
+          $("#archive-error").text("Could not unarchive recruit.");
+        }
+    });
   });
 
   $('#sidebar-toggle').click(function(){
@@ -47,7 +50,9 @@ $(document).ready(function(){
     $('#items').toggle();
   });
 
+    // hide extraneous things so mobile doesn't look as bad
   if ($(window).width() < 480){
+    $(".mobile-hidden").hide()
     $("#items").hide();
     if (!($("#sidebar").hasClass("collapsed"))){
       $('#sidebar').addClass("collapsed");
@@ -56,11 +61,14 @@ $(document).ready(function(){
 
   $(window).resize(function(){
     if ($(window).width() < 480){
+      $(".mobile-hidden").hide()
       $("#items").hide();
       if (!($("#sidebar").hasClass("collapsed"))){
         $('#sidebar').addClass("collapsed");
       }
-    } 
+    } else {
+      $(".mobile-hidden").show()
+    }
   });
 
   $('#logout-link').click(function(){

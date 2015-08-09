@@ -109,8 +109,8 @@ block content
             for time in recruit.times
               tr(timeid=time._id)
                 td=time.eventName
-                td.time-edit.center-align
-                  input(type="text", value=time.timeString, maxlength=8).time-input
+                td.time-edit
+                  input(type="text", value=time.timeString, maxlength=8).form-control.time-input
                 td.center-align
                   button.sm-circular-btn.circular-delete-btn.save-time-btn.circular-update-btn
                     span.glyphicon.glyphicon-ok

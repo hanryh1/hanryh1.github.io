@@ -24,6 +24,10 @@ hr { margin: 2px; }
   text-transform: uppercase;
 }
 
+input.form-control {
+  border-radius: 0px;
+}
+
 th{
   font-weight:700;
   background-color: #f9f9f9;
@@ -169,6 +173,11 @@ th, td {
   border: 1px solid #ccc;
 }
 
+.inline{
+  display: inline-block;
+  padding-right: 5px;
+}
+
 /* Login */
 .login-container{
   max-width: 500px;
@@ -234,15 +243,6 @@ table{
   background-color: #f9f9f9;
 }
 
-#years{
-  display: none;
-  width: 350px;
-  background-color: #FAFAFA;
-  border: 1px solid #D8E6E6;
-  border-radius: 10px;
-  padding: 20px;
-}
-
 .recruit-container{
     border-top: 1px solid #D8E6E6;
     margin: 20px;
@@ -279,11 +279,6 @@ table{
 .error{
     color: #CF000F;
     font-size: 20px;
-}
-
-.inline{
-  display: inline-block;
-  padding-right: 5px;
 }
 
 .title-404 {

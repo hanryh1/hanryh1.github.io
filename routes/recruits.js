@@ -32,16 +32,19 @@ router.get('/:recruitId', isAuthenticated, RecruitController.getRecruit);
 
 router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRecruit);
 
-router.post('/:recruitId/times', isAuthenticated, RecruitController.addTimeManually);
+router.post('/:recruitId/times', isAuthenticated, function(req, res){ RecruitController.addTimeManually(req, res, true) });
+
+/* Lazy Implementation */
+router.put('/:recruitId/times/:timeId', isAuthenticated, function(req, res){ RecruitController.addTimeManually(req, res, false) });
 
 router.put('/', isAuthenticated, RecruitController.archiveAllRecruits);
 
 router.put('/:recruitId', isAuthenticated, RecruitController.archiveRecruit);
 
-router.put('/:recruitId/info', isAdmin, RecruitController.updateRecruit);
+router.put('/:recruitId/info', isAuthenticated, RecruitController.updateRecruit);
 
 router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);
 
-router.delete('/times/:timeId', isAuthenticated, RecruitController.deleteTime);
+router.delete('/:recruitId/times/:timeId', isAuthenticated, RecruitController.deleteTime);
 
 module.exports = router;

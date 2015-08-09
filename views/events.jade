@@ -4,34 +4,36 @@ block scripts
 block content
   mixin sidebar-mixin()
   div.container.events-container
-    h1.centered Event Rank
+    h1.title Event Rank
     div.row
-      div.col-md-1
-      div#event-selection.col-md-5
-        div.error#event-error
-        label Event
-        div.form-group
-          input.typeahead.form-control(type="text" value="50 Y Free")#select-event
-        div.form-group
-          label Gender
-          div#select-gender
-            label.radio-inline
-              input(type="radio" value="M" name="gender" checked="checked")
-              span Male
-            label.radio-inline
-              input(type="radio" value="F" name="gender")
-              span Female
-        div.form-group
-          label Include Archived Swimmers?
-          div#include-archive
-            label.radio-inline
-              input(type="radio" value="0" name="archived" checked="checked")
-              span No
-            label.radio-inline
-              input(type="radio" value="1" name="archived")
-              span Yes
-      div#event-rank.col-md-5
-        h2#event-header Event Rank
-      div.col-md-1
+      div.col-md-2
+      div.col-md-8
+        div#event-selection
+          div.error#event-error
+          div.form-group
+            label Event
+            div
+              input.typeahead.form-control(type="text" value="50 Y Free")#select-event
+          div.form-group.inline.margin-right
+            label Gender
+            div#select-gender
+              label.radio-inline
+                input(type="radio" value="M" name="gender" checked="checked")
+                span Male
+              label.radio-inline
+                input(type="radio" value="F" name="gender")
+                span Female
+          div.form-group#include-archived
+            label Include Archived Swimmers?
+            div#include-archive
+              label.radio-inline
+                input(type="radio" value="0" name="archived" checked="checked")
+                span No
+              label.radio-inline
+                input(type="radio" value="1" name="archived")
+                span Yes
+        div#event-rank
+          h2#event-header Event Rank
+      div.col-md-2
 
     include sidebar-mixin

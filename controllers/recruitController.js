@@ -278,7 +278,7 @@ controller.deleteTime = function(req, res){
     });
 }
 
-controller.addTimeManually = function(req, res){
+controller.addTimeManually = function(req, res, requireFaster){
     if (EVENTS.indexOf(req.body.eventName) == -1){
         return res.status(400).send({"error": "This is not a real event."});
     }
@@ -296,9 +296,9 @@ controller.addTimeManually = function(req, res){
                         res.status(500).send(err)
                     } else {
                         if (time){
-                            if (time.time <= newTime){
+                            if (requireFaster && time.time <= newTime){
                                 return res.status(400)
-                                          .send({"error": "This time isn't faster than an existing time."});
+                                       .send({"error": "This time isn't faster than an existing time."});
                             } else {
                                 var timeIndex = recruit.times.indexOf(time._id);
                                 recruit.times.slice(timeIndex, 1);

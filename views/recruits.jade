@@ -5,43 +5,105 @@ block scripts
 block content
   mixin sidebar-mixin()
   div.container
-    div#add-recruit.centered
-      h2 Add a new recruit
-      div#new-recruit-error.error
-      form(name="login", id="add-recruit-form")
-        div.form-group
-          label CollegeSwimming ID Number
-          input(type="text", name="csId", id="new-csId").form-control
-        div.form-group
-          div.radio
-            label.margin-right Gender:
-            label.margin-right
-              input(type="radio" name="gender" value="M")
-              | Male
-            label
-              input(type="radio" name="gender" value="F")
-              | Female
-        button.btn.btn-default#create-recruit-btn Submit
+    h1.title Recruits
+    div#add-recruit.modal.fade.vertical-centered
+      div.modal-content
+        div.modal-body.center-align
+          div.right-align
+            button(data-dismiss="modal").sm-circular-btn.dismiss-modal-btn.default-btn
+              span.glyphicon.glyphicon-remove
+          div#new-recruit-error.error
+          form(name="login", id="add-recruit-form")
+            div.form-group
+              label CollegeSwimming ID Number
+              input(type="text", name="csId", id="new-csId").form-control
+            div.form-group
+              div.radio
+                label.margin-right Gender
+                label.margin-right
+                  input(type="radio" name="gender" value="M")
+                  | Male
+                label
+                  input(type="radio" name="gender" value="F")
+                  | Female
+            button.btn.update-btn#create-recruit-btn Submit
     div#recruits
       div.centered
-        div.buttons
-          button.btn.main-btn#archive-all-btn Archive All
-          a(href="/recruits/csv")
-            button.btn.main-btn#download-csv-btn Download As CSV
-        div#are-you-sure-archive-all.margin-top
-          p Are you sure you want to archive all the recruits? It would be annoying to undo this.
-          button.btn.btn-danger#archive-all-confirm-btn.margin-right.margin-bottom Yes
-          button.btn.btn-default#archive-all-deny-btn.margin-bottom No!
+        div#are-you-sure-archive-all.modal.fade.vertical-centered
+          div.modal-content
+            div.modal-body
+              p Are you sure you want to archive all the recruits? It would be annoying to undo this.
+              button.btn.btn-danger#archive-all-confirm-btn.margin-right.margin-bottom Yes
+              button(data-dismiss="modal").btn.btn-default#archive-all-deny-btn.margin-bottom No!
+        div#are-you-sure-delete.modal.fade.vertical-centered
+          div.modal-content
+            div.modal-body
+              div#delete-recruit-error
+              p#delete-recruit-message
+              button.btn.btn-danger#delete-confirm-btn.margin-right.margin-bottom Yes
+              button(data-dismiss="modal").btn.btn-default#delete-deny-btn.margin-bottom No!
+        div#recruit-information.modal.fade.vertical-centered
+          div.modal-content
       div.row
         div.col-md-1
-        div#maleRecruits.col-md-5
+        div.col-md-10
+          div#actions.right-align
+            div.inline.action
+              a(href="#")
+                button(data-toggle="modal" data-target="#add-recruit").btn.action-btn.circular-btn
+                  span.glyphicon.glyphicon-plus
+                div.action-label
+                  span Add New Recruit
+            div.inline.action
+              a(href="#")
+                button(data-toggle="modal" data-target="#are-you-sure-archive-all").btn.action-btn.circular-btn
+                  span.glyphicon.glyphicon-inbox
+                div.action-label
+                  span Archive All
+            div.inline.action
+              a(href="/recruits/csv")
+                button.btn.action-btn.circular-btn
+                  span.glyphicon.glyphicon-download
+                div.action-label
+                  span Download As CSV
           h2 Male
-          for m in maleRecruits
-            mixin recruit-mixin(m)
-        div#femaleRecruits.col-md-5
+          table.male-recruits
+            tr
+              th Name
+              th Class Year
+              th Power Index
+              th.mobile-hidden Delete
+              th.mobile-hidden Archive
+            for m in maleRecruits
+              tr(recruitId=m._id).recruit-row
+                td.name= m.name
+                td= m.classYear
+                td= m.powerIndex
+                td.center-align.mobile-hidden
+                  button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
+                    span.glyphicon.glyphicon-remove
+                td.center-align.mobile-hidden
+                  button.sm-circular-btn.archive-recruit-btn.default-btn
+                    span.glyphicon.glyphicon-inbox
           h2 Female
-          for f in femaleRecruits
-            mixin recruit-mixin(f)
+          table.female-recruits
+            tr
+              th Name
+              th Class Year
+              th Power Index
+              th.mobile-hidden Delete
+              th.mobile-hidden Archive
+            for f in femaleRecruits
+              tr(recruitId=f._id).recruit-row
+                td.name= f.name
+                td= f.classYear
+                td= f.powerIndex
+                td.center-align.mobile-hidden
+                  button.sm-circular-btn.delete-recruit-btn
+                    span.glyphicon.glyphicon-remove
+                td.center-align.mobile-hidden
+                  button.sm-circular-btn.archive-recruit-btn
+                    span.glyphicon.glyphicon-inbox
         div.col-md-1
     include recruit-mixin
     include sidebar-mixin

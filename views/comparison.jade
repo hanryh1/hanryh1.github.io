@@ -4,18 +4,20 @@ block scripts
 block content
   mixin sidebar-mixin()
   div.container
-    h1.centered Compare
+    h1.title Compare
     div.row.margin-20-10
       div.col-md-1
       div#error
-      div#select-people.col-md-5
-        form
-        div.form-group
-          label Recruit
-          input(type="text").typeahead.form-control#select-recruit
-        div.form-group
-          label Team Member
-          input(type="text").typeahead.form-control#select-team-member
-      div#comparison-results.col-md-5
+      div.col-md-10
+        div#comparison-selection
+          div.form-group
+            div
+              label Recruit
+            input(type="text").typeahead.form-control#select-recruit
+          div.form-group
+            div
+              label Team Member
+            input(type="text").typeahead.form-control#select-team-member
+        div#comparison-results
       div.col-md-1
     include sidebar-mixin

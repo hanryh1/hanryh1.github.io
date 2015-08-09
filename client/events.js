@@ -1,5 +1,5 @@
 var generateHtml = function(eventName, data){
-  var newHtml = "<h3>"+eventName+"</h3><table class=\"table-striped\">" +
+  var newHtml = "<h3>"+eventName+"</h3><table>" +
                 "<tr><th>Name</th><th>Class</th><th>Time</th>" +
                 "<th>Standard</th></tr>";
   for (var i = 0; i < data.length; i++){
@@ -74,45 +74,66 @@ var events = [ "50 Y Free",
                "400 Y IM" ];
 
 $(document).ready(function(){
-    $.ajax({
-        url: "/events/rank",
-        type: 'GET',
-        data: {eventName: "50 Y Free", gender: "M", archived: 0},
-        success: function(data){
-            var newHTML = generateHtml("50 Y Free", data);
-            $("#event-rank").html(newHTML);
-          }, 
-        error: function(jqXHR, textStatus, err) {
-            $("#event-error").text("Something went wrong.");
-          }
-    });
-
-    $('.typeahead').typeahead({
-      minLength: 1,
-      highlight: true
-    },
-    {
-      name: 'events',
-      limit: 14,
-      source: substringMatcher(events)
-    });
-
-    $('#select-event').bind('typeahead:selected', function(obj, datum, name) {
-      $('#select-event').val(JSON.stringify(datum).replace(/['"]+/g, ""));
-      selectNewEvent();
-    });
-
-    $('#events-link').addClass("active");
-    $('#select-gender').change(selectNewEvent);
-    $('#include-archive').change(selectNewEvent);
-
-    $('#logout-link').click(function(){
-      $.ajax({
-        url: '/logout',
-        type: 'POST',
-        success: function(){
-          window.location = '/';
+  $.ajax({
+      url: "/events/rank",
+      type: 'GET',
+      data: {eventName: "50 Y Free", gender: "M", archived: 0},
+      success: function(data){
+          var newHTML = generateHtml("50 Y Free", data);
+          $("#event-rank").html(newHTML);
+        }, 
+      error: function(jqXHR, textStatus, err) {
+          $("#event-error").text("Something went wrong.");
         }
-      });
+  });
+
+  $('.typeahead').typeahead({
+    minLength: 1,
+    highlight: true
+  },
+  {
+    name: 'events',
+    limit: 14,
+    source: substringMatcher(events)
+  });
+
+  $('#select-event').bind('typeahead:selected', function(obj, datum, name) {
+    $('#select-event').val(JSON.stringify(datum).replace(/['"]+/g, ""));
+    selectNewEvent();
+  });
+
+  $('#events-link').addClass("active");
+  $('#select-gender').change(selectNewEvent);
+  $('#include-archive').change(selectNewEvent);
+
+  $('#sidebar-toggle').click(function(){
+    $('#sidebar').toggleClass("collapsed");
+    $('#items').toggle();
+  });
+
+  if ($(window).width() < 480){
+    $("#items").hide();
+    if (!($("#sidebar").hasClass("collapsed"))){
+      $('#sidebar').addClass("collapsed");
+    }
+  }
+
+  $(window).resize(function(){
+    if ($(window).width() < 480){
+      $("#items").hide();
+      if (!($("#sidebar").hasClass("collapsed"))){
+        $('#sidebar').addClass("collapsed");
+      }
+    }
+  });
+
+  $('#logout-link').click(function(){
+    $.ajax({
+      url: '/logout',
+      type: 'POST',
+      success: function(){
+        window.location = '/';
+      }
     });
+  });
 });

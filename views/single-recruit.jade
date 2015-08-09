@@ -3,81 +3,131 @@ block scripts
   script(src='/js/singleRecruit.js')
 block content
   mixin sidebar-mixin()
-  div.container.max-width-600
+  div.container.max-width-800
     div.recruit-info
       if recruit.archived
         span.label.label-default.archived-label Archived
-      h2= recruit.name
-      p
-        em Class of #{recruit.classYear}
-        span  | 
-        em Power Index #{recruit.powerIndex}
-      div.updateable-information
-        p
-          strong Email 
-          em= recruit.email || "None"
-        if recruit.height
-          p
-            strong Height 
-            em= recruit.getHeightAsString()
-        strong Comments
-        p= recruit.comments || "None"
-        if isAdmin
+      div.inline
+        h2.recruit-title= recruit.name
+        div.updateable-information
+          div.inline.margin-right
+            p
+              span.glyphicon.glyphicon-envelope.margin-right
+              span= recruit.email || "None"
+          if recruit.height
+            div.inline
+              p
+                span.glyphicon.glyphicon-user.margin-right 
+                span= recruit.getHeightAsString()
+          div
+            strong Comments
+            p= recruit.comments || "None"
           button.btn.update-btn.btn-sm#update-form-btn Update Info
-      if isAdmin
-        div.update-form-container
-          div.error
-          div.form-group
-            label Email
-            input(type="email", name="email", value=recruit.email).form-control#recruit-email
-          div.form-group
-            label Comments
-            textarea(name="comments").form-control#recruit-comments= recruit.comments
-          div.form-group
-            label Height (inches)
-            input(type="number", name="height", min=48, max=96).form-control#recruit-height
-          button.btn.update-btn.btn-sm#submit-recruit-update.margin-right-5 Update
-          button.btn.btn-default.btn-sm#cancel-update Cancel
+      div.inline.stats
+        div.stat
+          span.small-label Class of
+          h3.stat-value #{recruit.classYear}
+        div.stat
+          span.small-label Power Index
+          h3.stat-value #{recruit.powerIndex}  
+      div.update-form-container
+        div.error
+        div.form-group
+          label Email
+          input(type="email", name="email", value=recruit.email).form-control#recruit-email
+        div.form-group
+          label Comments
+          textarea(name="comments").form-control#recruit-comments= recruit.comments
+        div.form-group
+          label Height (inches)
+          input(type="number", name="height", min=48, max=96, value=recruit.height).form-control#recruit-height
+        button.btn.update-btn.btn-sm#submit-recruit-update.margin-right-5 Update
+        button.btn.btn-default.btn-sm#cancel-update Cancel
       hr.hr-margin
       div.times
-        h3 Times
-        if recruit.height
-          div.btn-group.margin-bottom
-            button(class = "#{ showBodylengths ? 'btn btn-default btn-sm' : 'btn btn-default btn-sm active' }")#toggle-seconds Seconds
-            button(class = "#{ showBodylengths ? 'btn btn-default btn-sm active': 'btn btn-default btn-sm' }")#toggle-body-lengths Body Lengths
-        div.times-table-wrapper
-          table.table-striped.single-recruit-times
+        div.action
+          a(href="#")
+            button.btn.action-btn.circular-btn#edit-times-btn
+              span.glyphicon.glyphicon-pencil
+            div.action-label
+              span Edit Times
+        div.action
+          a(href="#")
+            button.btn.action-btn.circular-btn.default-btn#cancel-edit-times
+              span.glyphicon.glyphicon-remove
+            div.action-label
+              span Cancel
+        div#display-times
+          h3 Times
+          if recruit.height
+            div.btn-group.margin-bottom
+              button(class = "#{ showBodylengths ? 'btn btn-default btn-sm' : 'btn btn-default btn-sm active' }")#toggle-seconds Seconds
+              button(class = "#{ showBodylengths ? 'btn btn-default btn-sm active': 'btn btn-default btn-sm' }")#toggle-body-lengths Body Lengths
+          div.times-table-wrapper
+            table.single-recruit-times
+              tr
+                th Event
+                th Time
+                th Points
+                th.mobile-hidden Team
+                th.mobile-hidden Natl
+                th.mobile-hidden Standard
+              for time in recruit.times
+                tr
+                  td=time.eventName
+                  td=time.timeString
+                  td=time.points || "-"
+                  if time.teamRank
+                    if time.behind || time.inFrontOf
+                      td.mobile-hidden
+                        - content = "<b>" + time.eventName + "</b><br>"
+                        if time.inFrontOf
+                          if showBodylengths && recruit.height
+                            - content = content + time.getInFrontOfBodyLengthsMessage(recruit.height)
+                          else
+                            - content = content + time.getInFrontOfMessage()
+                        if time.behind
+                          if showBodylengths && recruit.height
+                            - content = content + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
+                          else
+                            - content = content + "<br>" + time.getBehindMessage()
+                        span(data-toggle="hover", data-content=content, class="teamRank")=time.teamRank
+                    else
+                      td.mobile-hidden= time.teamRank
+                  else
+                    td.mobile-hidden -
+                  td.mobile-hidden=time.nationalRank || "-"
+                  td.mobile-hidden= time.standard || "-"
+        div#times-editor
+          div#edit-times-error.error
+          table#edit-single-recruit-times
             tr
               th Event
               th Time
-              th Points
-              th.mobile-hidden Natl
-              th.mobile-hidden Team
-              th.mobile-hidden Standard
+              th Save
+              th Delete
             for time in recruit.times
-              tr
+              tr(timeid=time._id)
                 td=time.eventName
-                td=time.timeString
-                td=time.points || "-"
-                td.mobile-hidden=time.nationalRank || "-"
-                if time.teamRank
-                  if time.behind || time.inFrontOf
-                    td.mobile-hidden
-                      - content = "<b>" + time.eventName + "</b><br>"
-                      if time.inFrontOf
-                        if showBodylengths && recruit.height
-                          - content = content + time.getInFrontOfBodyLengthsMessage(recruit.height)
-                        else
-                          - content = content + time.getInFrontOfMessage()
-                      if time.behind
-                        if showBodylengths && recruit.height
-                          - content = content + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
-                        else
-                          - content = content + "<br>" + time.getBehindMessage()
-                      span(data-toggle="hover", data-content=content, class="teamRank")=time.teamRank
-                  else
-                    td.mobile-hidden= time.teamRank
-                else
-                  td.mobile-hidden -
-                td.mobile-hidden= time.standard || "-"
+                td.time-edit.center-align
+                  input(type="text", value=time.timeString, maxlength=8).time-input
+                td.center-align
+                  button.sm-circular-btn.circular-delete-btn.save-time-btn.circular-update-btn
+                    span.glyphicon.glyphicon-ok
+                td.center-align
+                  button.sm-circular-btn.circular-delete-btn.delete-time-btn
+                    span.glyphicon.glyphicon-remove
+          div#add-manual-time.margin-top
+            div#add-manual-time-error.error
+            div.form-group.inline.margin-right-5
+              label Event
+              div#new-time-event
+                input.typeahead.form-control(type="text")#new-event-select
+            span.inline.margin-right-5
+              label Time
+              input(type="text", name="time", maxlength=8)#new-time-input.form-control
+            div.inline
+              button(type="submit" recruitid=recruit._id)#new-time-btn.btn.sm-circular-btn.circular-update-btn
+                span.glyphicon.glyphicon-plus
+
     include sidebar-mixin

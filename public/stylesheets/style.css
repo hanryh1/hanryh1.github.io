@@ -426,7 +426,6 @@ Sidebar
 
 .stats {
   float: right;
-  clear: both;
 }
 
 .small-label{
@@ -465,6 +464,15 @@ Sidebar
   border: 2px solid #00b5ad;
 }
 
+.updateable-information {
+  margin-top:30px;
+}
+
+.comments {
+  margin-top:30px;
+  max-width:315px;
+}
+
 #new-time-event .typeahead, #new-time-event .tt-open {
   max-width:150px!important;
 }
@@ -477,6 +485,11 @@ Sidebar
 .times .action {
   float: right;
   clear: right;
+}
+
+.times {
+  padding-top: 30px;
+  clear: both;
 }
 /*Comparison page*/
 .compare-row:hover {

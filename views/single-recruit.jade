@@ -7,23 +7,23 @@ block content
     div.recruit-info
       if recruit.archived
         span.label.label-default.archived-label Archived
-      div.inline
+      div.inline.col-md-9
         h2.recruit-title= recruit.name
         div.updateable-information
-          div.inline.margin-right
+          div
             p
               span.glyphicon.glyphicon-envelope.margin-right
               span= recruit.email || "None"
           if recruit.height
-            div.inline
+            div
               p
                 span.glyphicon.glyphicon-user.margin-right 
                 span= recruit.getHeightAsString()
-          div
+          div.comments
             strong Comments
             p= recruit.comments || "None"
           button.btn.update-btn.btn-sm#update-form-btn Update Info
-      div.inline.stats
+      div.inline.stats.mobile-hidden.col-md-3
         div.stat
           span.small-label Class of
           h3.stat-value #{recruit.classYear}

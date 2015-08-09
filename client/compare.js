@@ -51,41 +51,111 @@ var popoverPlacement = function(){
   return $(window).width() < 975 ? 'top' : 'left';
 }
 
-var getNewComparison = function(){
-      var selectedRecruit = $("#select-recruit").find("option:selected").text();
-      var selectedTeamMember = $("#select-team-member").find("option:selected").text();
-      $.ajax({
-        url: "/compare/times",
-        type: 'GET',
-        data: {recruit: selectedRecruit, teamMember: selectedTeamMember},
-        success: function(data){
-            var newHTML = generateHtml(selectedRecruit, selectedTeamMember, data);
-            $("#comparison-results").html(newHTML);
-            //enable popover
-            $('[data-toggle="hover"]').popover({
-                  placement: popoverPlacement,
-                  trigger: 'hover',
-                  html: true
-            });
-          }, 
-        error: function(jqXHR, textStatus, err) {
-            $("#error").text("Something went wrong.");
-          }
-      });
+var getNewComparison = function(recruits, roster){
+  var selectedRecruit = $("#select-recruit").val();
+  var selectedTeamMember = $("#select-team-member").val();
+  if (recruits.indexOf(selectedRecruit) == -1 || roster.indexOf(selectedTeamMember) == -1) {
+    return;
+  }
+  $.ajax({
+    url: "/compare/times",
+    type: 'GET',
+    data: {recruit: selectedRecruit, teamMember: selectedTeamMember},
+    success: function(data){
+        var newHTML = generateHtml(selectedRecruit, selectedTeamMember, data);
+        $("#comparison-results").html(newHTML);
+        //enable popover
+        $('[data-toggle="hover"]').popover({
+              placement: popoverPlacement,
+              trigger: 'hover',
+              html: true
+        });
+      }, 
+    error: function(jqXHR, textStatus, err) {
+        $("#error").text("Something went wrong.");
+      }
+  });
 }
 
-$(document).ready(function(){
-    $('#compare-link').addClass("active");
-    $('#select-team-member').change(getNewComparison);
-    $('#select-recruit').change(getNewComparison);
+/* Source: https://twitter.github.io/typeahead.js/examples/ */
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
 
-    $('#logout-link').click(function(){
-      $.ajax({
-        url: '/logout',
-        type: 'POST',
-        success: function(){
-          window.location = '/';
-        }
-      });
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
     });
+
+    cb(matches);
+  };
+};
+
+$(document).ready(function(){
+  var recruits = [];
+  var roster = [];
+
+  /*
+    Fetch recruit and roster list
+  */
+  $.ajax({
+    url: '/compare/swimmers',
+    type: 'GET',
+    success: function(response){
+      $('#compare-link').addClass("active");
+      recruits = response.recruits;
+      roster = response.roster;
+      $('#select-team-member').typeahead({
+        minLength: 1,
+        highlight: true
+      },
+      {
+        name: 'teamMembers',
+        limit: 5,
+        source: substringMatcher(roster)
+      });
+
+      $('#select-recruit').typeahead({
+        minLength: 1,
+        highlight: true
+      },
+      {
+        name: 'recruits',
+        limit: 5,
+        source: substringMatcher(recruits)
+      });
+
+      $('#select-team-member').bind('typeahead:selected', function(obj, datum, name) {
+        $('#select-team-member').val(JSON.stringify(datum).replace(/['"]+/g, ""));
+        getNewComparison(recruits, roster);
+      });
+
+      $('#select-recruit').bind('typeahead:selected', function(obj, datum, name) {
+        $('#select-recruit').val(JSON.stringify(datum).replace(/['"]+/g, ""));
+        getNewComparison(recruits, roster);
+      });
+    },
+    error: function(jqXHR, textStatus, err) {
+      $("#error").text("Something went wrong.");
+    }
+  });
+
+  $('#logout-link').click(function(){
+    $.ajax({
+      url: '/logout',
+      type: 'POST',
+      success: function(){
+        window.location = '/';
+      }
+    });
+  });
 });

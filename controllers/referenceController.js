@@ -66,7 +66,7 @@ controller.compareSwimmerToTeamMember = function(req, res) {
     }
 }
 
-controller.getComparisonPage = function(req, res) {
+controller.getRecruitsAndRoster = function(req, res) {
     var getRecruits = new Promise(function(f, r){
         Recruit.getFullList(function(err, list){
             if (err) {
@@ -92,9 +92,13 @@ controller.getComparisonPage = function(req, res) {
             res.status(500).send(err);
         })
         .then(function(results){
-            res.render('comparison', { "recruits": results[0],
-                                       "roster": results[1] });
+            res.status(200).send({ "recruits": results[0],
+                                   "roster": results[1] });
         });
+}
+
+controller.getComparisonPage = function(req, res) {
+    res.render("comparison");
 }
 
 module.exports = controller;

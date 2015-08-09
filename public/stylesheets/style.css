@@ -1,10 +1,11 @@
 @Lato {
     font-family: Lato;
-    src: url('http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext');
+    src: url('http://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic');
 }
 * {
   font-family: Lato, "Lucida Grande", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-weight:300;
+  font-size: 16px;
 }
 a {
   color: #52B3D9;
@@ -79,6 +80,29 @@ th{
   background-color: #BDC3C7;
 }
 
+.typeahead {
+  width: 300px;
+}
+
+.tt-hint, .tt-suggestion {
+  color: #7D8D8D;
+}
+
+.tt-highlight {
+  color: #00b5ad;
+}
+
+.tt-open {
+  background-color: #fff;
+  padding:10px;
+  width: 300px;
+  font-size:16px;
+  border: 1px solid #ccc;
+  border-radius:5px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
 /* Login */
 .login-container{
   max-width: 500px;
@@ -97,7 +121,7 @@ table{
   margin: auto;
   margin-right: 5px;
   margin-top: 5px;
-  background-color: #FFFFFF;
+  background-color: #fff;
   border: 1px solid #019875;
   color: #019875;
   text-transform: uppercase;
@@ -106,7 +130,7 @@ table{
 }
 
 .main-btn:hover, .main-btn:focus, .main-btn:active{
-  color: #FFFFFF;
+  color: #fff;
   background-color: #019875;
 }
 
@@ -157,7 +181,7 @@ table{
 
 .update-btn{
   background-color: #019875;
-  color: #FFFFFF;
+  color: #fff;
   opacity: .7;
   -webkit-transition: opacity 0.5s;
 }
@@ -177,7 +201,7 @@ td:hover .delete-time-btn{
 }
 
 .update-btn:hover, .update-btn:focus, .update-btn:active{
-  color: #FFFFFF;
+  color: #fff;
   opacity: 1;
 }
 
@@ -244,7 +268,7 @@ Sidebar
 }
 
 #sidebar a .item span{
-  color: #FFFFFF;
+  color: #fff;
   font-size:16px;
 }
 
@@ -281,7 +305,7 @@ Sidebar
 }
 
 .times-table-wrapper {
-  background-color: #FFFFFF;
+  background-color: #fff;
   border-radius:5px;
   border: 1px solid #D8E6E6;
 }

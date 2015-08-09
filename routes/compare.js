@@ -12,6 +12,8 @@ var isAuthenticated = function(req, res, next){
 
 router.get('/', isAuthenticated, controller.getComparisonPage);
 
+router.get('/swimmers', isAuthenticated, controller.getRecruitsAndRoster);
+
 router.get('/times', isAuthenticated, controller.compareSwimmerToTeamMember);
 
 module.exports = router;

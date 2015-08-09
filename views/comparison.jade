@@ -12,14 +12,10 @@ block content
         form
         div.form-group
           label Recruit
-          select.form-control#select-recruit
-            for recruit in recruits
-              option(value = recruit)= recruit
+          input(type="text").typeahead.form-control#select-recruit
         div.form-group
           label Team Member
-          select.form-control#select-team-member
-            for swimmer in roster
-              option(value = swimmer)= swimmer
+          input(type="text").typeahead.form-control#select-team-member
       div#comparison-results.col-md-5
       div.col-md-1
     include sidebar-mixin

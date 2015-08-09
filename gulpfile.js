@@ -17,11 +17,18 @@ gulp.task('bower', function() {
   Uglify client side scripts
 */
 gulp.task('clientjs', function(){
-  return gulp.src('client/*.js')
+  if (process.env.NODE_ENV === 'dev') {
+    return gulp.src('client/*.js')
     .pipe(sourcemaps.init())
       .pipe(uglify())
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('public/js'));
+  } else {
+    return gulp.src('client/*.js')
+    .pipe(sourcemaps.init())
+      .pipe(uglify())
+    .pipe(gulp.dest('public/js'));
+  }
 });
 
 // Rerun the task when a file changes 

@@ -414,6 +414,7 @@ Sidebar
 
 .archived-label {
   float: right;
+  margin-right:10px;
 }
 
 .teamRank {

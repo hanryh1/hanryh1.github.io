@@ -8,6 +8,11 @@ $(document).ready(function(){
     window.location = "/recruits/archived/" + classYear;
   });
 
+  $(".recruit-row").click(function(){
+    var recruitId = $(this).attr("recruitid");
+    window.location = "/recruits/" + recruitId;
+  });
+
   $(".delete-recruit-btn").click(function(evt){
     evt.stopPropagation();
     var recruitRow = $(this).closest(".recruit-row");

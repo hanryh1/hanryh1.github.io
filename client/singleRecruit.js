@@ -96,8 +96,9 @@ $(document).ready(function(){
       $(".error").text("Not all fields can be blank.");
       return;
     }
-    if (height < 48 || height > 96){
+    if (height && (height < 48 || height > 96)){
       $(".error").text("Put a real height.");
+      return;
     }
     $.ajax({
       url: window.location.pathname + "/info",

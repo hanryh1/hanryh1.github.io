@@ -5,6 +5,7 @@ block scripts
 block content
   mixin sidebar-mixin()
   div.container
+    input(type="hidden" value=csrf)#csrf
     h1.title Recruits
     div#add-recruit.modal.fade.vertical-centered
       div.modal-content

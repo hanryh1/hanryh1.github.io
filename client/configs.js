@@ -7,6 +7,8 @@ var getFormData = function(form) {
 };
 
 $(document).ready(function(){
+  var csrf = $("#csrf").val();
+
   $("#submit-meet-link").click(function(evt){
     evt.preventDefault();
     var url = $("#meet-url").val();
@@ -17,7 +19,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/admin/config/meet",
       type: "POST",
-      data: {"meetUrl": url},
+      data: {"meetUrl": url, "_csrf": csrf},
       success: function(){
           window.location.reload(true);
         }, 
@@ -57,7 +59,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/admin/config/team",
       type: "POST",
-      data: {"teamId": teamId, "season": season},
+      data: {"teamId": teamId, "season": season, "_csrf": csrf},
       success: function(){
           window.location.reload(true);
         },
@@ -71,6 +73,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/admin/recruits",
       type: "POST",
+      data: { "_csrf": csrf },
       success: function(){
           window.location.reload(true);
         },

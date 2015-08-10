@@ -7,4 +7,5 @@ block content
         h4=error
       div.form-group
         input(type="password", name="password", id="login-password", placeholder="Enter password").form-control
+        input(type="hidden", name="_csrf", value=csrf)
       button(type="submit").btn.update-btn.btn-lg.submit-login Log In

@@ -4,6 +4,7 @@ block scripts
 block content
   mixin sidebar-mixin()
   div.container.max-width-800
+    input(type="hidden" value=csrf)#csrf
     div.recruit-info
       if recruit.archived
         span.label.label-default.archived-label Archived

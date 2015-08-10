@@ -3,6 +3,7 @@ block scripts
     script(src='/js/configs.js') 
 block content
   mixin sidebar-mixin()
+  input(type="hidden" value=csrf)#csrf
   div.container.max-width-800
     h1 Configuration Page
     div.error

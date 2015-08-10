@@ -5,6 +5,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var csrf = require('csurf');
 
 var routes = require('./routes/index');
 var recruits = require('./routes/recruits');
@@ -49,6 +50,13 @@ if (process.env.SECURE_PROXY) {
 }
 app.use(cookieSession(cookieSessionArgs));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(req, res, next){
+  if (req.path === "/logout") { //disable for logout
+      next();
+  } else {
+    csrf()(req, res, next);
+  }
+});
 
 app.use('/', routes);
 app.use('/recruits', recruits);

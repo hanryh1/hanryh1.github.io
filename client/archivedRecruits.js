@@ -3,6 +3,8 @@ $(document).ready(function(){
   $(".are-you-sure-archive").hide();
   $("#archived-link").addClass("active");
 
+  var csrf = $("#csrf").val();
+
   $("#select-year").change(function(){
     var classYear = $("#select-year").find("option:selected").attr("value");
     window.location = "/recruits/archived/" + classYear;
@@ -27,6 +29,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId,
       type: "DELETE",
+      data: { "_csrf": csrf },
       success: function(){
         window.location.reload(true);
       }, error: function(jqXHR, textStatus, err) {
@@ -42,6 +45,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId + "?archive=false",
       type: "PUT",
+      data: { "_csrf": csrf },
       success: function(){
         recruitRow.remove();
       }, error: function(jqXHR, textStatus, err) {

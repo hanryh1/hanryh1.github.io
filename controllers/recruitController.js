@@ -169,6 +169,7 @@ controller.getAllRecruits = function(req, res) {
         if (err){
             res.render("error", {"error": err});
         } else {
+            recruits.csrf = req.csrfToken();
             res.render("recruits", recruits);
         }
     });
@@ -232,7 +233,8 @@ controller.getArchivedRecruits = function(req, res) {
             res.render("archived", { "maleRecruits": results[0],
                                      "femaleRecruits": results[1],
                                      "classYears": results[2],
-                                     "defaultYear": classYear });
+                                     "defaultYear": classYear,
+                                     "csrf": req.csrfToken() });
        });
 }
 
@@ -357,7 +359,7 @@ controller.getRecruit = function(req, res) {
                                             "timeToString": helpers.convertNumberToString,
                                             "showBodylengths": req.query.bodylengths == 1,
                                             "differenceInBodylengths": differenceInBodylengths,
-                                            "isAdmin": req.session.admin});
+                                            "csrf": req.csrfToken() });
                               });
             }
         });

@@ -55,6 +55,8 @@ $(document).ready(function(){
   $('#times-editor').hide();
   $('#cancel-edit-times').hide();
 
+  var csrf = $("#csrf").val();
+
   var activeTabSelector = ($(".archived-label").length == 1) ? "#archived-link" : "#recruits-link";
 
   $(activeTabSelector).addClass("active");
@@ -94,12 +96,16 @@ $(document).ready(function(){
       $(".error").text("Not all fields can be blank.");
       return;
     }
+    if (height < 48 || height > 96){
+      $(".error").text("Put a real height.");
+    }
     $.ajax({
       url: window.location.pathname + "/info",
       type: "PUT",
       data: { "email": email,
               "comments": comments,
-              "height": height
+              "height": height,
+              "_csrf": csrf
       },
       success: function(){
           window.location.reload(true);
@@ -154,6 +160,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId + "/times/" + timeId,
       type: "DELETE",
+      data: { "_csrf": csrf },
       success: function(){
         timeRow.hide();
       }, error: function(jqXHR, textStatus, err){
@@ -178,7 +185,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId + "/times",
       type: "POST",
-      data: {"time": time, "eventName": eventName},
+      data: {"time": time, "eventName": eventName, "_csrf": csrf},
       success: function(time){
         window.location.reload(true);
       }, error: function(jqXHR, textStatus, err) {
@@ -201,7 +208,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId + "/times/"+timeId,
       type: "PUT",
-      data: {"time": time, "eventName": eventName},
+      data: {"time": time, "eventName": eventName, "_csrf": csrf},
       success: function(){
         window.location.reload(true);
       }, error: function(jqXHR, textStatus, err){

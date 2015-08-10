@@ -12,7 +12,7 @@ var isAdmin = function(req, res, next){
 
 // configure stuff like getting nationals results
 router.get('/config', isAdmin, function(req, res) {
-    res.render("config");
+    res.render("config", {"csrf": req.csrfToken()});
 });
 
 router.post('/config/meet', isAdmin, configController.createReferenceTimesForMeet);

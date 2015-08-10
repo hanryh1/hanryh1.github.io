@@ -6,7 +6,7 @@ router.get('/', function(req, res) {
   if (req.session.authenticated){
     res.redirect('/recruits')
   } else{
-    res.render('index');
+    res.render('index', {"csrf": req.csrfToken()});
   }
 });
 
@@ -19,7 +19,7 @@ router.post('/authenticate', function(req, res){
         req.session.authenticated = true;
         res.redirect('/recruits');
     } else {
-        res.render('index', {'error': 'Invalid Password'});
+        res.render('index', {'error': 'Invalid Password', "csrf": req.csrfToken()});
     }
 });
 

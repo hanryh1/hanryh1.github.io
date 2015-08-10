@@ -11,6 +11,8 @@ $(document).ready(function(){
 
   $("#recruits-link").addClass("active");
 
+  var csrf = $("#csrf").val();
+
   $("#create-recruit-btn").click(function(evt){
     evt.preventDefault();
     var formData = getFormData("#add-recruit-form");
@@ -22,6 +24,7 @@ $(document).ready(function(){
       $("#new-recruit-error").text("You must select a gender!");
       return;
     }
+    formData["_csrf"] = csrf;
     $.ajax({
       url: window.location.pathname,
       type: "POST",
@@ -52,6 +55,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId,
       type: "DELETE",
+      data: { "_csrf": csrf },
       success: function(){
         window.location.reload(true);
       }, error: function(jqXHR, textStatus, err) {
@@ -67,6 +71,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits/" + recruitId + "?archive=true",
       type: "PUT",
+      data: { "_csrf": csrf },
       success: function(){
         recruitRow.remove();
       }, error: function(jqXHR, textStatus, err) {
@@ -84,6 +89,7 @@ $(document).ready(function(){
     $.ajax({
       url: "/recruits?&archive=true",
       type: "PUT",
+      data: { "_csrf": csrf },
       success: function(){
         window.location.reload(true);
       }, error: function(jqXHR, textStatus, err) {

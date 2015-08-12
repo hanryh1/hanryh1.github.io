@@ -1,11 +1,11 @@
 var StandardTime = require('../models/standardTime');
 var ReferenceTime = require('../models/referenceTime');
-var eventMap = require("../eventMap");
+var eventMap = require("../lib/eventMap");
 var async = require("async");
 var request = require("request");
 var helpers = require("../lib/helpers");
 var updateTeamReferenceTimes = require("../lib/updateTeamReferenceTimes");
-var EVENTS = require("../models/time").schema.path("eventName").enumValues;
+var EVENTS = require("../lib/events");
 var updateAllRecruits = require("../lib/updateRecruits").updateAllRecruits;
 
 controller = {}

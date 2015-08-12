@@ -1,6 +1,6 @@
 var Recruit = require("../models/recruit");
 var Time = require("../models/time");
-var EVENTS = Time.schema.path("eventName").enumValues;
+var EVENTS = require("../lib/events");
 
 timeController = {};
 

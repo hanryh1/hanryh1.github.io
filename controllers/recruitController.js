@@ -4,6 +4,7 @@ var request = require("request");
 var Recruit = require("../models/recruit");
 var Time = require("../models/time");
 var helpers = require("../lib/helpers");
+var EVENTS = require("../lib/events");
 
 controller = {};
 
@@ -16,8 +17,6 @@ var findMatchingEvent = function(events, eventName){
     }
     return -1;
 }
-
-var EVENTS = Time.schema.path("eventName").enumValues;
 
 // scrape collegeswimming for the stuff we want
 var getRecruitData = function(collegeSwimmingId, callback) {
@@ -384,21 +383,18 @@ controller.updateRecruit = function(req, res) {
     if (!req.body.email && !req.body.comments && !req.body.height){
         return res.status(400).send({"error": "Not all fields can be blank!"});
     }
-    Recruit.findById(req.params.recruitId, function(err, recruit){
-        if (err){
-            res.status(500).send(err);
-        } else {
-            recruit.email = req.body.email;
-            recruit.comments = req.body.comments;
-            recruit.height = req.body.height;
-            recruit.save(function(err){
-                if (err){
-                    res.status(500).send(err);
-                } else {
-                    res.status(200).send({"message": "Update successful."});
-                }
-            });
-        }
+    Recruit.findOneAndUpdate({ _id: req.params.recruitId},
+                             { email: req.body.email,
+                               comments: req.body.comments,
+                               height: req.body.height },
+                               function(err, recruit){
+                                   if (err){
+                                       res.status(500).send(err);
+                                   } else {
+                                      res.status(200)
+                                         .send({"message": "Update successful."});
+
+                                   }
     });
 }
 

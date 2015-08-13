@@ -553,11 +553,11 @@ th {
   }
 
   #new-time-event .typeahead, #new-time-event .tt-open {
-    width: 115px!important;
+    width: 100px!important;
   }
 
   #new-time-input {
-    width: 100px!important;
+    width: 80px!important;
   }
 
   .events-container{

@@ -105,7 +105,7 @@ block content
               th Event
               th Time
               th Save
-              th Delete
+              th.mobile-hidden Delete
             for time in recruit.times
               tr(timeid=time._id)
                 td=time.eventName
@@ -114,7 +114,7 @@ block content
                 td.center-align
                   button.sm-circular-btn.circular-delete-btn.save-time-btn.circular-update-btn
                     span.glyphicon.glyphicon-ok
-                td.center-align
+                td.center-align.mobile-hidden
                   button.sm-circular-btn.circular-delete-btn.delete-time-btn
                     span.glyphicon.glyphicon-remove
           div#add-manual-time.margin-top

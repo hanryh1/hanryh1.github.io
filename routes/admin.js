@@ -1,8 +1,8 @@
-var express = require('express');
+var express          = require('express');
+var router           = express.Router();
 var configController = require("../controllers/timeConfigController");
-var router = express.Router();
 
-var isAdmin = function(req, res, next){
+function isAdmin(req, res, next) {
     if (req.session.admin) {
         return next();
     } else{

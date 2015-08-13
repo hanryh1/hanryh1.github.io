@@ -15,7 +15,7 @@ var recruitSchema = new mongoose.Schema({
 
 recruitSchema.set('autoIndex', false);
 
-recruitSchema.method('getHeightAsString', function(){
+recruitSchema.method('getHeightAsString', function() {
     if (!this.height) {
         return "";
     }

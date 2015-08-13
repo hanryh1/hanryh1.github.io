@@ -1,21 +1,21 @@
-var differenceInBodylengths = function(time, diff, height) {
-    var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
-    var heightInYards = height / 36;
-    return Math.abs(avgSpeed * diff / heightInYards).toFixed(2);
+function differenceInBodylengths(time, diff, height) {
+  var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
+  var heightInYards = height / 36;
+  return Math.abs(avgSpeed * diff / heightInYards).toFixed(2);
 }
 
-var convertNumberToString = function(timeNumber){
-    var minutes = Math.floor(timeNumber/60);
-    var timeString = minutes > 0 ? String(minutes)+":" : "";
-    var seconds = (timeNumber % 60);
-    var secondsString = String(seconds.toFixed(2));
-    if (seconds < 10){
-        secondsString = "0" + secondsString;
-    }
-    return timeString + secondsString;
+function convertNumberToString(timeNumber) {
+  var minutes = Math.floor(timeNumber/60);
+  var timeString = minutes > 0 ? String(minutes)+":" : "";
+  var seconds = (timeNumber % 60);
+  var secondsString = String(seconds.toFixed(2));
+  if (seconds < 10){
+      secondsString = "0" + secondsString;
+  }
+  return timeString + secondsString;
 }
 
-var generateHtml = function(recruit, swimmer, data){
+function generateHtml(recruit, swimmer, data){
   var recruitTimes = data.recruitTimes;
   var referenceTimes = data.referenceTimes;
   var height = data.recruit.height;
@@ -47,11 +47,11 @@ var generateHtml = function(recruit, swimmer, data){
   return newHtml
 }
 
-var popoverPlacement = function(){
+function popoverPlacement(){
   return $(window).width() < 975 ? 'top' : 'left';
 }
 
-var getNewComparison = function(recruits, roster){
+function getNewComparison(recruits, roster){
   var selectedRecruit = $("#select-recruit").val();
   var selectedTeamMember = $("#select-team-member").val();
   if (recruits.indexOf(selectedRecruit) == -1 || roster.indexOf(selectedTeamMember) == -1) {
@@ -78,7 +78,7 @@ var getNewComparison = function(recruits, roster){
 }
 
 /* Source: https://twitter.github.io/typeahead.js/examples/ */
-var substringMatcher = function(strs) {
+function substringMatcher(strs) {
   return function findMatches(q, cb) {
     var matches, substringRegex;
 

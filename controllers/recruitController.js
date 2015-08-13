@@ -1,14 +1,16 @@
+var csv     = require("csv");
 var Promise = require("bluebird");
-var csv = require("csv");
 var request = require("request");
-var Recruit = require("../models/recruit");
-var Time = require("../models/time");
+
 var helpers = require("../lib/helpers");
-var EVENTS = require("../lib/events");
+var EVENTS  = require("../lib/events");
+
+var Recruit = require("../models/recruit");
+var Time    = require("../models/time");
 
 controller = {};
 
-var findMatchingEvent = function(events, eventName){
+function findMatchingEvent(events, eventName) {
     for (var i=0; i < events.length; i++){
         if (events[i].eventName == eventName){
             events[i].index = i;
@@ -19,7 +21,7 @@ var findMatchingEvent = function(events, eventName){
 }
 
 // scrape collegeswimming for the stuff we want
-var getRecruitData = function(collegeSwimmingId, callback) {
+function getRecruitData(collegeSwimmingId, callback) {
     request("http://www.collegeswimming.com/swimmer/" +
              collegeSwimmingId + "/powerindex/"
              , function(error, response, body){
@@ -54,16 +56,16 @@ var getRecruitData = function(collegeSwimmingId, callback) {
 }
 
 // update recruit times
-var updateTime = function(recruit, callback){
+function updateTime(recruit, callback) {
     getRecruitData(recruit.collegeSwimmingId, function(err, recruitData, data){
         if (err){
             var status = err.status == 404 ? 404 : 500;
         } else {
-            Time.remove({"recruit": recruit._id, "manual": {$ne:true}}, function(err){
+            Time.remove({"recruit": recruit._id, "manual": {$ne:true}}, function(err) {
                 if (err){
                     callback(err);
                 } else {
-                    Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes){
+                    Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes) {
                         if (err) {
                             callback(err);
                         } else {
@@ -105,7 +107,7 @@ var updateTime = function(recruit, callback){
     });
 }
 
-var updatePowerIndex = function(recruit, callback){
+function updatePowerIndex(recruit, callback) {
     request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId,
         function(error, response, body){
             if (error){
@@ -117,7 +119,7 @@ var updatePowerIndex = function(recruit, callback){
                     callback({"error": "Could not get power index", "status": 500}, null);
                 } else{
                     recruit.powerIndex = powerIndex[0].substring(13, powerIndex[0].length-4);
-                    recruit.save(function(err, recruit){
+                    recruit.save(function(err, recruit) {
                         callback(err, recruit);
                     });
                 }
@@ -128,8 +130,8 @@ var updatePowerIndex = function(recruit, callback){
 /**
 *Various functions to query for recruits
 **/
-var getRecruitsByGender = function(callback){
-    var getMales = new Promise(function(f, r){
+function getRecruitsByGender(callback) {
+    var getMales = new Promise(function(f, r) {
         Recruit.find({"gender": "M", "archived": { $ne: true }})
            .sort({powerIndex:1}).populate("times")
            .exec(function(err, recruits){
@@ -141,7 +143,7 @@ var getRecruitsByGender = function(callback){
             });
     });
 
-    var getFemales = new Promise(function(f, r){
+    var getFemales = new Promise(function(f, r) {
         Recruit.find({"gender": "F", "archived": { $ne: true }})
            .sort({powerIndex:1}).populate("times")
            .exec(function(err, recruits){
@@ -188,11 +190,11 @@ controller.getArchivedRecruits = function(req, res) {
         }  
     }
 
-    var getMales = new Promise(function(f, r){
+    var getMales = new Promise(function(f, r) {
         Recruit.find(maleQuery)
            .sort({powerIndex:1, classYear: 1})
            .populate("times")
-           .exec(function(err, recruits){
+           .exec(function(err, recruits) {
                 if (err){
                     r(err);
                 } else {
@@ -201,11 +203,11 @@ controller.getArchivedRecruits = function(req, res) {
             });
     });
 
-    var getFemales = new Promise(function(f, r){
+    var getFemales = new Promise(function(f, r) {
         Recruit.find(femaleQuery)
            .sort({powerIndex:1, classYear: 1})
            .populate("times")
-           .exec(function(err, recruits){
+           .exec(function(err, recruits) {
                 if (err){
                     r(err);
                 } else {
@@ -214,10 +216,10 @@ controller.getArchivedRecruits = function(req, res) {
             });
     });
 
-    var getClassYears = new Promise(function(f, r){
+    var getClassYears = new Promise(function(f, r) {
         Recruit.find({"archived": "true"})
             .distinct("classYear"
-            , function(err, classYears){
+            , function(err, classYears) {
                 if (err){
                     r(err);
                 } else {
@@ -228,7 +230,7 @@ controller.getArchivedRecruits = function(req, res) {
     });
 
     Promise.all([getMales, getFemales, getClassYears])
-       .then(function(results){
+       .then(function(results) {
             res.render("archived", { "maleRecruits": results[0],
                                      "femaleRecruits": results[1],
                                      "classYears": results[2],
@@ -237,8 +239,8 @@ controller.getArchivedRecruits = function(req, res) {
        });
 }
 
-controller.getTimesForRecruit = function(req, res){
-    Time.find({"recruit": req.params.recruitId}, function(err, times){
+controller.getTimesForRecruit = function(req, res) {
+    Time.find({"recruit": req.params.recruitId}, function(err, times) {
         if (err){
             res.status(500).send(err);
         } else {
@@ -250,14 +252,14 @@ controller.getTimesForRecruit = function(req, res){
 /**
 * Functions to modify a recruit's times
 */
-controller.deleteTime = function(req, res){
-    Time.findById(req.params.timeId, function(err, time){
+controller.deleteTime = function(req, res) {
+    Time.findById(req.params.timeId, function(err, time) {
         if (err){
             res.status(500).send(err);
         } else if (!time){
             res.status(404).send({"error": "This time does not exist."});
         } else{
-            Recruit.findById(time.recruit, function(err, recruit){
+            Recruit.findById(time.recruit, function(err, recruit) {
                 if (err){
                     res.status(500).send(err);
                 } else if (!recruit){
@@ -279,7 +281,7 @@ controller.deleteTime = function(req, res){
     });
 }
 
-controller.addTimeManually = function(req, res, requireFaster){
+controller.addTimeManually = function(req, res, requireFaster) {
     if (EVENTS.indexOf(req.body.eventName) == -1){
         return res.status(400).send({"error": "This is not a real event."});
     }
@@ -287,12 +289,12 @@ controller.addTimeManually = function(req, res, requireFaster){
     if (newTime < 15) {
         return res.status(400).send({"error": "This does not seem like a real time."});
     }
-    Recruit.findById(req.params.recruitId, function(err, recruit){
+    Recruit.findById(req.params.recruitId, function(err, recruit) {
         if (err){
             res.status(500).send(err)
         } else {
             Time.findOne({"eventName": req.body.eventName, "recruit": recruit._id}
-                , function(err, time){
+                , function(err, time) {
                     if (err){
                         res.status(500).send(err)
                     } else {
@@ -313,7 +315,7 @@ controller.addTimeManually = function(req, res, requireFaster){
                                            "powerPoints": 0,
                                            "manual": true,
                                            "recruit": recruit._id });
-                        t.save(function(err, time){
+                        t.save(function(err, time) {
                             if (err){
                                 res.status(500).send(err);
                             } else{
@@ -333,7 +335,7 @@ controller.addTimeManually = function(req, res, requireFaster){
     });
 }
 
-var differenceInBodylengths = function(time, height, inFrontOf) {
+function differenceInBodylengths(time, height, inFrontOf) {
     var diff = inFrontOf ? time.inFrontOf.time - time.time : time.time - time.behind.time;
     var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
     var heightInYards = height / 36;
@@ -343,7 +345,7 @@ var differenceInBodylengths = function(time, height, inFrontOf) {
 controller.getRecruit = function(req, res) {
     Recruit.findById(req.params.recruitId)
         .populate("times")
-        .exec(function(err, recruit){
+        .exec(function(err, recruit) {
             if (err){
                 res.status(500).send(err);
             } else if (!recruit){
@@ -351,7 +353,7 @@ controller.getRecruit = function(req, res) {
             } else {
                 Time.populate(recruit.times,
                               {path: "behind inFrontOf", model: "ReferenceTime"},
-                              function(err, times){
+                              function(err, times) {
                                 recruit.times = times;
                                 res.render("single-recruit",
                                            {"recruit": recruit,
@@ -364,14 +366,14 @@ controller.getRecruit = function(req, res) {
         });
 };
 
-controller.deleteRecruit = function(req, res){
-    Recruit.findById(req.params.recruitId, function(err, recruit){
+controller.deleteRecruit = function(req, res) {
+    Recruit.findById(req.params.recruitId, function(err, recruit) {
         if (err) {
             res.status(500).send(err); 
         } else if (!recruit){
             res.status(404).send({"error": "This recruit does not exist!"})
         } else {
-            Time.remove({"recruit": recruit._id}, function(err){
+            Time.remove({"recruit": recruit._id}, function(err) {
                 recruit.remove();
                 res.status(200).send({"message": "Recruit successfully deleted."});
             });
@@ -387,7 +389,7 @@ controller.updateRecruit = function(req, res) {
                              { email: req.body.email,
                                comments: req.body.comments,
                                height: req.body.height },
-                               function(err, recruit){
+                               function(err, recruit) {
                                    if (err){
                                        res.status(500).send(err);
                                    } else {
@@ -405,7 +407,7 @@ controller.archiveRecruit = function(req, res) {
     if (["true", "false"].indexOf(req.query.archive) == -1){
         return res.status(400).send({"error": "Invalid query parameters."});
     }
-    Recruit.findById(req.params.recruitId, function(err, recruit){
+    Recruit.findById(req.params.recruitId, function(err, recruit) {
         if (err) {
             res.status(500).send(err); 
         } else if (!recruit){
@@ -414,12 +416,12 @@ controller.archiveRecruit = function(req, res) {
             Time.update({"recruit": recruit._id}
                        , {$set: {"archived": req.query.archive}}
                        , {multi: true}
-                       , function(err){
+                       , function(err) {
                             if (err) {
                                 res.status(500).send(err); 
                             } else {
                                 recruit.update({$set: {"archived": req.query.archive}}
-                                    , function(err){
+                                    , function(err) {
                                         if (err) {
                                             res.status(500).send(err); 
                                         } else {
@@ -437,11 +439,11 @@ controller.archiveAllRecruits = function(req, res) {
     if (!req.query.archive){
         res.status(200).send({});
     } else {
-        Recruit.update({}, {$set: {"archived": true}}, {multi: true}, function(err){
+        Recruit.update({}, {$set: {"archived": true}}, {multi: true}, function(err) {
             if (err){
                 res.status(500).send(err);
             } else {
-                Time.update({}, {$set: {"archived": true}}, {multi: true}, function(err){
+                Time.update({}, {$set: {"archived": true}}, {multi: true}, function(err) {
                     if (err){
                         res.status(500).send(err);
                     } else {
@@ -455,18 +457,18 @@ controller.archiveAllRecruits = function(req, res) {
 
 //get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
-    Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit){
+    Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit) {
         if (err){
             res.status(500).send(err);
         } else if (recruit){
             res.status(200).send(recruit); //already exists, don"t need to make new one
         } else {
-            getRecruitData(req.body.csId, function(err, recruit, data){
+            getRecruitData(req.body.csId, function(err, recruit, data) {
                 if (err){
                     var status = err.status == 404 ? 404 : 500;
                 } else {
                     recruit.gender = req.body.gender;
-                    Recruit.create(recruit, function(err, recruit){
+                    Recruit.create(recruit, function(err, recruit) {
                         if (err){
                             res.status(500).send(err);
                         } else {
@@ -483,10 +485,10 @@ controller.createRecruit = function(req, res) {
                                 if (times.length > 6) break;
                             }
                             recruit.times = times;
-                            recruit.save(function (err, recruit){
+                            recruit.save(function (err, recruit) {
                                 if (err) res.status(500).send(err);
                                 else{
-                                    updatePowerIndex(recruit, function(err, r){
+                                    updatePowerIndex(recruit, function(err, r) {
                                         if (err){
                                             res.status(500).send(err);
                                         } else{
@@ -508,7 +510,7 @@ controller.createRecruit = function(req, res) {
 /**
 * CSV Generation
 **/
-var generateCsvRow = function(recruit, data) {
+function generateCsvRow(recruit, data) {
     var row = [recruit.name, recruit.email, recruit.getHeightAsString(), recruit.powerIndex];
     for (var i = 0; i < EVENTS.length; i++){
         for (var j = 0; j < recruit.times.length; j++){
@@ -523,8 +525,8 @@ var generateCsvRow = function(recruit, data) {
     }
     data.push(row);
 }
-var generateRecruitCsv = function(callback){
-    getRecruitsByGender(function(err, recruits){
+function generateRecruitCsv(callback){
+    getRecruitsByGender(function(err, recruits) {
         if (err) {
             callback(err);
         } else {
@@ -542,8 +544,8 @@ var generateRecruitCsv = function(callback){
     });
 }
 
-controller.downloadRecruitCsv = function(req, res){
-    generateRecruitCsv(function(err, data){
+controller.downloadRecruitCsv = function(req, res) {
+    generateRecruitCsv(function(err, data) {
         if (err){
             res.status(500).send(err)
         } else {

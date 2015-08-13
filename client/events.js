@@ -1,4 +1,4 @@
-var generateHtml = function(eventName, data){
+function generateHtml(eventName, data) {
   var newHtml = "<h3>"+eventName+"</h3><table>" +
                 "<tr><th>Name</th><th>Class</th><th>Time</th>" +
                 "<th>Standard</th></tr>";
@@ -14,29 +14,29 @@ var generateHtml = function(eventName, data){
   return newHtml
 }
 
-var selectNewEvent = function(){
-      var selectedEvent = $("#select-event").val();
-      var selectedGender = $("input[name='gender']:checked").val();
-      var isArchived = $("input[name='archived']:checked").val();
-      if (events.indexOf(selectedEvent) == -1){
-        return;
+function selectNewEvent() {
+  var selectedEvent = $("#select-event").val();
+  var selectedGender = $("input[name='gender']:checked").val();
+  var isArchived = $("input[name='archived']:checked").val();
+  if (events.indexOf(selectedEvent) == -1){
+    return;
+  }
+  $.ajax({
+    url: "/events/rank",
+    type: 'GET',
+    data: {eventName: selectedEvent, gender: selectedGender, archived: isArchived},
+    success: function(data){
+        var newHTML = generateHtml(selectedEvent, data);
+        $("#event-rank").html(newHTML);
+      },
+    error: function(jqXHR, textStatus, err) {
+        $("#event-error").text("Something went wrong.");
       }
-      $.ajax({
-        url: "/events/rank",
-        type: 'GET',
-        data: {eventName: selectedEvent, gender: selectedGender, archived: isArchived},
-        success: function(data){
-            var newHTML = generateHtml(selectedEvent, data);
-            $("#event-rank").html(newHTML);
-          }, 
-        error: function(jqXHR, textStatus, err) {
-            $("#event-error").text("Something went wrong.");
-          }
-      });
+  });
 }
 
 /* Source: https://twitter.github.io/typeahead.js/examples/ */
-var substringMatcher = function(strs) {
+function substringMatcher(strs) {
   return function findMatches(q, cb) {
     var matches, substringRegex;
 

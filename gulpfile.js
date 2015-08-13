@@ -17,7 +17,7 @@ gulp.task('bower', function() {
 /*
   Uglify client side scripts
 */
-gulp.task('clientjs', function(){
+gulp.task('clientjs', function() {
   if (process.env.NODE_ENV === 'dev') {
     return gulp.src('client/*.js')
     .pipe(sourcemaps.init())

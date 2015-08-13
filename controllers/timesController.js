@@ -1,15 +1,15 @@
 var Recruit = require("../models/recruit");
-var Time = require("../models/time");
-var EVENTS = require("../lib/events");
+var Time    = require("../models/time");
+var EVENTS  = require("../lib/events");
 
 timeController = {};
 
 //takes in an event name and a gender
-timeController.getTimesByEventAndGender = function(req, res){
+timeController.getTimesByEventAndGender = function(req, res) {
     if (EVENTS.indexOf(req.query.eventName) == -1 || ["M", "F"].indexOf(req.query.gender) == -1 ){
         res.status(400).send({'error': 'Invalid query parameters.'});
     } else {
-        var query = {"eventName": req.query.eventName}
+        var query = {"eventName": req.query.eventName};
 
         if (req.query.archived == 0) {
             query["archived"] =  { $ne: true };
@@ -19,7 +19,7 @@ timeController.getTimesByEventAndGender = function(req, res){
         Time.find(query)
             .sort({time: 1})
             .populate('recruit', 'name collegeSwimmingId gender classYear')
-            .exec(function(err, times){
+            .exec(function(err, times) {
                 if (err){
                     res.status(500).send(err);
                 } else{

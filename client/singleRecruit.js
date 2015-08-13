@@ -1,13 +1,13 @@
-var getFormData = function(form) {
-    var inputs = {};
-    $(form).serializeArray().forEach(function(item) {
-      inputs[item.name] = item.value;
-    });
-    return inputs;
+function getFormData(form) {
+  var inputs = {};
+  $(form).serializeArray().forEach(function(item) {
+    inputs[item.name] = item.value;
+  });
+  return inputs;
 };
 
 /* Source: https://twitter.github.io/typeahead.js/examples/ */
-var substringMatcher = function(strs) {
+function substringMatcher(strs) {
   return function findMatches(q, cb) {
     var matches, substringRegex;
 

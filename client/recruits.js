@@ -1,4 +1,4 @@
-var getFormData = function(form) {
+function getFormData(form) {
   var inputs = {};
   $(form).serializeArray().forEach(function(item) {
     inputs[item.name] = item.value;

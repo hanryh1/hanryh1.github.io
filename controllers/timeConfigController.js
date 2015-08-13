@@ -1,18 +1,20 @@
-var StandardTime = require('../models/standardTime');
-var ReferenceTime = require('../models/referenceTime');
-var eventMap = require("../lib/eventMap");
-var async = require("async");
-var request = require("request");
-var helpers = require("../lib/helpers");
+var async                    = require("async");
+var request                  = require("request");
+
+var eventMap                 = require("../lib/eventMap");
+var EVENTS                   = require("../lib/events");
+var helpers                  = require("../lib/helpers");
+var updateAllRecruits        = require("../lib/updateRecruits").updateAllRecruits;
 var updateTeamReferenceTimes = require("../lib/updateTeamReferenceTimes");
-var EVENTS = require("../lib/events");
-var updateAllRecruits = require("../lib/updateRecruits").updateAllRecruits;
+
+var StandardTime             = require('../models/standardTime');
+var ReferenceTime            = require('../models/referenceTime');
 
 controller = {}
 
 /* Controller for getting times to compare against requiring some extra configuration */
 
-controller.updateTeamReferenceTimes = function(req, res){
+controller.updateTeamReferenceTimes = function(req, res) {
     if (!req.body.teamId || !req.body.season){
         return res.status(400).send({"error":"Missing parameters."});
     }
@@ -23,13 +25,13 @@ controller.updateTeamReferenceTimes = function(req, res){
 //// Functions for getting times from meets ////
 
 // This is necessary because cheerio is weird
-var generateSelector = function(tableIndex, rowIndex, columnIndex){
+function generateSelector(tableIndex, rowIndex, columnIndex) {
     return ".table-with-teams:nth-child(" + tableIndex +
            ") > tbody > tr:nth-child(" + rowIndex + ") > td:nth-child(" +
            columnIndex + ")";
 }
 
-var getTimesFromTable = function(eventName, tableIndex, $)  {
+function getTimesFromTable(eventName, tableIndex, $) {
     var times = [];
     // no finals, get top 16
     var numRows = eventName.indexOf("1650") != -1 ? 16 : 8;
@@ -37,13 +39,12 @@ var getTimesFromTable = function(eventName, tableIndex, $)  {
     var timeCol = eventName.indexOf("1650") != -1 ? 4 : 5;
     for (var i = 1; i < numRows + 1; i++){
         var time = {
-            "time": helpers.convertTimeToNumber($(generateSelector(tableIndex, i, timeCol) + " > span > a ").text()),
-            "eventName": eventName.substring(2),
-            "rank": parseInt($(generateSelector(tableIndex, i, 1)).text().trim()),
-            "gender": eventName[0],
-            "type": "Nationals"
-        }
-
+                        "time": helpers.convertTimeToNumber($(generateSelector(tableIndex, i, timeCol) + " > span > a ").text()),
+                        "eventName": eventName.substring(2),
+                        "rank": parseInt($(generateSelector(tableIndex, i, 1)).text().trim()),
+                        "gender": eventName[0],
+                        "type": "Nationals"
+                    }
         if (!isNaN(time.rank)){ // if someone gets DQed this won't be correct
             times.push(time);
         }
@@ -51,8 +52,8 @@ var getTimesFromTable = function(eventName, tableIndex, $)  {
     return times;
 }
 
-var getTimesForEvent = function(eventName, eventIndex, meetUrl, callback){
-    request(meetUrl + "/event/" + eventIndex, function(error, response, body){
+function getTimesForEvent(eventName, eventIndex, meetUrl, callback) {
+    request(meetUrl + "/event/" + eventIndex, function(error, response, body) {
         if (error){
             callback(error);
         } else if (response.statusCode == 200){
@@ -84,12 +85,12 @@ controller.createReferenceTimesForMeet = function(req, res) {
             if (map.hasOwnProperty(ev)) {
                 (function(eventName, eventIndex, meetUrl, calls){
                     calls.push(function(callback){
-                        getTimesForEvent(eventName, eventIndex, meetUrl, function(err, times){
+                        getTimesForEvent(eventName, eventIndex, meetUrl, function(err, times) {
                             if (err){
                                 callback(err);
                             } else {
                                 console.log(eventName);
-                                ReferenceTime.create(times, function(err, t){
+                                ReferenceTime.create(times, function(err, t) {
                                     if (err){
                                         console.log("Error occured with:", eventName);
                                         console.log(times);
@@ -104,7 +105,7 @@ controller.createReferenceTimesForMeet = function(req, res) {
                 }(ev, map[ev], req.body.meetUrl, calls));
             }
         }
-        ReferenceTime.remove({"type": "Nationals"}, function(err){
+        ReferenceTime.remove({"type": "Nationals"}, function(err) {
             if (err) {
                 res.status(500).send({"error": "Error removing old times"});
             } else {
@@ -127,7 +128,7 @@ controller.createReferenceTimesForMeet = function(req, res) {
 //// Functions for making time standards ////
 
 // converts casing to Xxxxx format
-var toTitleCase = function(str){
+function toTitleCase(str) {
     if (str == "IM") return str;
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
@@ -155,11 +156,11 @@ controller.createTimeStandards = function(req, res) {
             standards.push(standard);
         }
     }
-    StandardTime.remove({"gender": req.body.gender}, function(err){
+    StandardTime.remove({"gender": req.body.gender}, function(err) {
         if (err){
             res.status(500).send(err);
         } else {
-            StandardTime.create(standards, function(err){
+            StandardTime.create(standards, function(err) {
                 if (err){
                     res.status(500).send(err);
                 } else {
@@ -173,7 +174,7 @@ controller.createTimeStandards = function(req, res) {
 }
 
 // admin interface to updating all the recruits so we don't have to wait until every monday
-controller.updateAllRecruits = function(req, res){
+controller.updateAllRecruits = function(req, res) {
     res.status(200).send({"message": "Starting update"});
     updateAllRecruits();
 }

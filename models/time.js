@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-var Promise = require("bluebird");
-var EVENTS = require("../lib/events");
+var Promise  = require("bluebird");
+var EVENTS   = require("../lib/events");
 
 var timeSchema = new mongoose.Schema({
     time: {type: 'Number', required: true, min: 15},
@@ -20,21 +20,21 @@ var timeSchema = new mongoose.Schema({
 timeSchema.set('autoIndex', false);
 
 // // set rankings and time standards
-timeSchema.pre('save', function(next){
+timeSchema.pre('save', function(next) {
     var self = this;
     mongoose.model('Recruit')
         .findById(self.recruit, "gender")
         .exec(function(err, recruit){
             var gender = recruit.gender;
 
-            var setTeamRank = new Promise(function(f, r){
+            var setTeamRank = new Promise(function(f, r) {
                 mongoose.model('ReferenceTime')
                     .findOne({ "eventName": self.eventName,
                             "gender": gender,
                             "time": { $gt: self.time },
                             "type": "Team" })
                     .sort({ "time" : 1})
-                    .exec(function(err, slower){  
+                    .exec(function(err, slower) {
                         if (slower) {
                             self.teamRank = slower.rank;
                             self.inFrontOf = slower._id;
@@ -43,14 +43,14 @@ timeSchema.pre('save', function(next){
                     });
                 });
 
-            var setFaster = new Promise(function(f, r){
+            var setFaster = new Promise(function(f, r) {
                 mongoose.model('ReferenceTime')
                     .findOne({ "eventName": self.eventName,
                             "gender": gender,
                             "time": { $lt: self.time },
                             "type": "Team" })
                     .sort({ "time" : -1})
-                    .exec(function(err, faster){
+                    .exec(function(err, faster) {
                         if (faster) {
                             self.behind = faster._id;
                         }
@@ -58,14 +58,14 @@ timeSchema.pre('save', function(next){
                     });
                 });
 
-            var setNationalRank = new Promise(function(f, r){
+            var setNationalRank = new Promise(function(f, r) {
                 mongoose.model('ReferenceTime')
                     .findOne({ "eventName": self.eventName,
                             "gender": gender,
                             "time": { $gt: self.time },
                             "type": "Nationals" })
                     .sort({ "time" : 1})
-                    .exec(function(err, nationalTime){
+                    .exec(function(err, nationalTime) {
                         if (nationalTime) {
                             self.nationalRank = nationalTime.rank;
                         }
@@ -73,13 +73,13 @@ timeSchema.pre('save', function(next){
                     });
                 });
 
-            var setStandard = new Promise(function(f, r){
+            var setStandard = new Promise(function(f, r) {
                 mongoose.model('StandardTime')
                   .findOne({ "eventName": self.eventName,
                     "gender": gender,
                     "time": { $gt: self.time }})
                     .sort({ "time" : 1})
-                    .exec(function(err, standardTime){
+                    .exec(function(err, standardTime) {
                         if (standardTime){
                           self.standard = standardTime.type;
                         }
@@ -88,32 +88,32 @@ timeSchema.pre('save', function(next){
                 });
 
             Promise.all([setTeamRank, setFaster, setNationalRank, setStandard])
-                   .then(function(result){
+                   .then(function(result) {
                         next();
                    });
         });
 });
 
-var differenceInBodylengths = function(time, height, inFrontOf) {
+function differenceInBodylengths(time, height, inFrontOf) {
     var diff = inFrontOf ? time.inFrontOf.time - time.time : time.time - time.behind.time;
     var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
     var heightInYards = height / 36;
     return (avgSpeed * diff / heightInYards).toFixed(2);
 }
 
-timeSchema.method('getInFrontOfMessage', function(){
+timeSchema.method('getInFrontOfMessage', function() {
     return (this.inFrontOf.time - this.time).toFixed(2) + "s faster than " + this.inFrontOf.swimmer;
 });
 
-timeSchema.method('getBehindMessage', function(){
+timeSchema.method('getBehindMessage', function() {
     return (this.time - this.behind.time).toFixed(2) + "s slower than " + this.behind.swimmer;
 });
 
-timeSchema.method('getInFrontOfBodyLengthsMessage', function(height){
+timeSchema.method('getInFrontOfBodyLengthsMessage', function(height) {
     return differenceInBodylengths(this, height, true) + " body lengths ahead of " + this.inFrontOf.swimmer
 });
 
-timeSchema.method('getBehindBodyLengthsMessage', function(height){
+timeSchema.method('getBehindBodyLengthsMessage', function(height) {
     return differenceInBodylengths(this, height, false) + " body lengths behind " + this.behind.swimmer;
 });
 

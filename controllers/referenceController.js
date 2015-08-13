@@ -1,8 +1,10 @@
-var Recruit = require("../models/recruit");
-var Promise = require("bluebird");
-var Time = require("../models/time");
+var Promise       = require("bluebird");
+
+var Recruit       = require("../models/recruit");
 var ReferenceTime = require('../models/referenceTime');
-var helpers = require("../lib/helpers");
+var Time          = require("../models/time");
+
+var helpers       = require("../lib/helpers");
 
 controller = {}
 
@@ -10,10 +12,10 @@ controller.compareSwimmerToTeamMember = function(req, res) {
     if (!req.query.recruit || !req.query.teamMember) {
         res.status(400).send({"error": "Missing parameters."});
     } else {
-        var getRecruitTimes = new Promise(function(f, r){
+        var getRecruitTimes = new Promise(function(f, r) {
             Recruit.findOne({"name": req.query.recruit}, 'times height')
                    .populate('times')
-                   .exec(function(err, r){
+                   .exec(function(err, r) {
                         if (err) {
                             r(err);
                         } else {
@@ -22,9 +24,9 @@ controller.compareSwimmerToTeamMember = function(req, res) {
                    });
         });
 
-        var getReferenceTimes = new Promise(function(f, r){
+        var getReferenceTimes = new Promise(function(f, r) {
             ReferenceTime.find({"swimmer": req.query.teamMember}
-                          , function(err, times){
+                          , function(err, times) {
                             if (err) {
                                 r(err);
                             } else {
@@ -34,10 +36,10 @@ controller.compareSwimmerToTeamMember = function(req, res) {
         });
 
         Promise.all([getRecruitTimes, getReferenceTimes])
-            .catch(function(err){
+            .catch(function(err) {
                 res.status(500).send(err);
             })
-            .then(function(results){
+            .then(function(results) {
                 var recruitTimes = results[0].times;
                 var reference = results[1];
                 if (!recruitTimes) {
@@ -67,8 +69,8 @@ controller.compareSwimmerToTeamMember = function(req, res) {
 }
 
 controller.getRecruitsAndRoster = function(req, res) {
-    var getRecruits = new Promise(function(f, r){
-        Recruit.getFullList(function(err, list){
+    var getRecruits = new Promise(function(f, r) {
+        Recruit.getFullList(function(err, list) {
             if (err) {
                 r(err);
             } else {
@@ -77,8 +79,8 @@ controller.getRecruitsAndRoster = function(req, res) {
         });
     });
 
-    var getTeamRoster = new Promise(function(f, r){
-        ReferenceTime.getTeamRoster(function(err, roster){
+    var getTeamRoster = new Promise(function(f, r) {
+        ReferenceTime.getTeamRoster(function(err, roster) {
             if (err) {
                 r(err);
             } else {
@@ -88,10 +90,10 @@ controller.getRecruitsAndRoster = function(req, res) {
     });
 
     Promise.all([getRecruits, getTeamRoster])
-        .catch(function(err){
+        .catch(function(err) {
             res.status(500).send(err);
         })
-        .then(function(results){
+        .then(function(results) {
             res.status(200).send({ "recruits": results[0],
                                    "roster": results[1] });
         });

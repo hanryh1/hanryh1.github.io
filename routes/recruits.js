@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var RecruitController = require('../controllers/recruitController');
+var express    = require('express');
+var router     = express.Router();
+var controller = require('../controllers/recruitController');
 
-var isAuthenticated = function(req, res, next){
+function isAuthenticated(req, res, next) {
     if (req.session.authenticated) {
         return next()
     } else{
@@ -10,7 +10,7 @@ var isAuthenticated = function(req, res, next){
     }
 }
 
-var isAdmin = function(req, res, next){
+function isAdmin(req, res, next) {
     if (req.session.admin) {
         return next();
     } else{
@@ -18,33 +18,33 @@ var isAdmin = function(req, res, next){
     }
 }
 
-router.post('/', isAuthenticated, RecruitController.createRecruit);
+router.post('/', isAuthenticated, controller.createRecruit);
 
-router.get('/', isAuthenticated, RecruitController.getAllRecruits);
+router.get('/', isAuthenticated, controller.getAllRecruits);
 
-router.get('/csv', isAuthenticated, RecruitController.downloadRecruitCsv);
+router.get('/csv', isAuthenticated, controller.downloadRecruitCsv);
 
-router.get('/archived', isAuthenticated, RecruitController.getArchivedRecruits);
+router.get('/archived', isAuthenticated, controller.getArchivedRecruits);
 
-router.get('/archived/:classYear', isAuthenticated, RecruitController.getArchivedRecruits);
+router.get('/archived/:classYear', isAuthenticated, controller.getArchivedRecruits);
 
-router.get('/:recruitId', isAuthenticated, RecruitController.getRecruit);
+router.get('/:recruitId', isAuthenticated, controller.getRecruit);
 
-router.get('/:recruitId/times', isAuthenticated, RecruitController.getTimesForRecruit);
+router.get('/:recruitId/times', isAuthenticated, controller.getTimesForRecruit);
 
-router.post('/:recruitId/times', isAuthenticated, function(req, res){ RecruitController.addTimeManually(req, res, true) });
+router.post('/:recruitId/times', isAuthenticated, function(req, res){ controller.addTimeManually(req, res, true) });
 
 /* Lazy Implementation */
-router.put('/:recruitId/times/:timeId', isAuthenticated, function(req, res){ RecruitController.addTimeManually(req, res, false) });
+router.put('/:recruitId/times/:timeId', isAuthenticated, function(req, res){ controller.addTimeManually(req, res, false) });
 
-router.put('/', isAuthenticated, RecruitController.archiveAllRecruits);
+router.put('/', isAuthenticated, controller.archiveAllRecruits);
 
-router.put('/:recruitId', isAuthenticated, RecruitController.archiveRecruit);
+router.put('/:recruitId', isAuthenticated, controller.archiveRecruit);
 
-router.put('/:recruitId/info', isAuthenticated, RecruitController.updateRecruit);
+router.put('/:recruitId/info', isAuthenticated, controller.updateRecruit);
 
-router.delete('/:recruitId', isAuthenticated, RecruitController.deleteRecruit);
+router.delete('/:recruitId', isAuthenticated, controller.deleteRecruit);
 
-router.delete('/:recruitId/times/:timeId', isAuthenticated, RecruitController.deleteTime);
+router.delete('/:recruitId/times/:timeId', isAuthenticated, controller.deleteTime);
 
 module.exports = router;

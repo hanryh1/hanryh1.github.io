@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.Router();
+var router  = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -10,7 +10,7 @@ router.get('/', function(req, res) {
   }
 });
 
-router.post('/authenticate', function(req, res){
+router.post('/authenticate', function(req, res) {
     if (req.body.password == process.env.ADMIN_PASSWORD){
         req.session.admin = true;
         req.session.authenticated = true;

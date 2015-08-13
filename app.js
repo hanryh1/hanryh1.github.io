@@ -1,33 +1,34 @@
 "use strict";
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var csrf = require('csurf');
+var express       = require('express');
 
-var routes = require('./routes/index');
-var recruits = require('./routes/recruits');
-var events = require('./routes/events');
-var admin = require('./routes/admin');
-var compare = require('./routes/compare');
-
+/* Middleware */
+var path          = require('path');
+var favicon       = require('serve-favicon');
+var logger        = require('morgan');
+var cookieParser  = require('cookie-parser');
+var bodyParser    = require('body-parser');
+var csrf          = require('csurf');
 var cookieSession = require('cookie-session');
+var mongoose      = require('mongoose');
 
-var mongoose = require('mongoose');
+/* Routes */
+var routes        = require('./routes/index');
+var recruits      = require('./routes/recruits');
+var events        = require('./routes/events');
+var admin         = require('./routes/admin');
+var compare       = require('./routes/compare');
 
 var app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-var db = mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/stalkmyrecruit");
+var db = mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/stalkmyrecruit");
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
-var filter = function(middleware) {
+/* Filter out static content from being logged */
+function filter(middleware) {
     return function(req, res, next) {
         if (/\/js|\/stylesheets|\/fonts/.test(req.path)) {
             return next();
@@ -42,7 +43,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// only send cookies over https if SECURE_PROXY env variable set
+/* only send cookies over https if SECURE_PROXY env variable set */
 var cookieSessionArgs = {secret: process.env.SMR_SESSION_SECRET};
 if (process.env.SECURE_PROXY) {
     cookieSessionArgs["secureProxy"] = true;
@@ -50,8 +51,8 @@ if (process.env.SECURE_PROXY) {
 }
 app.use(cookieSession(cookieSessionArgs));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(function(req, res, next){
-  if (req.path === "/logout") { //disable for logout
+app.use(function(req, res, next) {
+  if (req.path === "/logout") {
       next();
   } else {
     csrf()(req, res, next);
@@ -69,7 +70,7 @@ require('./models/recruit');
 require('./models/referenceTime');
 require('./models/time');
 
-// catch 404 and forward to error handler
+/* 404 Error Handler */
 app.use(function(req, res, next) {
     res.render('404');
 });
@@ -77,10 +78,7 @@ app.use(function(req, res, next) {
 //don't send X-Powered-By header
 app.disable('x-powered-by');
 
-// error handlers
-
-// development error handler
-// will print stacktrace
+/* Error Handlers */
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
@@ -91,8 +89,6 @@ if (app.get('env') === 'development') {
     });
 }
 
-// production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -101,7 +97,7 @@ app.use(function(err, req, res, next) {
     });
 });
 
-// include background jobs
+/* Background jobs */
 require('./lib/updateRecruits').updateRecruitsJob.start();
 
 var debug = require('debug')('stalkmyrecruit');

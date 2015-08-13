@@ -1,26 +1,20 @@
 var express          = require('express');
 var router           = express.Router();
 var configController = require("../controllers/timeConfigController");
-
-function isAdmin(req, res, next) {
-  if (req.session.admin) {
-    return next();
-  } else{
-    res.redirect('/');
-  }
-}
+var isAdmin          = require("../lib/authMiddleware").isAdmin;
+var isAuthenticated  = require('../lib/authMiddleware').isAuthenticated;
 
 // configure stuff like getting nationals results
-router.get('/config', isAdmin, function(req, res) {
+router.get('/config', isAuthenticated, isAdmin, function(req, res) {
   res.render("config", {"csrf": req.csrfToken()});
 });
 
-router.post('/config/meet', isAdmin, configController.createReferenceTimesForMeet);
+router.post('/config/meet', isAuthenticated, isAdmin, configController.createReferenceTimesForMeet);
 
-router.post('/config/standards', isAdmin, configController.createTimeStandards);
+router.post('/config/standards', isAuthenticated, isAdmin, configController.createTimeStandards);
 
-router.post('/config/team', isAdmin, configController.updateTeamReferenceTimes);
+router.post('/config/team', isAuthenticated, isAdmin, configController.updateTeamReferenceTimes);
 
-router.post('/recruits', isAdmin, configController.updateAllRecruits);
+router.post('/recruits', isAuthenticated, isAdmin, configController.updateAllRecruits);
 
 module.exports = router;

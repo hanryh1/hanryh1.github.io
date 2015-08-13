@@ -1,14 +1,7 @@
-var express    = require('express');
-var router     = express.Router();
-var controller = require('../controllers/referenceController');
-
-function isAuthenticated(req, res, next) {
-  if (req.session.authenticated) {
-    return next()
-  } else{
-    res.redirect('/');
-  }
-}
+var express         = require('express');
+var router          = express.Router();
+var controller      = require('../controllers/referenceController');
+var isAuthenticated = require('../lib/authMiddleware').isAuthenticated;
 
 router.get('/', isAuthenticated, controller.getComparisonPage);
 

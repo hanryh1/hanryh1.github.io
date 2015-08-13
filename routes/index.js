@@ -25,7 +25,8 @@ router.post('/authenticate', function(req, res) {
 
 /* GET home page. */
 router.post('/logout', function(req, res) {
-  req.session = null;
+  req.session.authenticated = false;
+  req.session.admin = false;
   res.status(200).send({'message': 'Logout successful.'});
 });
 

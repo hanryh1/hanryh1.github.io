@@ -342,13 +342,6 @@ controller.addTimeManually = function(req, res, requireFaster) {
   });
 }
 
-function differenceInBodylengths(time, height, inFrontOf) {
-  var diff = inFrontOf ? time.inFrontOf.time - time.time : time.time - time.behind.time;
-  var avgSpeed = parseInt(time.eventName.split(" ")[0]) / time.time;
-  var heightInYards = height / 36;
-  return (avgSpeed * diff / heightInYards).toFixed(2);
-}
-
 controller.getRecruit = function(req, res) {
   Recruit
     .findById(req.params.recruitId)
@@ -366,8 +359,6 @@ controller.getRecruit = function(req, res) {
                         res.render("single-recruit",
                                    { "recruit": recruit,
                                      "timeToString": helpers.convertNumberToString,
-                                     "showBodylengths": req.query.bodylengths == 1,
-                                     "differenceInBodylengths": differenceInBodylengths,
                                      "csrf": req.csrfToken() });
                       });
       }

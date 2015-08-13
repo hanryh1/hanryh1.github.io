@@ -54,6 +54,7 @@ $(document).ready(function(){
 
   $('#times-editor').hide();
   $('#cancel-edit-times').hide();
+  $('.bodylengths').hide();
 
   var csrf = $("#csrf").val();
 
@@ -118,11 +119,21 @@ $(document).ready(function(){
   });
 
   $("#toggle-seconds").click(function(){
-    window.location = window.location.pathname;
+    if (!$(this).hasClass("active")){
+      $(this).addClass("active");
+    }
+    $("#toggle-body-lengths").removeClass("active");
+    $(".bodylengths").hide();
+    $(".seconds").show();
   });
 
   $("#toggle-body-lengths").click(function(){
-    window.location = window.location.pathname + "?bodylengths=1";
+    if (!$(this).hasClass("active")){
+      $(this).addClass("active");
+    }
+    $("#toggle-seconds").removeClass("active");
+    $(".seconds").hide();
+    $(".bodylengths").show();
   });
 
   $('#logout-link').click(function(){

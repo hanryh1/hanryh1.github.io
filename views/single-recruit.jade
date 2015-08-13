@@ -80,18 +80,18 @@ block content
                   if time.teamRank
                     if time.behind || time.inFrontOf
                       td.mobile-hidden
-                        - content = "<b>" + time.eventName + "</b><br>"
+                        - seconds = "<b>" + time.eventName + "</b><br>"
+                        - bodyLengths = "<b>" + time.eventName + "</b><br>"
                         if time.inFrontOf
-                          if showBodylengths && recruit.height
-                            - content = content + time.getInFrontOfBodyLengthsMessage(recruit.height)
-                          else
-                            - content = content + time.getInFrontOfMessage()
+                          if recruit.height
+                            - bodyLengths = bodyLengths + time.getInFrontOfBodyLengthsMessage(recruit.height)
+                          - seconds = seconds + time.getInFrontOfMessage()
                         if time.behind
-                          if showBodylengths && recruit.height
-                            - content = content + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
-                          else
-                            - content = content + "<br>" + time.getBehindMessage()
-                        span(data-toggle="hover", data-content=content, class="teamRank")=time.teamRank
+                          if recruit.height
+                            - bodyLengths = bodyLengths + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
+                          - seconds = seconds + "<br>" + time.getBehindMessage()
+                        span(data-toggle="hover", data-content=seconds).seconds.team-rank=time.teamRank
+                        span(data-toggle="hover", data-content=bodyLengths).bodylengths.team-rank=time.teamRank
                     else
                       td.mobile-hidden= time.teamRank
                   else

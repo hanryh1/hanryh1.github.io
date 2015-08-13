@@ -3,11 +3,11 @@ var router     = express.Router();
 var controller = require('../controllers/referenceController');
 
 function isAuthenticated(req, res, next) {
-    if (req.session.authenticated) {
-        return next()
-    } else{
-        res.redirect('/');
-    }
+  if (req.session.authenticated) {
+    return next()
+  } else{
+    res.redirect('/');
+  }
 }
 
 router.get('/', isAuthenticated, controller.getComparisonPage);

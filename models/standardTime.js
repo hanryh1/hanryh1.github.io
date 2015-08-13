@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 
 var standardTimeSchema = new mongoose.Schema({
-    time: {type: 'Number', required: true},
-    eventName: {type: 'String', required: true, index: true},
-    gender: {type: 'String', enum: ['M', 'F'], required: true},
-    created: {type:'Date', default: Date.now},
-    type: {type: 'String', enum: ['A', 'B', 'Inv'], required: true}
+  time: {type: 'Number', required: true},
+  eventName: {type: 'String', required: true, index: true},
+  gender: {type: 'String', enum: ['M', 'F'], required: true},
+  created: {type:'Date', default: Date.now},
+  type: {type: 'String', enum: ['A', 'B', 'Inv'], required: true}
 });
 
 standardTimeSchema.set('autoIndex', false);

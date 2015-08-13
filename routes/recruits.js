@@ -3,19 +3,19 @@ var router     = express.Router();
 var controller = require('../controllers/recruitController');
 
 function isAuthenticated(req, res, next) {
-    if (req.session.authenticated) {
-        return next()
-    } else{
-        res.redirect('/');
-    }
+  if (req.session.authenticated) {
+    return next()
+  } else{
+    res.redirect('/');
+  }
 }
 
 function isAdmin(req, res, next) {
-    if (req.session.admin) {
-        return next();
-    } else{
-        res.redirect('/');
-    }
+  if (req.session.admin) {
+    return next();
+  } else{
+    res.redirect('/');
+  }
 }
 
 router.post('/', isAuthenticated, controller.createRecruit);

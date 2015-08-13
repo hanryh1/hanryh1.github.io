@@ -3,15 +3,15 @@ var router     = express.Router();
 var controller = require('../controllers/timesController');
 
 function isAuthenticated(req, res, next) {
-    if (req.session.authenticated) {
-        return next()
-    } else{
-        res.redirect('/');
-    }
+  if (req.session.authenticated) {
+    return next()
+  } else{
+    res.redirect('/');
+  }
 }
 
 router.get('/', isAuthenticated, function(req, res){
-    res.render('events');
+  res.render('events');
 });
 
 router.get('/rank', isAuthenticated, controller.getTimesByEventAndGender);

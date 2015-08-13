@@ -11,16 +11,16 @@ router.get('/', function(req, res) {
 });
 
 router.post('/authenticate', function(req, res) {
-    if (req.body.password == process.env.ADMIN_PASSWORD){
-        req.session.admin = true;
-        req.session.authenticated = true;
-        res.redirect('/admin/config');
-    } else if (req.body.password == process.env.SMR_PASSWORD){
-        req.session.authenticated = true;
-        res.redirect('/recruits');
-    } else {
-        res.render('index', {'error': 'Invalid Password', "csrf": req.csrfToken()});
-    }
+  if (req.body.password == process.env.ADMIN_PASSWORD){
+    req.session.admin = true;
+    req.session.authenticated = true;
+    res.redirect('/admin/config');
+  } else if (req.body.password == process.env.SMR_PASSWORD){
+    req.session.authenticated = true;
+    res.redirect('/recruits');
+  } else {
+    res.render('index', {'error': 'Invalid Password', "csrf": req.csrfToken()});
+  }
 });
 
 /* GET home page. */

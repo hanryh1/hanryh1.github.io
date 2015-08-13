@@ -29,13 +29,13 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 /* Filter out static content from being logged */
 function filter(middleware) {
-    return function(req, res, next) {
-        if (/\/js|\/stylesheets|\/fonts/.test(req.path)) {
-            return next();
-        } else {
-            return middleware(req, res, next);
-        }
-    };
+  return function(req, res, next) {
+    if (/\/js|\/stylesheets|\/fonts/.test(req.path)) {
+      return next();
+    } else {
+      return middleware(req, res, next);
+    }
+  };
 };
 
 app.use(filter(logger('common')));
@@ -46,8 +46,8 @@ app.use(cookieParser());
 /* only send cookies over https if SECURE_PROXY env variable set */
 var cookieSessionArgs = {secret: process.env.SMR_SESSION_SECRET};
 if (process.env.SECURE_PROXY) {
-    cookieSessionArgs["secureProxy"] = true;
-    app.enable("trust proxy");
+  cookieSessionArgs["secureProxy"] = true;
+  app.enable("trust proxy");
 }
 app.use(cookieSession(cookieSessionArgs));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -72,7 +72,7 @@ require('./models/time');
 
 /* 404 Error Handler */
 app.use(function(req, res, next) {
-    res.render('404');
+  res.render('404');
 });
 
 //don't send X-Powered-By header
@@ -80,21 +80,21 @@ app.disable('x-powered-by');
 
 /* Error Handlers */
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
 app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 /* Background jobs */

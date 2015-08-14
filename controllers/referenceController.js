@@ -48,6 +48,18 @@ controller.compareSwimmerToTeamMember = function(req, res) {
         if (reference.length == 0) {
           return res.status(400).send({"error": "This team member does not exist."});
         }
+
+        // sort by event length & alphabetical stroke
+        recruitTimes.sort(function(a,b){
+          var a = a.eventName.split(" ");
+          var b = b.eventName.split(" ");
+          var diff = parseInt(a[0]) - parseInt(b[0]);
+          if (diff != 0) {
+            return diff;
+          }
+          return a[2] < b[2] ? -1 : 1;
+        });
+
         var commonRecruitTimes = [];
         var commonReferenceTimes = [];
         for (var i = 0; i < recruitTimes.length; i++){

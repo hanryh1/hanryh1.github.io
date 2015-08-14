@@ -25,8 +25,8 @@ function generateHtml(recruit, swimmer, data){
   var recruitFirstName = recruit.split(" ")[0];
   var teamMemberFirstName = swimmer.split(" ")[0]
   var newHtml = "<a href='/recruits/" + data.recruit._id + "'><h2>" +
-                recruit + "</h2></a><p><p>Compared with " +
-                swimmer + "<p><table>" +
+                recruit + "</h2></a><p>Compared with " +
+                swimmer + "</p><table>" +
                 "<tr><th>Event</th><th>" + recruitFirstName +
                 "</th><th>" + teamMemberFirstName + "</th></tr>";
   for (var i = 0; i < recruitTimes.length; i++){
@@ -42,7 +42,7 @@ function generateHtml(recruit, swimmer, data){
       content += "<br>" + bodyLengths + " body lengths";
     }
 
-    newHtml += "<tr class=\"compare-row\" data-toggle=\"hover\" data-container=\"body\" data-placement=\"left\" data-content='" +
+    newHtml += "<tr class='compare-row' data-toggle='hover' data-container='body' data-placement='left' data-content='" +
                content + "'><td>" + time.eventName + "</td>";
     var timeElem = delta > 0 ? "<td class='faster'>" + time.timeString + "</td>" : "<td>" + time.timeString + "</td>"
     var refTimeString = convertNumberToString(refTime.time);

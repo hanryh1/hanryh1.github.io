@@ -16,6 +16,9 @@ function convertNumberToString(timeNumber) {
 }
 
 function generateHtml(recruit, swimmer, data){
+  if (data.recruitTimes.length == 0){
+    return "<h3 class='centered'> No matching events found :(</h3>"
+  }
   var recruitTimes = data.recruitTimes;
   var referenceTimes = data.referenceTimes;
   var height = data.recruit.height;
@@ -117,24 +120,54 @@ $(document).ready(function(){
       $('#compare-link').addClass("active");
       recruits = response.recruits;
       roster = response.roster;
+
+      var recruitSource = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: recruits
+      });
+
+      var rosterSource = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: roster
+      });
+
       $('#select-team-member').typeahead({
+        hint: true,
         minLength: 1,
-        highlight: true
+        highlight: true,
+        autoselect: true
       },
       {
         name: 'teamMembers',
         limit: 5,
-        source: substringMatcher(roster)
+        source: rosterSource
+      }).on('keyup', this, function (event) {
+        if (event.keyCode == 13) {
+          var suggestions = $(".tt-dataset-teamMembers > .tt-selectable");
+          if (suggestions.length == 1){
+            suggestions.trigger("click");
+          }
+        }
       });
 
       $('#select-recruit').typeahead({
+        hint: true,
         minLength: 1,
         highlight: true
       },
       {
         name: 'recruits',
         limit: 5,
-        source: substringMatcher(recruits)
+        source: recruitSource
+      }).on('keyup', this, function (event) {
+        if (event.keyCode == 13) {
+          var suggestions = $(".tt-dataset-recruits > .tt-selectable");
+          if (suggestions.length == 1){
+            suggestions.trigger("click");
+          }
+        }
       });
 
       $('#select-team-member').bind('typeahead:selected', function(obj, datum, name) {

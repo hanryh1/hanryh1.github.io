@@ -136,11 +136,16 @@ th, td {
   color: #7D8D8D;
 }
 
+.tt-selectable {
+  cursor: pointer;
+}
+
 .tt-highlight {
   color: #00b5ad;
 }
 
 .tt-open {
+  margin-top: 10px;
   background-color: #fff;
   padding:10px;
   width: 400px;
@@ -500,6 +505,10 @@ Sidebar
 .compare-row:hover {
   background-color: #52B3D9;
   cursor: pointer;
+}
+
+.faster {
+  font-weight: 700;
 }
 
 th {

@@ -1,15 +1,16 @@
 "use strict";
 var express       = require('express');
 
-/* Middleware */
-var path          = require('path');
-var favicon       = require('serve-favicon');
-var logger        = require('morgan');
-var cookieParser  = require('cookie-parser');
+/* External modules */
 var bodyParser    = require('body-parser');
+var cookieParser  = require('cookie-parser');
 var csrf          = require('csurf');
 var cookieSession = require('cookie-session');
+var debug         = require('debug')('stalkmyrecruit');
+var favicon       = require('serve-favicon');
 var mongoose      = require('mongoose');
+var logger        = require('morgan');
+var path          = require('path');
 
 /* Routes */
 var routes        = require('./routes/index');
@@ -59,35 +60,20 @@ app.use(function(req, res, next) {
   }
 });
 
+/* Base paths for routes */
 app.use('/', routes);
 app.use('/recruits', recruits);
 app.use('/events', events);
 app.use('/admin', admin);
 app.use('/compare', compare);
 
-//include models
-require('./models/recruit');
-require('./models/referenceTime');
-require('./models/time');
-
-/* 404 Error Handler */
-app.use(function(req, res, next) {
-  res.render('404');
-});
-
 //don't send X-Powered-By header
 app.disable('x-powered-by');
 
 /* Error Handlers */
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
+app.use(function(req, res, next) {
+  res.render('404');
+});
 
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
@@ -99,8 +85,6 @@ app.use(function(err, req, res, next) {
 
 /* Background jobs */
 require('./lib/updateRecruits').updateRecruitsJob.start();
-
-var debug = require('debug')('stalkmyrecruit');
 
 app.set('port', process.env.PORT || 3000);
 

@@ -24,7 +24,7 @@ function findMatchingEvent(events, eventName) {
 function getRecruitData(collegeSwimmingId, callback) {
   request("http://www.collegeswimming.com/swimmer/" +
            collegeSwimmingId + "/powerindex/"
-           , function(error, response, body){
+           , function(error, response, body) {
             if (error){
               callback(error);
             } else if (response.statusCode == 200){
@@ -57,7 +57,7 @@ function getRecruitData(collegeSwimmingId, callback) {
 
 // update recruit times
 function updateTime(recruit, callback) {
-  getRecruitData(recruit.collegeSwimmingId, function(err, recruitData, data){
+  getRecruitData(recruit.collegeSwimmingId, function(err, recruitData, data) {
     if (err){
         var status = err.status == 404 ? 404 : 500;
     } else {
@@ -96,7 +96,7 @@ function updateTime(recruit, callback) {
                 }
                 recruit.times = times;
                 recruit.times = recruit.times.concat(manualTimes);
-                recruit.save(function (err, recruit){
+                recruit.save(function (err, recruit) {
                   callback(err, recruit);        
                 });
               }
@@ -109,7 +109,7 @@ function updateTime(recruit, callback) {
 
 function updatePowerIndex(recruit, callback) {
   request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId,
-    function(error, response, body){
+    function(error, response, body) {
       if (error){
         console.log(error);
       } else if (response.statusCode == 200) {
@@ -523,7 +523,8 @@ function generateCsvRow(recruit, data) {
   }
   data.push(row);
 }
-function generateRecruitCsv(callback){
+
+function generateRecruitCsv(callback) {
   getRecruitsByGender(function(err, recruits) {
     if (err) {
       callback(err);

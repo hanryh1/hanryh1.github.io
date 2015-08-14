@@ -1,4 +1,7 @@
 function generateHtml(eventName, data) {
+  if (data.length == 0){
+    return "<h3 class='centered'>No times matched your query :(</h3>"
+  }
   var newHtml = "<h3>"+eventName+"</h3><table>" +
                 "<tr><th>Name</th><th>Class</th><th>Time</th>" +
                 "<th>Standard</th></tr>";
@@ -15,12 +18,9 @@ function generateHtml(eventName, data) {
 }
 
 function selectNewEvent() {
-  var selectedEvent = $("#select-event").val();
+  var selectedEvent = $("#select-event").find("option:selected").text();
   var selectedGender = $("input[name='gender']:checked").val();
   var isArchived = $("input[name='archived']:checked").val();
-  if (events.indexOf(selectedEvent) == -1){
-    return;
-  }
   $.ajax({
     url: "/events/rank",
     type: 'GET',
@@ -34,44 +34,6 @@ function selectNewEvent() {
       }
   });
 }
-
-/* Source: https://twitter.github.io/typeahead.js/examples/ */
-function substringMatcher(strs) {
-  return function findMatches(q, cb) {
-    var matches, substringRegex;
-
-    // an array that will be populated with substring matches
-    matches = [];
-
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
-
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        matches.push(str);
-      }
-    });
-
-    cb(matches);
-  };
-};
-
-var events = [ "50 Y Free",
-               "100 Y Free",
-               "200 Y Free",
-               "500 Y Free",
-               "1000 Y Free",
-               "1650 Y Free",
-               "100 Y Back",
-               "200 Y Back",
-               "100 Y Breast",
-               "200 Y Breast",
-               "100 Y Fly",
-               "200 Y Fly",
-               "200 Y IM",
-               "400 Y IM" ];
 
 $(document).ready(function(){
   $.ajax({
@@ -87,21 +49,7 @@ $(document).ready(function(){
         }
   });
 
-  $('.typeahead').typeahead({
-    minLength: 1,
-    highlight: true
-  },
-  {
-    name: 'events',
-    limit: 14,
-    source: substringMatcher(events)
-  });
-
-  $('#select-event').bind('typeahead:selected', function(obj, datum, name) {
-    $('#select-event').val(JSON.stringify(datum).replace(/['"]+/g, ""));
-    selectNewEvent();
-  });
-
+  $('#select-event').change(selectNewEvent);
   $('#events-link').addClass("active");
   $('#select-gender').change(selectNewEvent);
   $('#include-archive').change(selectNewEvent);

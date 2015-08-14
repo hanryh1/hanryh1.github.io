@@ -183,6 +183,11 @@ th, td {
   padding-right: 5px;
 }
 
+select {
+  height: 40px!important;
+  font-size: 16px;
+}
+
 /* Login */
 .login-container{
   max-width: 500px;
@@ -483,8 +488,8 @@ Sidebar
   max-width:315px;
 }
 
-#new-time-event .typeahead, #new-time-event .tt-open {
-  max-width:150px!important;
+#new-time-event {
+  width: 135px;
 }
 
 #new-time-input {
@@ -565,8 +570,9 @@ th {
     width: 260px!important;
   }
 
-  #new-time-event .typeahead, #new-time-event .tt-open {
+  #new-time-event {
     width: 100px!important;
+    font-size: 14px!important;
   }
 
   #new-time-input {

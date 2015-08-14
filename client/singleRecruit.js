@@ -133,21 +133,6 @@ $(document).ready(function(){
 
   $(activeTabSelector).addClass("active");
 
-  $('.typeahead').typeahead({
-    minLength: 1,
-    highlight: true
-  },
-  {
-    name: 'events',
-    limit: 14,
-    source: substringMatcher(events)
-  });
-
-  $('#new-event-select').bind('typeahead:selected', function(obj, datum, name) {
-    $('#new-event-select').val(JSON.stringify(datum).replace(/['"]+/g, ""));
-    selectNewEvent();
-  });
-
   $("#update-form-btn").click(function(evt){
     $(".updateable-information").hide();
     $(".update-form-container").show();
@@ -256,11 +241,7 @@ $(document).ready(function(){
     evt.preventDefault;
     var recruitId = $(this).attr("recruitid");
     var time = $("#new-time-input").val();
-    var eventName = $("#new-event-select").val();
-    if (events.indexOf(eventName) == -1){
-      $("#add-manual-time-error").text("Please enter a valid event.");
-      return;
-    }
+    var eventName = $('#new-event-select').find("option:selected").text();
     if (!/^([0-9]{1,2}:)?[0-9]{2}\.[0-9]{1,2}$/.test(time)){
        $("#add-manual-time-error").text("Please enter a valid time.");
        return;

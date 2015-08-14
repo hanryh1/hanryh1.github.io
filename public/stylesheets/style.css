@@ -14,6 +14,10 @@ a {
 
 hr { margin: 2px; }
 
+.btn {
+  border-radius: 0;
+}
+
 .hr-margin { margin-top:20px; }
 
 .btn{

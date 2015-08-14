@@ -1,3 +1,13 @@
+jQuery.fn.dataTableExt.oSort["name-asc"] = function(a, b){
+  return a < b ? -1 : 1;
+};
+
+jQuery.fn.dataTableExt.oSort["name-desc"] = function(a, b){
+  var a = a.split(" ");
+  var b = b.split(" ");
+  return a[a.length - 1] > b[b.length - 1] ? 1 : -1;
+};
+
 $(document).ready(function(){
   $(".are-you-sure").hide();
   $(".are-you-sure-archive").hide();
@@ -8,8 +18,12 @@ $(document).ready(function(){
     columnDefs: [{
       "targets": [-1,-2],
       "orderable": false
+    },
+    {
+      "targets": [0],
+      "type": "name"
     }]
-  }
+  };
 
   var maleTable = $('.male-recruits').dataTable(tableOptions);
   var femaleTable = $('.female-recruits').dataTable(tableOptions);

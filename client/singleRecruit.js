@@ -86,7 +86,7 @@ jQuery.fn.dataTableExt.oSort["time-desc"] = function(a, b){
 };
 
 jQuery.fn.dataTableExt.oSort["time-asc"] = function(a, b){
-  return jQuery.fn.dataTableExt.oSort["time-asc"](b, a);
+  return jQuery.fn.dataTableExt.oSort["time-desc"](b, a);
 }
 
 $(document).ready(function(){

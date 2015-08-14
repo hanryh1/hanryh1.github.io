@@ -42,7 +42,7 @@ function generateHtml(recruit, swimmer, data){
       content += "<br>" + bodyLengths + " body lengths";
     }
 
-    newHtml += "<tr class=\"compare-row\" data-toggle=\"hover\" data-placement=\"left\" data-content='" +
+    newHtml += "<tr class=\"compare-row\" data-toggle=\"hover\" data-container=\"body\" data-placement=\"left\" data-content='" +
                content + "'><td>" + time.eventName + "</td>";
     var timeElem = delta > 0 ? "<td class='faster'>" + time.timeString + "</td>" : "<td>" + time.timeString + "</td>"
     var refTimeString = convertNumberToString(refTime.time);

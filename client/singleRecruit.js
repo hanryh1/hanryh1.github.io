@@ -19,7 +19,7 @@ function convertTimeToNumber(timeString) {
 };
 
 /**
- * Custom Sorting Functions 
+ * Custom Sorting Functions
  */
 
 var EVENTS = [ "50 Y Free",

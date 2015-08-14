@@ -6,30 +6,23 @@ function getFormData(form) {
   return inputs;
 };
 
-/* Source: https://twitter.github.io/typeahead.js/examples/ */
-function substringMatcher(strs) {
-  return function findMatches(q, cb) {
-    var matches, substringRegex;
-
-    // an array that will be populated with substring matches
-    matches = [];
-
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
-
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        matches.push(str);
-      }
-    });
-
-    cb(matches);
-  };
+function convertTimeToNumber(timeString) {
+  if (timeString[0] == ":"){ //handle leading ":"
+    timeString = timeString.substring(1);
+  }
+  var interim = timeString.split(":");
+  if (interim.length > 1) {
+    return parseInt(interim[0])*60 + parseFloat(interim[1]);
+  } else{
+    return parseFloat(interim[0]);
+  }
 };
 
-var events = [ "50 Y Free",
+/**
+ * Custom Sorting Functions 
+ */
+
+var EVENTS = [ "50 Y Free",
                "100 Y Free",
                "200 Y Free",
                "500 Y Free",
@@ -44,6 +37,58 @@ var events = [ "50 Y Free",
                "200 Y IM",
                "400 Y IM" ];
 
+jQuery.fn.dataTableExt.oSort["event-asc"] = function(a, b){
+  return EVENTS.indexOf(a) - EVENTS.indexOf(b);
+};
+
+jQuery.fn.dataTableExt.oSort["event-desc"] = function(a, b){
+  return jQuery.fn.dataTableExt.oSort["event-asc"](b, a);
+};
+
+jQuery.fn.dataTableExt.oSort["points-asc"] = function(a, b){
+  var a = parseInt(a);
+  var b = parseInt(b);
+  return isNaN(a) ? 1 : isNaN(b) ? -1 : a - b;
+};
+
+jQuery.fn.dataTableExt.oSort["points-desc"] = function(a, b){
+  return jQuery.fn.dataTableExt.oSort["points-asc"](b, a);
+}
+
+jQuery.fn.dataTableExt.oSort["team-asc"] = function(a, b){
+  var regex = new RegExp(">([0-9]{1,2})</span>");
+  var x = a.match(regex);
+  var y = b.match(regex);
+  return x ? ( y ? parseInt(x[1]) - parseInt(y[1]) : -1 ) : 1
+};
+
+jQuery.fn.dataTableExt.oSort["team-desc"] = function(a, b){
+  return jQuery.fn.dataTableExt.oSort["team-asc"](b, a);
+}
+
+var standardMap = {
+                    "A":   1,
+                    "Inv": 2,
+                    "B":   3,
+                    "-":   4
+                  };
+
+jQuery.fn.dataTableExt.oSort["standard-asc"] = function(a, b){
+  return standardMap[a] - standardMap[b];
+};
+
+jQuery.fn.dataTableExt.oSort["standard-desc"] = function(a, b){
+  return jQuery.fn.dataTableExt.oSort["standard-asc"](b, a);
+}
+
+jQuery.fn.dataTableExt.oSort["time-desc"] = function(a, b){
+  return convertTimeToNumber(a) - convertTimeToNumber(b);
+};
+
+jQuery.fn.dataTableExt.oSort["time-asc"] = function(a, b){
+  return jQuery.fn.dataTableExt.oSort["time-asc"](b, a);
+}
+
 $(document).ready(function(){
   //enable popover
   $('[data-toggle="hover"]').popover({
@@ -51,6 +96,32 @@ $(document).ready(function(){
         trigger: 'hover',
         html: true
   });
+
+  var tableOptions = {
+    dom: 't',
+    columnDefs: [{
+      "targets": [0],
+      "type": "event"
+    },
+    {
+      "targets": [1],
+      "type": "time"
+    },
+    {
+      "targets": [2,4],
+      "type": "points"
+    },
+    {
+      "targets": [3],
+      "type": "team"
+    },
+    {
+      "targets": [5],
+      "type": "standard"
+    }]
+  }
+
+  $('.single-recruit-times').dataTable(tableOptions);
 
   $('#times-editor').hide();
   $('#cancel-edit-times').hide();

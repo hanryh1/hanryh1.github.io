@@ -192,6 +192,10 @@ table{
     width: 100%;
 }
 
+.sorting, .sorting_asc, .sorting_desc {
+  cursor: pointer;
+}
+
 .action-label span{
   font-size: 12px!important;
   font-weight: 700;

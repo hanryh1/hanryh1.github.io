@@ -1,9 +1,10 @@
 var Promise       = require("bluebird");
 
 var Recruit       = require("../models/recruit");
-var ReferenceTime = require('../models/referenceTime');
+var ReferenceTime = require("../models/referenceTime");
 var Time          = require("../models/time");
 
+var EVENTS        = require("../lib/events");
 var helpers       = require("../lib/helpers");
 
 controller = {}
@@ -49,15 +50,9 @@ controller.compareSwimmerToTeamMember = function(req, res) {
           return res.status(400).send({"error": "This team member does not exist."});
         }
 
-        // sort by event length & alphabetical stroke
+        // sort by event order
         recruitTimes.sort(function(a,b){
-          var a = a.eventName.split(" ");
-          var b = b.eventName.split(" ");
-          var diff = parseInt(a[0]) - parseInt(b[0]);
-          if (diff != 0) {
-            return diff;
-          }
-          return a[2] < b[2] ? -1 : 1;
+          return EVENTS.indexOf(a.eventName) - EVENTS.indexOf(b.eventName);
         });
 
         var commonRecruitTimes = [];

@@ -3,6 +3,17 @@ $(document).ready(function(){
   $(".are-you-sure-archive").hide();
   $("#archived-link").addClass("active");
 
+  var tableOptions = {
+    dom: 't',
+    columnDefs: [{
+      "targets": [-1,-2],
+      "orderable": false
+    }]
+  }
+
+  var maleTable = $('.male-recruits').dataTable(tableOptions);
+  var femaleTable = $('.female-recruits').dataTable(tableOptions);
+
   var csrf = $("#csrf").val();
 
   $("#select-year").change(function(){
@@ -41,13 +52,14 @@ $(document).ready(function(){
   $(".unarchive-recruit-btn").click(function(evt){
     evt.stopPropagation();
     var recruitRow = $(this).closest(".recruit-row");
+    var table = $(this).closest("table").hasClass("male-recruits") ? maleTable : femaleTable;
     var recruitId = recruitRow.attr("recruitid");
     $.ajax({
       url: "/recruits/" + recruitId + "?archive=false",
       type: "PUT",
       data: { "_csrf": csrf },
       success: function(){
-        recruitRow.remove();
+        table.fnDeleteRow(recruitRow[0], null, true);
       }, error: function(jqXHR, textStatus, err) {
           $("#archive-error").text("Could not unarchive recruit.");
         }

@@ -32,41 +32,45 @@ block content
           div#archived-error
           h2 Male
           table.male-recruits
-            tr
-              th Name
-              th Class Year
-              th Power Index
-              th.mobile-hidden Delete
-              th.mobile-hidden Unarchive
-            for m in maleRecruits
-              tr(recruitId=m._id).recruit-row
-                td.name= m.name
-                td= m.classYear
-                td= m.powerIndex
-                td.center-align.mobile-hidden
-                  button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
-                    span.glyphicon.glyphicon-remove
-                td.center-align.mobile-hidden
-                  button.sm-circular-btn.unarchive-recruit-btn.default-btn
-                    span.glyphicon.glyphicon-inbox
+            thead
+              tr
+                th Name
+                th Class Year
+                th Power Index
+                th.mobile-hidden Delete
+                th.mobile-hidden Unarchive
+            tbody
+              for m in maleRecruits
+                tr(recruitId=m._id).recruit-row
+                  td.name= m.name
+                  td= m.classYear
+                  td= m.powerIndex
+                  td.center-align.mobile-hidden
+                    button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
+                      span.glyphicon.glyphicon-remove
+                  td.center-align.mobile-hidden
+                    button.sm-circular-btn.unarchive-recruit-btn.default-btn
+                      span.glyphicon.glyphicon-inbox
           h2 Female
           table.female-recruits
-            tr
-              th Name
-              th Class Year
-              th Power Index
-              th.mobile-hidden Delete
-              th.mobile-hidden Unarchive
-            for f in femaleRecruits
-              tr(recruitId=f._id).recruit-row
-                td.name= f.name
-                td= f.classYear
-                td= f.powerIndex
-                td.center-align.mobile-hidden
-                  button.sm-circular-btn.delete-recruit-btn
-                    span.glyphicon.glyphicon-remove
-                td.center-align.mobile-hidden
-                  button.sm-circular-btn.unarchive-recruit-btn
-                    span.glyphicon.glyphicon-inbox
+            thead
+              tr
+                th Name
+                th Class Year
+                th Power Index
+                th.mobile-hidden Delete
+                th.mobile-hidden Unarchive
+            tbody
+              for f in femaleRecruits
+                tr(recruitId=f._id).recruit-row
+                  td.name= f.name
+                  td= f.classYear
+                  td= f.powerIndex
+                  td.center-align.mobile-hidden
+                    button.sm-circular-btn.delete-recruit-btn
+                      span.glyphicon.glyphicon-remove
+                  td.center-align.mobile-hidden
+                    button.sm-circular-btn.unarchive-recruit-btn
+                      span.glyphicon.glyphicon-inbox
         div.col-md-1
     include sidebar-mixin

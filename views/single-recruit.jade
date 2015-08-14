@@ -65,39 +65,41 @@ block content
               button(class = "#{ showBodylengths ? 'btn btn-default btn-sm active': 'btn btn-default btn-sm' }")#toggle-body-lengths Body Lengths
           div.times-table-wrapper
             table.single-recruit-times
-              tr
-                th Event
-                th Time
-                th Points
-                th.mobile-hidden Team
-                th.mobile-hidden Natl
-                th.mobile-hidden Standard
-              for time in recruit.times
+              thead
                 tr
-                  td=time.eventName
-                  td=time.timeString
-                  td=time.points || "-"
-                  if time.teamRank
-                    if time.behind || time.inFrontOf
-                      td.mobile-hidden
-                        - seconds = "<b>" + time.eventName + "</b><br>"
-                        - bodyLengths = "<b>" + time.eventName + "</b><br>"
-                        if time.inFrontOf
-                          if recruit.height
-                            - bodyLengths = bodyLengths + time.getInFrontOfBodyLengthsMessage(recruit.height)
-                          - seconds = seconds + time.getInFrontOfMessage()
-                        if time.behind
-                          if recruit.height
-                            - bodyLengths = bodyLengths + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
-                          - seconds = seconds + "<br>" + time.getBehindMessage()
-                        span(data-toggle="hover", data-content=seconds).seconds.team-rank=time.teamRank
-                        span(data-toggle="hover", data-content=bodyLengths).bodylengths.team-rank=time.teamRank
+                  th Event
+                  th Time
+                  th Points
+                  th.mobile-hidden Team
+                  th.mobile-hidden Natl
+                  th.mobile-hidden Standard
+              tbody
+                for time in recruit.times
+                  tr
+                    td=time.eventName
+                    td=time.timeString
+                    td=time.points || "-"
+                    if time.teamRank
+                      if time.behind || time.inFrontOf
+                        td.mobile-hidden
+                          - seconds = "<b>" + time.eventName + "</b><br>"
+                          - bodyLengths = "<b>" + time.eventName + "</b><br>"
+                          if time.inFrontOf
+                            if recruit.height
+                              - bodyLengths = bodyLengths + time.getInFrontOfBodyLengthsMessage(recruit.height)
+                            - seconds = seconds + time.getInFrontOfMessage()
+                          if time.behind
+                            if recruit.height
+                              - bodyLengths = bodyLengths + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
+                            - seconds = seconds + "<br>" + time.getBehindMessage()
+                          span(data-toggle="hover", data-content=seconds).seconds.team-rank=time.teamRank
+                          span(data-toggle="hover", data-content=bodyLengths).bodylengths.team-rank=time.teamRank
+                      else
+                        td.mobile-hidden= time.teamRank
                     else
-                      td.mobile-hidden= time.teamRank
-                  else
-                    td.mobile-hidden -
-                  td.mobile-hidden=time.nationalRank || "-"
-                  td.mobile-hidden= time.standard || "-"
+                      td.mobile-hidden -
+                    td.mobile-hidden=time.nationalRank || "-"
+                    td.mobile-hidden= time.standard || "-"
         div#times-editor
           div#edit-times-error.error
           table#edit-single-recruit-times

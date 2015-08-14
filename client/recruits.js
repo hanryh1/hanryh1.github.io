@@ -7,6 +7,18 @@ function getFormData(form) {
 };
 
 $(document).ready(function(){
+
+  var tableOptions = {
+    dom: 't',
+    columnDefs: [{
+      "targets": [-1,-2],
+      "orderable": false
+    }]
+  }
+
+  var maleTable = $('.male-recruits').dataTable(tableOptions);
+  var femaleTable = $('.female-recruits').dataTable(tableOptions);
+
   $(".add-manual-time").hide();
 
   $("#recruits-link").addClass("active");
@@ -67,13 +79,14 @@ $(document).ready(function(){
   $(".archive-recruit-btn").click(function(evt){
     evt.stopPropagation();
     var recruitRow = $(this).closest(".recruit-row");
+    var table = $(this).closest("table").hasClass("male-recruits") ? maleTable : femaleTable;
     var recruitId = recruitRow.attr("recruitid");
     $.ajax({
       url: "/recruits/" + recruitId + "?archive=true",
       type: "PUT",
       data: { "_csrf": csrf },
       success: function(){
-        recruitRow.remove();
+        table.fnDeleteRow(recruitRow[0], null, true);
       }, error: function(jqXHR, textStatus, err) {
           $("#recruit-error").text("Could not archive recruit.");
         }

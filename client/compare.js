@@ -32,16 +32,19 @@ function generateHtml(recruit, swimmer, data){
     var delta = (refTime.time - time.time).toFixed(2);
     var faster = delta > 0 ? recruitFirstName : teamMemberFirstName;
     var slower = delta > 0 ? teamMemberFirstName : recruitFirstName;
-    var content = "<b>" + time.eventName + "</b><br>" + faster + " beats " + slower + " by<br>";
-    content += Math.abs(delta) + " seconds";
+    var content = "<b>" + time.eventName + "</b><br>" + faster + " beats " + slower + " by<br>" +
+                  Math.abs(delta) + " seconds";
     if (height) {
       var bodyLengths = differenceInBodylengths(time, delta, height);
       content += "<br>" + bodyLengths + " body lengths";
     }
+
     newHtml += "<tr class=\"compare-row\" data-toggle=\"hover\" data-placement=\"left\" data-content='" +
-               content + "'><td>" + time.eventName + "</td>" +
-               "<td>" + time.timeString + "</td>" +
-               "<td>" + convertNumberToString(refTime.time) + "</td></tr>";
+               content + "'><td>" + time.eventName + "</td>";
+    var timeElem = delta > 0 ? "<td class='faster'>" + time.timeString + "</td>" : "<td>" + time.timeString + "</td>"
+    var refTimeString = convertNumberToString(refTime.time);
+    var refTimeElem = delta > 0 ? "<td>" + refTimeString + "</td></tr>" : "<td class='faster'>" + refTimeString + "</td></tr>"
+    newHtml += timeElem + refTimeElem;
   }  
   newHtml += "</table>"
   return newHtml

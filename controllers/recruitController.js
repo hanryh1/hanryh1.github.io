@@ -61,48 +61,40 @@ function updateTime(recruit, callback) {
     if (err){
         var status = err.status == 404 ? 404 : 500;
     } else {
-        Time.remove({"recruit": recruit._id, "manual": {$ne:true}}, function(err) {
-          if (err){
-            callback(err);
-          } else {
-            Time.find({"recruit": recruit._id, "manual": true}, function(err, manualTimes) {
-              if (err) {
-                callback(err);
-              } else {
-                var numTimes = 0;
-                var times = [];
-                for (var i = 1; i < data.length; i ++){
-                  var time = data[i];
-                  //only care about yard times
-                  if (time.eventName.indexOf(" Y ") >= 0){
-                    var manualEvent = findMatchingEvent(manualTimes, time.eventName);
-                    if (manualEvent != -1){
-                      if (manualEvent.time < time.time){
-                        numTimes +=1;
-                        if (numTimes > 6) break;
-                        continue;
-                      } else{
-                        manualTimes[manualEvent.index].remove();
-                        manualTimes.slice(manualEvent.index,1);
-                      }
-                    }
-                    time.recruit = recruit._id;
-                    var t = new Time(time);
-                    t.save();
-                    times.push(t);
-                    numTimes += 1;
-                  }
-                  if (numTimes > 6) break;
+      Time.find({"recruit": recruit._id}, function(err, oldTimes) {
+        if (err) {
+          callback(err);
+        } else {
+          var times = [];
+          for (var i = 1; i < data.length; i ++){
+            var time = data[i];
+            //only care about yard times
+            if (time.eventName.indexOf(" Y ") >= 0){
+              var oldTime = findMatchingEvent(oldTimes, time.eventName);
+              if (oldTime != -1){
+                if (oldTime.time <= time.time){
+                  continue;
+                } else{
+                  oldTime.time = time.time;
+                  oldTime.points = time.points;
+                  oldTime.timeString = time.timeString;
+                  oldTime.manual = false;
+                  oldTime.save();
                 }
-                recruit.times = times;
-                recruit.times = recruit.times.concat(manualTimes);
-                recruit.save(function (err, recruit) {
-                  callback(err, recruit);        
-                });
+              } else {
+                time.recruit = recruit._id;
+                var t = new Time(time);
+                t.save();
+                times.push(t);
               }
-            });
+            }
           }
-        });
+          recruit.times = times.concat(oldTimes);
+          recruit.save(function (err, recruit) {
+            callback(err, recruit);
+          });
+        }
+      });
     }
   });
 }
@@ -481,7 +473,6 @@ controller.createRecruit = function(req, res) {
                   t.save();
                   times.push(t);
                 }
-                if (times.length > 6) break;
               }
               recruit.times = times;
               recruit.save(function (err, recruit) {

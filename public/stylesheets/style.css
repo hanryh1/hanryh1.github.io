@@ -492,6 +492,10 @@ Sidebar
   max-width:315px;
 }
 
+.bodylengths {
+  display: none;
+}
+
 #new-time-event {
   width: 135px;
 }

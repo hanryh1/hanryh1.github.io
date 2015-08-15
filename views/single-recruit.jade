@@ -93,7 +93,8 @@ block content
                               - bodyLengths = bodyLengths + "<br>" + time.getBehindBodyLengthsMessage(recruit.height)
                             - seconds = seconds + "<br>" + time.getBehindMessage()
                           span(data-toggle="hover", data-content=seconds).seconds.team-rank=time.teamRank
-                          span(data-toggle="hover", data-content=bodyLengths).bodylengths.team-rank=time.teamRank
+                          if recruit.height
+                            span(data-toggle="hover", data-content=bodyLengths).bodylengths.team-rank=time.teamRank
                       else
                         td.mobile-hidden= time.teamRank
                     else

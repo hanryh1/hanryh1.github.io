@@ -117,7 +117,7 @@ controller.createReferenceTimesForMeet = function(req, res) {
           } else {
             console.log("Times successfully created");
             console.log("Updating all recruit times");
-            updateAllRecruits();
+            updateAllRecruits(true);
           }
         });
       }
@@ -166,7 +166,7 @@ controller.createTimeStandards = function(req, res) {
         } else {
           res.status(201).send({"message": "New standards created."});
           console.log("Updating all recruit times");
-          updateAllRecruits();
+          updateAllRecruits(true);
         }
       });
     }
@@ -176,7 +176,7 @@ controller.createTimeStandards = function(req, res) {
 // admin interface to updating all the recruits so we don't have to wait until every monday
 controller.updateAllRecruits = function(req, res) {
   res.status(200).send({"message": "Starting update"});
-  updateAllRecruits();
+  updateAllRecruits(true);
 }
 
 module.exports = controller;

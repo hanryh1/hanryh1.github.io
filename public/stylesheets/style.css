@@ -574,6 +574,10 @@ th {
     float: left;
   }
 
+  #select-event {
+    width: 280px!important;
+  }
+
   .typeahead, .tt-open {
     width: 260px!important;
   }

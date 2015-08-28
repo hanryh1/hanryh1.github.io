@@ -286,11 +286,7 @@ table{
   -webkit-transition: background-color 0.5s;
 }
 
-.archive-btn, .unarchive-btn{
-  margin: 10px 10px 10px 0;
-}
-
-.are-you-sure, .are-you-sure-archive, .add-manual-time{
+.are-you-sure, .add-manual-time{
   display: none;
 }
 
@@ -324,11 +320,6 @@ td:hover .delete-time-btn{
 #event-selection{
   width: 400px;
   margin: auto;
-}
-
-#include-archived {
-  display: inline-block;
-  float: right;
 }
 
 /*
@@ -428,11 +419,6 @@ Sidebar
 
 .update-form-container {
   display: none;
-}
-
-.archived-label {
-  float: right;
-  margin-right:10px;
 }
 
 .team-rank {
@@ -563,11 +549,6 @@ th {
 
   .modal {
     width: 80%;
-  }
-
-  #include-archived {
-    display: block;
-    float: none;
   }
 
   .float-right {

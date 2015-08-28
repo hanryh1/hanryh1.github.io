@@ -21,7 +21,7 @@ $(document).ready(function(){
   var tableOptions = {
     dom: 't',
     columnDefs: [{
-      "targets": [-1,-2],
+      "targets": [-1],
       "orderable": false
     },
     {
@@ -57,7 +57,7 @@ $(document).ready(function(){
       data: formData,
       success: function(){
           window.location.reload(true);
-        }, 
+        },
       error: function(jqXHR, textStatus, err) {
           $("#new-recruit-error").text("Invalid ID, or something else went wrong.");
           $("#new-csId").val("");
@@ -65,6 +65,11 @@ $(document).ready(function(){
           $("input[name=\"gender\"]")[1].checked = false;
         }
       });
+  });
+
+  $("#select-year").change(function(){
+    var classYear = $("#select-year").find("option:selected").attr("value");
+    window.location = "/recruits?classYear=" + classYear;
   });
 
   $(".delete-recruit-btn").click(function(evt){
@@ -90,39 +95,9 @@ $(document).ready(function(){
     });
   });
 
-  $(".archive-recruit-btn").click(function(evt){
-    evt.stopPropagation();
-    var recruitRow = $(this).closest(".recruit-row");
-    var table = $(this).closest("table").hasClass("male-recruits") ? maleTable : femaleTable;
-    var recruitId = recruitRow.attr("recruitid");
-    $.ajax({
-      url: "/recruits/" + recruitId + "?archive=true",
-      type: "PUT",
-      data: { "_csrf": csrf },
-      success: function(){
-        table.fnDeleteRow(recruitRow[0], null, true);
-      }, error: function(jqXHR, textStatus, err) {
-          $("#recruit-error").text("Could not archive recruit.");
-        }
-    });
-  });
-
   $(".recruit-row").click(function(){
     var recruitId = $(this).attr("recruitid");
     window.location = "/recruits/" + recruitId;
-  });
-
-  $("#archive-all-confirm-btn").click(function(){
-    $.ajax({
-      url: "/recruits?&archive=true",
-      type: "PUT",
-      data: { "_csrf": csrf },
-      success: function(){
-        window.location.reload(true);
-      }, error: function(jqXHR, textStatus, err) {
-          $("#new-recruit-error").text("Oops, something went horribly wrong.");
-        }
-    });
   });
 
   $('#sidebar-toggle').click(function(){

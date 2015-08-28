@@ -1,6 +1,6 @@
 extends layout
 block scripts
-    script(src='/js/configs.js') 
+    script(src='/js/configs.js')
 block content
   mixin sidebar-mixin()
   input(type="hidden" value=csrf)#csrf
@@ -18,7 +18,7 @@ block content
     div.national-cuts
     h3 Time Standards
       p
-        span Find a document like 
+        span Find a document like
         span
           a(href="/assets/QualifyingStandardsWomen2016.pdf") this
         span  from the NCAA and copy and paste the contents of the table in the textbox as follows:
@@ -52,6 +52,14 @@ block content
           option(value=currentYear - 1 selected) #{currentYear-1}-#{currentYear}
           option(value=currentYear) #{currentYear}-#{currentYear+1}
       button.btn.update-btn#submit-team-info Submit
+    hr.hr-margin
+    div.set-default-year
+      h3 Default Recruiting Year
+      p Set the default recruiting class.
+      div.form-group
+        label Class Year
+        input(type="number", name="teamId", min=2000, max=2999, value=defaultYear).form-control#default-year
+      button.btn.update-btn#update-default-year-btn Update Year
     hr.hr-margin
     div.update-all-recruits
       h3 Recruits

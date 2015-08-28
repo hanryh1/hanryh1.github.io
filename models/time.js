@@ -9,7 +9,6 @@ var timeSchema = new mongoose.Schema({
   points: {type: 'Number'},
   manual: {type: 'Boolean'},
   recruit: {type: mongoose.Schema.Types.ObjectId, ref: 'Recruit'},
-  archived: {type: 'Boolean', default:false},
   teamRank: {type: 'Number'},
   inFrontOf: {type: mongoose.Schema.Types.ObjectId, ref: 'ReferenceTime'},
   behind: {type: mongoose.Schema.Types.ObjectId, ref: 'ReferenceTime'},

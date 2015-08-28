@@ -6,7 +6,6 @@ var recruitSchema = new mongoose.Schema({
   powerIndex: {type: 'Number'},
   gender: {type: 'String', enum: ['M', 'F']},
   times: [{type: mongoose.Schema.Types.ObjectId, ref: 'Time'}],
-  archived: {type: 'Boolean', default: false},
   classYear: {type: 'Number', index: true},
   email: {type: 'String'},
   comments: {type: 'String'},
@@ -26,6 +25,10 @@ recruitSchema.method('getHeightAsString', function() {
 
 recruitSchema.statics.getFullList = function(callback) {
   this.find().distinct('name', callback);
+}
+
+recruitSchema.statics.getAllClassYears = function(callback) {
+  this.find().distinct('classYear', callback);
 }
 
 module.exports = mongoose.model('Recruit', recruitSchema);

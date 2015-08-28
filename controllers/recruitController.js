@@ -1,12 +1,13 @@
-var csv     = require("csv");
-var Promise = require("bluebird");
-var request = require("request");
+var csv           = require("csv");
+var Promise       = require("bluebird");
+var request       = require("request");
 
-var helpers = require("../lib/helpers");
-var EVENTS  = require("../lib/events");
+var helpers       = require("../lib/helpers");
+var EVENTS        = require("../lib/events");
 
-var Recruit = require("../models/recruit");
-var Time    = require("../models/time");
+var Configuration = require("../models/configuration");
+var Recruit       = require("../models/recruit");
+var Time          = require("../models/time");
 
 controller = {};
 
@@ -52,7 +53,7 @@ function getRecruitData(collegeSwimmingId, callback) {
                 callback(null, recruit, data);
               }
             }
-          });           
+          });
 }
 
 // update recruit times
@@ -122,10 +123,10 @@ function updatePowerIndex(recruit, callback) {
 /**
 *Various functions to query for recruits
 **/
-function getRecruitsByGender(callback) {
+function getRecruitsByGender(year, callback) {
   var getMales = new Promise(function(f, r) {
     Recruit
-      .find({"gender": "M", "archived": { $ne: true }})
+      .find({"gender": "M", "classYear": year})
       .sort({powerIndex:1}).populate("times")
       .exec(function(err, recruits){
           if (err){
@@ -138,7 +139,7 @@ function getRecruitsByGender(callback) {
 
   var getFemales = new Promise(function(f, r) {
       Recruit
-        .find({"gender": "F", "archived": { $ne: true }})
+        .find({"gender": "F", "classYear": year})
         .sort({powerIndex:1}).populate("times")
         .exec(function(err, recruits){
             if (err){
@@ -160,82 +161,78 @@ function getRecruitsByGender(callback) {
       });
 }
 
-controller.getAllRecruits = function(req, res) {
-  getRecruitsByGender(function(err, recruits) {
-    if (err){
-      res.render("error", {"error": err});
+/**
+ * Helper function to get the right class year
+ * to use for the query
+ */
+function getClassYear(input, callback) {
+  if (input) {
+    if (input == "all") {
+      return callback(null, null);
+    } else if (!/[0-9]{4}/.test(input)){
+      callback({"error": "Invalid class year"});
     } else {
-      recruits.csrf = req.csrfToken();
-      res.render("recruits", recruits);
+      callback(null, parseInt(input));
     }
-  });
-};
-
-controller.getArchivedRecruits = function(req, res) {
-  var classYear = null;
-  var maleQuery = {"gender": "M", "archived":true}
-  var femaleQuery = {"gender": "F", "archived":true}
-  if (req.params.classYear) {
-    if (!/[0-9]{4}/.test(req.params.classYear)){
-      return res.render("error", {"error": "Invalid class year"});
-    } else {
-      var classYear = parseInt(req.params.classYear);
-      maleQuery["classYear"] = classYear;
-      femaleQuery["classYear"] = classYear;
-    }  
+  } else {
+    Configuration.getDefaultYear(callback);
   }
+}
 
-  var getMales = new Promise(function(f, r) {
-    Recruit
-      .find(maleQuery)
-      .sort({powerIndex:1, classYear: 1})
-      .populate("times")
-      .exec(function(err, recruits) {
-        if (err){
-          r(err);
-        } else {
-          f(recruits);
-        }
-      });
-  });
-
-  var getFemales = new Promise(function(f, r) {
-    Recruit
-      .find(femaleQuery)
-      .sort({powerIndex:1, classYear: 1})
-      .populate("times")
-      .exec(function(err, recruits) {
-        if (err){
-          r(err);
-        } else {
-          f(recruits);
-        }
-      });
-  });
-
-  var getClassYears = new Promise(function(f, r) {
+controller.getAllRecruits = function(req, res) {
+  getClassYear(req.query.classYear, function(err, year){
+    var maleQuery = year ? {gender:"M", classYear: year} : {gender:"M"};
+    var femaleQuery = year ? {gender:"F", classYear: year} : {gender:"F"};
+    var getMales = new Promise(function(f, r) {
       Recruit
-        .find({"archived": "true"})
-        .distinct("classYear"
-        , function(err, classYears) {
+        .find(maleQuery)
+        .sort({powerIndex:1, classYear: 1})
+        .populate("times")
+        .exec(function(err, recruits) {
           if (err){
             r(err);
           } else {
-            classYears.sort();
-            f(classYears);
+            f(recruits);
           }
         });
-  });
+    });
 
-  Promise
-    .all([getMales, getFemales, getClassYears])
-      .then(function(results) {
-        res.render("archived", { "maleRecruits": results[0],
-                                 "femaleRecruits": results[1],
-                                 "classYears": results[2],
-                                 "defaultYear": classYear,
-                                 "csrf": req.csrfToken() });
-      });
+    var getFemales = new Promise(function(f, r) {
+      Recruit
+        .find(femaleQuery)
+        .sort({powerIndex:1, classYear: 1})
+        .populate("times")
+        .exec(function(err, recruits) {
+          if (err){
+            r(err);
+          } else {
+            f(recruits);
+          }
+        });
+    });
+
+    var getClassYears = new Promise(function(f, r) {
+        Recruit
+          .getAllClassYears(function(err, years) {
+            if (err){
+              r(err);
+            } else {
+              years.sort();
+              f(years);
+            }
+          });
+    });
+
+    Promise
+      .all([getMales, getFemales, getClassYears])
+        .then(function(results) {
+          res.render("recruits", { "maleRecruits": results[0],
+                                   "femaleRecruits": results[1],
+                                   "classYears": results[2],
+                                   "defaultYear": year,
+                                   "csrf": req.csrfToken() });
+        });
+  });
 }
 
 controller.getTimesForRecruit = function(req, res) {
@@ -330,7 +327,7 @@ controller.addTimeManually = function(req, res, requireFaster) {
               });
             }
           });
-      }   
+      }
   });
 }
 
@@ -360,7 +357,7 @@ controller.getRecruit = function(req, res) {
 controller.deleteRecruit = function(req, res) {
   Recruit.findById(req.params.recruitId, function(err, recruit) {
     if (err) {
-      res.status(500).send(err); 
+      res.status(500).send(err);
     } else if (!recruit){
       res.status(404).send({"error": "This recruit does not exist!"})
     } else {
@@ -376,74 +373,20 @@ controller.updateRecruit = function(req, res) {
   if (!req.body.email && !req.body.comments && !req.body.height){
     return res.status(400).send({"error": "Not all fields can be blank!"});
   }
-  Recruit.findOneAndUpdate({ _id: req.params.recruitId},
-                           { email: req.body.email,
-                             comments: req.body.comments,
-                             height: req.body.height },
-                             function(err, recruit) {
-                               if (err){
-                                 res.status(500).send(err);
-                               } else {
-                                 res.status(200)
-                                    .send({"message": "Update successful."});
+  Recruit
+    .findOneAndUpdate({ _id: req.params.recruitId},
+                      { email: req.body.email,
+                        comments: req.body.comments,
+                        height: req.body.height },
+                        function(err, recruit) {
+                          if (err){
+                            res.status(500).send(err);
+                          } else {
+                            res.status(200)
+                               .send({"message": "Update successful."});
 
-                               }
-  });
-}
-
-/**
-* Archiving Recruits
-**/
-controller.archiveRecruit = function(req, res) {
-  if (["true", "false"].indexOf(req.query.archive) == -1){
-    return res.status(400).send({"error": "Invalid query parameters."});
-  }
-  Recruit.findById(req.params.recruitId, function(err, recruit) {
-    if (err) {
-      res.status(500).send(err); 
-    } else if (!recruit){
-      res.status(404).send({"error": "This recruit does not exist!"})
-    } else {
-      Time.update({"recruit": recruit._id}
-                 , {$set: {"archived": req.query.archive}}
-                 , {multi: true}
-                 , function(err) {
-                    if (err) {
-                      res.status(500).send(err); 
-                    } else {
-                      recruit.update({$set: {"archived": req.query.archive}}
-                          , function(err) {
-                            if (err) {
-                              res.status(500).send(err); 
-                            } else {
-                              res.status(200)
-                                 .send({"message": "Recruit successfully updated."});
-                            }
-                      });
-                    }
-                  });
-    }
-  });
-}
-
-controller.archiveAllRecruits = function(req, res) {
-  if (!req.query.archive){
-    res.status(200).send({});
-  } else {
-    Recruit.update({}, {$set: {"archived": true}}, {multi: true}, function(err) {
-      if (err){
-        res.status(500).send(err);
-      } else {
-        Time.update({}, {$set: {"archived": true}}, {multi: true}, function(err) {
-          if (err){
-            res.status(500).send(err);
-          } else {
-            res.status(200).send({"message": "Recruits successfully archived."});
-          }
-        });
-      }
-    });
-  }
+                          }
+                        });
 }
 
 //get recruit's information from collegeswimming.com
@@ -515,8 +458,8 @@ function generateCsvRow(recruit, data) {
   data.push(row);
 }
 
-function generateRecruitCsv(callback) {
-  getRecruitsByGender(function(err, recruits) {
+function generateRecruitCsv(year, callback) {
+  getRecruitsByGender(year, function(err, recruits) {
     if (err) {
       callback(err);
     } else {
@@ -535,12 +478,18 @@ function generateRecruitCsv(callback) {
 }
 
 controller.downloadRecruitCsv = function(req, res) {
-  generateRecruitCsv(function(err, data) {
-    if (err){
-      res.status(500).send(err)
+  Configuration.getDefaultYear(function(err, year) {
+    if (err) {
+      res.status(500).send(err);
     } else {
-      res.attachment('recruits.csv');
-      csv().from(data).to(res);
+      generateRecruitCsv(year, function(err, data) {
+        if (err){
+          res.status(500).send(err)
+        } else {
+          res.attachment('recruits.csv');
+          csv().from(data).to(res);
+        }
+      });
     }
   });
 }

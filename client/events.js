@@ -12,19 +12,19 @@ function generateHtml(eventName, data) {
                time.recruit._id+"\">" + time.recruit.name +
                "</a><td>" + time.recruit.classYear + "<td>" +
                time.timeString +"</td><td>" + standard + "</td></tr>";
-  }  
+  }
   newHtml += "</table>"
   return newHtml
 }
 
 function selectNewEvent() {
-  var selectedEvent = $("#select-event").find("option:selected").text();
+  var selectedEvent = $("#select-event").find("option:selected").val();
   var selectedGender = $("input[name='gender']:checked").val();
-  var isArchived = $("input[name='archived']:checked").val();
+  var selectedYear = $("#select-year").find("option:selected").val();
   $.ajax({
     url: "/events/rank",
     type: 'GET',
-    data: {eventName: selectedEvent, gender: selectedGender, archived: isArchived},
+    data: {eventName: selectedEvent, gender: selectedGender, classYear: selectedYear},
     success: function(data){
         var newHTML = generateHtml(selectedEvent, data);
         $("#event-rank").html(newHTML);
@@ -43,7 +43,7 @@ $(document).ready(function(){
       success: function(data){
           var newHTML = generateHtml("50 Y Free", data);
           $("#event-rank").html(newHTML);
-        }, 
+        },
       error: function(jqXHR, textStatus, err) {
           $("#event-error").text("Something went wrong.");
         }
@@ -52,7 +52,7 @@ $(document).ready(function(){
   $('#select-event').change(selectNewEvent);
   $('#events-link').addClass("active");
   $('#select-gender').change(selectNewEvent);
-  $('#include-archive').change(selectNewEvent);
+  $('#select-year').change(selectNewEvent);
 
   $('#sidebar-toggle').click(function(){
     $('#sidebar').toggleClass("collapsed");

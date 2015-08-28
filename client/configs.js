@@ -22,7 +22,7 @@ $(document).ready(function(){
       data: {"meetUrl": url, "_csrf": csrf},
       success: function(){
           window.location.reload(true);
-        }, 
+        },
       error: function(jqXHR, textStatus, err) {
           $(".error").text("Oops, something went wrong.");
         }
@@ -60,6 +60,22 @@ $(document).ready(function(){
       url: "/admin/config/team",
       type: "POST",
       data: {"teamId": teamId, "season": season, "_csrf": csrf},
+      success: function(){
+          window.location.reload(true);
+        },
+      error: function(jqXHR, textStatus, err) {
+          $(".error").text("Oops, something went wrong.");
+        }
+      });
+  });
+
+  $("#update-default-year-btn").click(function(evt){
+    evt.preventDefault();
+    var year = $("#default-year").val();
+    $.ajax({
+      url: "/admin/config/year",
+      type: "POST",
+      data: {"year": year, "_csrf": csrf},
       success: function(){
           window.location.reload(true);
         },

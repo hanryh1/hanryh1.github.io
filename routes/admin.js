@@ -1,13 +1,22 @@
 var express          = require('express');
 var router           = express.Router();
-var configController = require("../controllers/timeConfigController");
+var configController = require("../controllers/configController");
 var isAdmin          = require("../lib/authMiddleware").isAdmin;
 var isAuthenticated  = require('../lib/authMiddleware').isAuthenticated;
+var Configuration    = require('../models/configuration');
 
 // configure stuff like getting nationals results
 router.get('/config', isAuthenticated, isAdmin, function(req, res) {
-  res.render("config", {"csrf": req.csrfToken()});
+  Configuration.getDefaultYear(function(err, year){
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.render("config", {"csrf": req.csrfToken(), "defaultYear": year});
+    }
+  });
 });
+
+router.post('/config/year', isAuthenticated, isAdmin, configController.setDefaultYear);
 
 router.post('/config/meet', isAuthenticated, isAdmin, configController.createReferenceTimesForMeet);
 

@@ -29,20 +29,6 @@ block content
                   | Female
             button.btn.update-btn#create-recruit-btn Submit
     div#recruits
-      div.centered
-        div#are-you-sure-archive-all.modal.fade.vertical-centered
-          div.modal-content
-            div.modal-body
-              p Are you sure you want to archive all the recruits? It would be annoying to undo this.
-              button.btn.btn-danger#archive-all-confirm-btn.margin-right.margin-bottom Yes
-              button(data-dismiss="modal").btn.btn-default#archive-all-deny-btn.margin-bottom No!
-        div#are-you-sure-delete.modal.fade.vertical-centered
-          div.modal-content
-            div.modal-body
-              div#delete-recruit-error
-              p#delete-recruit-message
-              button.btn.btn-danger#delete-confirm-btn.margin-right.margin-bottom Yes
-              button(data-dismiss="modal").btn.btn-default#delete-deny-btn.margin-bottom No!
       div.row
         div.col-md-1
         div.col-md-10
@@ -54,17 +40,28 @@ block content
                 div.action-label
                   span Add New Recruit
             div.inline.action
-              a(href="#")
-                button(data-toggle="modal" data-target="#are-you-sure-archive-all").btn.action-btn.circular-btn
-                  span.glyphicon.glyphicon-inbox
-                div.action-label
-                  span Archive All
-            div.inline.action
               a(href="/recruits/csv")
                 button.btn.action-btn.circular-btn
                   span.glyphicon.glyphicon-download
                 div.action-label
                   span Download As CSV
+          div.centered
+            form
+              label Class Year
+              select.form-control#select-year
+                option(value = "all") All years
+                for year in classYears
+                  if defaultYear == year
+                   option(value = year selected)= year
+                  else
+                    option(value = year)= year
+            div#are-you-sure-delete.modal.fade.vertical-centered
+              div.modal-content
+                div.modal-body
+                  div#delete-recruit-error
+                  p#delete-recruit-message
+                  button.btn.btn-danger#delete-confirm-btn.margin-right.margin-bottom Yes
+                  button(data-dismiss="modal").btn.btn-default#delete-deny-btn.margin-bottom No!
           div#recruit-error
           h2 Male
           table.male-recruits
@@ -74,7 +71,6 @@ block content
                 th Class Year
                 th Power Index
                 th.mobile-hidden Delete
-                th.mobile-hidden Archive
             tbody
               for m in maleRecruits
                 tr(recruitId=m._id).recruit-row
@@ -84,9 +80,6 @@ block content
                   td.center-align.mobile-hidden
                     button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
                       span.glyphicon.glyphicon-remove
-                  td.center-align.mobile-hidden
-                    button.sm-circular-btn.archive-recruit-btn.default-btn
-                      span.glyphicon.glyphicon-inbox
           h2 Female
           table.female-recruits
             thead
@@ -95,7 +88,6 @@ block content
                 th Class Year
                 th Power Index
                 th.mobile-hidden Delete
-                th.mobile-hidden Archive
             tbody
               for f in femaleRecruits
                 tr(recruitId=f._id).recruit-row
@@ -105,8 +97,5 @@ block content
                   td.center-align.mobile-hidden
                     button.sm-circular-btn.delete-recruit-btn
                       span.glyphicon.glyphicon-remove
-                  td.center-align.mobile-hidden
-                    button.sm-circular-btn.archive-recruit-btn
-                      span.glyphicon.glyphicon-inbox
         div.col-md-1
     include sidebar-mixin

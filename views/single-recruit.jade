@@ -6,8 +6,6 @@ block content
   div.container.max-width-800
     input(type="hidden" value=csrf)#csrf
     div.recruit-info
-      if recruit.archived
-        span.label.label-default.archived-label Archived
       div.inline.col-md-9
         h2.recruit-title= recruit.name
         div.updateable-information
@@ -18,7 +16,7 @@ block content
           if recruit.height
             div
               p
-                span.glyphicon.glyphicon-user.margin-right 
+                span.glyphicon.glyphicon-user.margin-right
                 span= recruit.getHeightAsString()
           div.comments
             strong Comments
@@ -30,7 +28,7 @@ block content
           h3.stat-value #{recruit.classYear}
         div.stat
           span.small-label Power Index
-          h3.stat-value #{recruit.powerIndex}  
+          h3.stat-value #{recruit.powerIndex}
       div.update-form-container
         div.error
         div.form-group

@@ -7,8 +7,10 @@ var helpers                  = require("../lib/helpers");
 var updateAllRecruits        = require("../lib/updateRecruits").updateAllRecruits;
 var updateTeamReferenceTimes = require("../lib/updateTeamReferenceTimes");
 
-var StandardTime             = require('../models/standardTime');
+var Configuration            = require('../models/configuration');
+var Recruit                  = require('../models/recruit');
 var ReferenceTime            = require('../models/referenceTime');
+var StandardTime             = require('../models/standardTime');
 
 controller = {}
 
@@ -72,7 +74,26 @@ function getTimesForEvent(eventName, eventIndex, meetUrl, callback) {
     } else {
       callback({"error": "Could not get page"});
     }
-  });     
+  });
+}
+
+controller.setDefaultYear = function(req, res) {
+  var year = parseInt(req.body.year);
+  Recruit.getAllClassYears(function(err, years){
+    if (err) {
+      res.status(500).send(err);
+    } else if (years.indexOf(year) == -1){
+      res.status(400).send({"error":"There are no recruits with this class year."});
+    } else {
+      Configuration.setDefaultYear(year, function(err){
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          res.status(200).send({"message": "Updated successfully."});
+        }
+      });
+    }
+  });
 }
 
 controller.createReferenceTimesForMeet = function(req, res) {

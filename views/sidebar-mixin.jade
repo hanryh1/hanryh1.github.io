@@ -1,10 +1,6 @@
 mixin sidebar-mixin()
   div#sidebar
-    div#sidebar-toggle.right-float
-      span.icon-bar
-      span.icon-bar
-      span.icon-bar
-    div#items
+    div.items
       a(href="/recruits")
         div#recruits-link.item
           span Recruits
@@ -14,6 +10,6 @@ mixin sidebar-mixin()
       a(href="/events")
         div#events-link.item
           span Event Rank
-      a(href="/#")
-        div#logout-link.item
+      a
+        div.logout-link.item
           span Logout

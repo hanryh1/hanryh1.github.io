@@ -36,6 +36,7 @@ $(document).ready(function(){
   $(".add-manual-time").hide();
 
   $("#recruits-link").addClass("active");
+  $("#recruits-nav-link").addClass("active");
 
   var csrf = $("#csrf").val();
 
@@ -100,12 +101,9 @@ $(document).ready(function(){
     window.location = "/recruits/" + recruitId;
   });
 
-  $('#sidebar-toggle').click(function(){
-    $('#sidebar').toggleClass("collapsed");
-    $('#items').toggle();
-  });
-
-  $('#logout-link').click(function(){
+  $('.logout-link').click(function(evt){
+    evt.preventDefault();
+    console.log(evt.target);
     $.ajax({
       url: '/logout',
       type: 'POST',
@@ -114,27 +112,5 @@ $(document).ready(function(){
       }
     });
   });
-
-  // hide extraneous things so mobile doesn't look as bad
-  if ($(window).width() < 480){
-    $(".mobile-hidden").hide()
-    $("#items").hide();
-    if (!($("#sidebar").hasClass("collapsed"))){
-      $('#sidebar').addClass("collapsed");
-    }
-  }
-
-  $(window).resize(function(){
-    if ($(window).width() < 480){
-      $(".mobile-hidden").hide()
-      $("#items").hide();
-      if (!($("#sidebar").hasClass("collapsed"))){
-        $('#sidebar').addClass("collapsed");
-      }
-    } else {
-      $(".mobile-hidden").show()
-    }
-  });
-
 });
 

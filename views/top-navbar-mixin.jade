@@ -1,0 +1,23 @@
+mixin top-navbar-mixin()
+  div#top-navbar
+    div.items
+      a(href="/recruits")
+        div#recruits-nav-link.item
+          i.fa.fa-user.nav-icon
+          div.nav-label
+            span Recruits
+      a(href="/compare")
+        div#compare-nav-link.item
+          i.fa.fa-bar-chart.nav-icon
+          div.nav-label
+            span Compare
+      a(href="/events")
+        div#events-nav-link.item
+          i.fa.fa-star.nav-icon
+          div.nav-label
+            span Event Rank
+      a
+        div.logout-link.item
+          i.fa.fa-sign-out.nav-icon
+          div.nav-label
+            span Logout

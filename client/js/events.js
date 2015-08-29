@@ -43,6 +43,8 @@ $(document).ready(function(){
       success: function(data){
           var newHTML = generateHtml("50 Y Free", data);
           $("#event-rank").html(newHTML);
+          $('#events-link').addClass("active");
+          $('#events-nav-link').addClass("active");
         },
       error: function(jqXHR, textStatus, err) {
           $("#event-error").text("Something went wrong.");
@@ -50,32 +52,11 @@ $(document).ready(function(){
   });
 
   $('#select-event').change(selectNewEvent);
-  $('#events-link').addClass("active");
   $('#select-gender').change(selectNewEvent);
   $('#select-year').change(selectNewEvent);
 
-  $('#sidebar-toggle').click(function(){
-    $('#sidebar').toggleClass("collapsed");
-    $('#items').toggle();
-  });
-
-  if ($(window).width() < 480){
-    $("#items").hide();
-    if (!($("#sidebar").hasClass("collapsed"))){
-      $('#sidebar').addClass("collapsed");
-    }
-  }
-
-  $(window).resize(function(){
-    if ($(window).width() < 480){
-      $("#items").hide();
-      if (!($("#sidebar").hasClass("collapsed"))){
-        $('#sidebar').addClass("collapsed");
-      }
-    }
-  });
-
-  $('#logout-link').click(function(){
+  $('.logout-link').click(function(evt){
+    evt.preventDefault();
     $.ajax({
       url: '/logout',
       type: 'POST',

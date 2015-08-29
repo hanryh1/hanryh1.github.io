@@ -48,7 +48,7 @@ function generateHtml(recruit, swimmer, data){
     var refTimeString = convertNumberToString(refTime.time);
     var refTimeElem = delta > 0 ? "<td>" + refTimeString + "</td></tr>" : "<td class='faster'>" + refTimeString + "</td></tr>"
     newHtml += timeElem + refTimeElem;
-  }  
+  }
   newHtml += "</table>"
   return newHtml
 }
@@ -76,7 +76,7 @@ function getNewComparison(recruits, roster){
               trigger: 'hover',
               html: true
         });
-      }, 
+      },
     error: function(jqXHR, textStatus, err) {
         $("#error").text("Something went wrong.");
       }
@@ -95,6 +95,8 @@ $(document).ready(function(){
     type: 'GET',
     success: function(response){
       $('#compare-link').addClass("active");
+      $('#compare-nav-link').addClass("active");
+
       recruits = response.recruits;
       roster = response.roster;
 
@@ -162,28 +164,8 @@ $(document).ready(function(){
     }
   });
 
-  $('#sidebar-toggle').click(function(){
-    $('#sidebar').toggleClass("collapsed");
-    $('#items').toggle();
-  });
-
-  if ($(window).width() < 480){
-    $("#items").hide();
-    if (!($("#sidebar").hasClass("collapsed"))){
-      $('#sidebar').addClass("collapsed");
-    }
-  }
-
-  $(window).resize(function(){
-    if ($(window).width() < 480){
-      $("#items").hide();
-      if (!($("#sidebar").hasClass("collapsed"))){
-        $('#sidebar').addClass("collapsed");
-      }
-    }
-  });
-
-  $('#logout-link').click(function(){
+  $('.logout-link').click(function(evt){
+    evt.preventDefault();
     $.ajax({
       url: '/logout',
       type: 'POST',

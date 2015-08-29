@@ -3,6 +3,7 @@ block scripts
   script(src='/js/compare.js')
 block content
   mixin sidebar-mixin()
+  mixin top-navbar-mixin()
   div.container
     h1.title Compare
     div.row.margin-20-10
@@ -21,3 +22,4 @@ block content
         div#comparison-results
       div.col-md-1
     include sidebar-mixin
+    include top-navbar-mixin

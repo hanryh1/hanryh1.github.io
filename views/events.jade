@@ -3,6 +3,7 @@ block scripts
     script(src='js/events.js')
 block content
   mixin sidebar-mixin()
+  mixin top-navbar-mixin()
   div.container.events-container
     h1.title Event Rank
     div.row
@@ -34,3 +35,4 @@ block content
       div.col-md-2
 
     include sidebar-mixin
+    include top-navbar-mixin

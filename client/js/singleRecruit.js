@@ -129,9 +129,8 @@ $(document).ready(function(){
 
   var csrf = $("#csrf").val();
 
-  var activeTabSelector = ($(".archived-label").length == 1) ? "#archived-link" : "#recruits-link";
-
-  $(activeTabSelector).addClass("active");
+  $("#recruits-link").addClass("active");
+  $("#recruits-nav-link").addClass("active");
 
   $("#update-form-btn").click(function(evt){
     $(".updateable-information").hide();
@@ -167,7 +166,7 @@ $(document).ready(function(){
       },
       success: function(){
           window.location.reload(true);
-        }, 
+        },
       error: function(jqXHR, textStatus, err) {
           $(".error").text("Oops, something went wrong.");
         }
@@ -190,21 +189,6 @@ $(document).ready(function(){
     $("#toggle-seconds").removeClass("active");
     $(".seconds").hide();
     $(".bodylengths").show();
-  });
-
-  $('#logout-link').click(function(){
-    $.ajax({
-      url: '/logout',
-      type: 'POST',
-      success: function(){
-        window.location = '/';
-      }
-    });
-  });
-
-  $('#sidebar-toggle').click(function(){
-    $('#sidebar').toggleClass("collapsed");
-    $('#items').toggle();
   });
 
   $('#edit-times-btn').click(function(){
@@ -281,24 +265,14 @@ $(document).ready(function(){
     });
   });
 
-  // hide extraneous things so mobile doesn't look as bad
-  if ($(window).width() < 480){
-    $(".mobile-hidden").hide()
-    $("#items").hide();
-    if (!($("#sidebar").hasClass("collapsed"))){
-      $('#sidebar').addClass("collapsed");
-    }
-  }
-
-  $(window).resize(function(){
-    if ($(window).width() < 480){
-      $(".mobile-hidden").hide()
-      $("#items").hide();
-      if (!($("#sidebar").hasClass("collapsed"))){
-        $('#sidebar').addClass("collapsed");
+  $('.logout-link').click(function(evt){
+    evt.preventDefault();
+    $.ajax({
+      url: '/logout',
+      type: 'POST',
+      success: function(){
+        window.location = '/';
       }
-    } else {
-      $(".mobile-hidden").show()
-    }
+    });
   });
 });

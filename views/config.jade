@@ -3,6 +3,7 @@ block scripts
     script(src='/js/configs.js')
 block content
   mixin sidebar-mixin()
+  mixin top-navbar-mixin()
   input(type="hidden" value=csrf)#csrf
   div.container.max-width-800
     h1 Configuration Page
@@ -66,3 +67,4 @@ block content
       p Don't want to wait until Monday to update all the recruits? Click this button to update all of them now.
       button.btn.update-btn#update-all-recruits-btn Update All
     include sidebar-mixin
+    include top-navbar-mixin

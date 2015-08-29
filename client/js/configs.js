@@ -99,28 +99,8 @@ $(document).ready(function(){
       });
   });
 
-  $('#sidebar-toggle').click(function(){
-    $('#sidebar').toggleClass("collapsed");
-    $('#items').toggle();
-  });
-
-  if ($(window).width() < 480){
-    $("#items").hide();
-    if (!($("#sidebar").hasClass("collapsed"))){
-      $('#sidebar').addClass("collapsed");
-    }
-  }
-
-  $(window).resize(function(){
-    if ($(window).width() < 480){
-      $("#items").hide();
-      if (!($("#sidebar").hasClass("collapsed"))){
-        $('#sidebar').addClass("collapsed");
-      }
-    }
-  });
-
-  $('#logout-link').click(function(){
+  $('.logout-link').click(function(evt){
+    evt.preventDefault();
     $.ajax({
       url: '/logout',
       type: 'POST',

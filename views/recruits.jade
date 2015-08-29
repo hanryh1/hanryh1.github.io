@@ -1,9 +1,9 @@
 extends layout
 block scripts
-  link(rel='stylesheet', href='/stylesheets/bootstrap-glyphicons.css')
   script(src='/js/recruits.js')
 block content
   mixin sidebar-mixin()
+  mixin top-navbar-mixin()
   div.container
     input(type="hidden" value=csrf)#csrf
     h1.title Recruits
@@ -36,13 +36,13 @@ block content
             div.inline.action
               a(href="#")
                 button(data-toggle="modal" data-target="#add-recruit").btn.action-btn.circular-btn
-                  span.glyphicon.glyphicon-plus
+                  i.fa.fa-plus
                 div.action-label
                   span Add New Recruit
             div.inline.action
               a(href="/recruits/csv")
                 button.btn.action-btn.circular-btn
-                  span.glyphicon.glyphicon-download
+                  i.fa.fa-arrow-circle-o-down
                 div.action-label
                   span Download As CSV
           div.centered
@@ -79,7 +79,7 @@ block content
                   td= m.powerIndex
                   td.center-align.mobile-hidden
                     button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
-                      span.glyphicon.glyphicon-remove
+                      i.fa.fa-times
           h2 Female
           table.female-recruits
             thead
@@ -95,7 +95,8 @@ block content
                   td= f.classYear
                   td= f.powerIndex
                   td.center-align.mobile-hidden
-                    button.sm-circular-btn.delete-recruit-btn
-                      span.glyphicon.glyphicon-remove
+                    button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
+                      i.fa.fa-times
         div.col-md-1
     include sidebar-mixin
+    include top-navbar-mixin

@@ -3,6 +3,7 @@ block scripts
   script(src='/js/singleRecruit.js')
 block content
   mixin sidebar-mixin()
+  mixin top-navbar-mixin()
   div.container.max-width-800
     input(type="hidden" value=csrf)#csrf
     div.recruit-info
@@ -11,12 +12,12 @@ block content
         div.updateable-information
           div
             p
-              span.glyphicon.glyphicon-envelope.margin-right
+              i.fa.fa-envelope.margin-right.info-icon
               span= recruit.email || "None"
           if recruit.height
             div
               p
-                span.glyphicon.glyphicon-user.margin-right
+                i.fa.fa-user.margin-right.info-icon
                 span= recruit.getHeightAsString()
           div.comments
             strong Comments
@@ -46,13 +47,13 @@ block content
         div.action
           a(href="#")
             button.btn.action-btn.circular-btn#edit-times-btn
-              span.glyphicon.glyphicon-pencil
+              i.fa.fa-pencil
             div.action-label
               span Edit Times
         div.action
           a(href="#")
             button.btn.action-btn.circular-btn.default-btn#cancel-edit-times
-              span.glyphicon.glyphicon-remove
+              i.fa.fa-times
             div.action-label
               span Cancel
         div#display-times
@@ -114,10 +115,10 @@ block content
                   input(type="text", value=time.timeString, maxlength=8).form-control.time-input
                 td.center-align
                   button.sm-circular-btn.circular-delete-btn.save-time-btn.circular-update-btn
-                    span.glyphicon.glyphicon-ok
+                    i.fa.fa-check
                 td.center-align.mobile-hidden
                   button.sm-circular-btn.circular-delete-btn.delete-time-btn
-                    span.glyphicon.glyphicon-remove
+                    i.fa.fa-times
           div#add-manual-time.margin-top
             div#add-manual-time-error.error
             div.form-group.inline.margin-right-5
@@ -143,6 +144,7 @@ block content
               input(type="text", name="time", maxlength=8)#new-time-input.form-control
             div.inline
               button(type="submit" recruitid=recruit._id)#new-time-btn.btn.sm-circular-btn.circular-update-btn
-                span.glyphicon.glyphicon-plus
+                i.fa.fa-plus
 
     include sidebar-mixin
+    include top-navbar-mixin

@@ -344,24 +344,6 @@ Sidebar
   border-bottom: 1px solid #65C6BB;
 }
 
-#sidebar-toggle .icon-bar {
-  background-color: #fff;
-  margin-top:4px;
-  display: block;
-  width: 22px;
-  height: 2px;
-  border-radius: 1px;
-}
-
-#sidebar-toggle {
-  height: 40px;
-  margin: 15px;
-}
-
-#sidebar-toggle:hover {
-  cursor:pointer;
-}
-
 #recruits-link {
   border-top: 1px solid #65C6BB;
 }
@@ -391,12 +373,52 @@ Sidebar
   color: #fff;
 }
 
-.collapsed {
-  width: 50px!important;
+#sidebar .items {
+  margin-top:200px;
 }
 
-#items {
-  margin-top:200px;
+/*
+Top Navbar
+*/
+
+#top-navbar {
+  display: none;
+  width: 100%;
+  position: fixed;
+  background: #00b5ad;
+  height: 70px;
+  z-index: 999;
+  text-align: center;
+  overflow: auto;
+}
+
+#top-navbar .item {
+  display: inline-block;
+  text-align: center;
+  color: #fff;
+  padding:10px;
+  margin:2px 10px;
+  -webkit-transition: border-bottom,.5s,linear;
+}
+
+#top-navbar .item:hover{
+  cursor:pointer;
+  background-color: #009c95;
+}
+
+#top-navbar .item.active{
+  background: #65C6BB;
+  border-bottom: 5px solid #A2DED0;
+}
+
+
+.nav-label span{
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.nav-icon {
+  font-size: 20px;
 }
 
 /*Single recruit page*/
@@ -425,7 +447,7 @@ Sidebar
   cursor: pointer;
 }
 
-.glyphicon-envelope, .glyphicon-user {
+.info-icon {
   color: #00b5ad;
 }
 
@@ -521,18 +543,34 @@ th {
 
 @media (max-width: 768px) {
   .container {
-    padding-left: 60px;
+    padding-left: 10px;
+  }
+
+  #sidebar {
+    display: none;
+  }
+
+  #top-navbar {
+    display: block;
   }
 }
 
-@media screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2){
+@media screen and (max-width: 480px) {
   .inline{
     display: inline-block;
     margin-bottom: 5px;
   }
 
+  .mobile-hidden {
+    display: none;
+  }
+
   #main-title {
     font-size: 2em;
+  }
+
+  select {
+    max-width: 360px;
   }
 
   .recruit-container {
@@ -555,12 +593,8 @@ th {
     float: left;
   }
 
-  #select-event {
-    width: 280px!important;
-  }
-
   .typeahead, .tt-open {
-    width: 260px!important;
+    width: 300px!important;
   }
 
   #new-time-event {

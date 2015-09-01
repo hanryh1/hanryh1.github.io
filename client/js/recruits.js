@@ -20,6 +20,7 @@ $(document).ready(function(){
 
   var tableOptions = {
     dom: 't',
+    bPaginate: false,
     columnDefs: [{
       "targets": [-1],
       "orderable": false

@@ -257,7 +257,6 @@ controller.createRecruitByName = function(req, res) {
         var recruit = results[0];
         var csId = /\/swimmer\/([0-9]+)/.exec(recruit["url"])[1];
         createRecruit(csId, req.body.gender, function(err, recruit){
-          console.log("Recruit created: ", recruit);
           if (err) {
             res.status(500).send(err);
           } else {

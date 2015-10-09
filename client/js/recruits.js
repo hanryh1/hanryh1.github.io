@@ -62,6 +62,7 @@ $(document).ready(function(){
   var tableOptions = {
     dom: 't',
     bPaginate: false,
+    order: [[2, 'asc']],
     columnDefs: [{
       "targets": [-1],
       "orderable": false

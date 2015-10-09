@@ -3,7 +3,9 @@ var router          = express.Router();
 var controller      = require('../controllers/recruitController');
 var isAuthenticated = require('../lib/authMiddleware').isAuthenticated;
 
-router.post('/', isAuthenticated, controller.createRecruit);
+router.post('/', isAuthenticated, controller.createRecruitByName);
+
+router.post('/id', isAuthenticated, controller.createRecruit);
 
 router.get('/', isAuthenticated, controller.getAllRecruits);
 

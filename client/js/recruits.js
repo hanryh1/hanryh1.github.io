@@ -16,6 +16,47 @@ jQuery.fn.dataTableExt.oSort["name-desc"] = function(a, b){
   return a[a.length - 1] > b[b.length - 1] ? 1 : -1;
 };
 
+/**
+ * Janky helper function to add recruit radio options in the case of multiple
+ * matching recruits w/ same or similar names
+ */
+function addRecruitOptions(formSelector, recruits, gender) {
+  var formHtml = '<div class="form-group">'
+  for (var i = 0; i < recruits.length; i++) {
+    var recruit = recruits[i];
+    var csId = /\/swimmer\/([0-9]+)/.exec(recruit["url"])[1];
+    formHtml += '<input type="radio" name="csId" class="recruit-radio" value=' + csId +
+                '>' + recruit["name"] + " | " + recruit["location"] + " | " +
+                '<a href="http://www.collegeswimming.com' + recruit["url"] + '"> Profile </a></input>';
+  }
+  formHtml += '</div><input type="hidden" name="gender" value=' + gender + '></input>';
+  formHtml += '<button class="button btn update-btn" id="select-recruit-btn">Select</button>'
+  $(formSelector).html(formHtml);
+  $("#select-recruit-btn").click(function(evt){
+    evt.preventDefault();
+    var formData = getFormData(formSelector);
+    if (!formData.csId){
+      $("#select-recruit-error").text("You must select a recruit!");
+      return;
+    }
+    formData["_csrf"] = $("#csrf").val();
+    $.ajax({
+      url: "/recruits/id",
+      type: "POST",
+      data: formData,
+      success: function(){
+          window.location = '/';
+        },
+      error: function(jqXHR, textStatus, err) {
+          $("#new-recruit-error").text("Invalid ID, or something else went wrong.");
+          $("#new-csId").val("");
+          $("input[name=\"gender\"]")[0].checked = false;
+          $("input[name=\"gender\"]")[1].checked = false;
+        }
+      });
+  });
+}
+
 $(document).ready(function(){
 
   var tableOptions = {
@@ -43,7 +84,7 @@ $(document).ready(function(){
 
   $("#create-recruit-btn").click(function(evt){
     evt.preventDefault();
-    var formData = getFormData("#add-recruit-form");
+    var formData = getFormData("#add-recruit-csId-form");
     if (!/^[0-9]{6}$/.test(formData.csId)){
       $("#new-recruit-error").text("ID should be a 6-digit number.");
       return;
@@ -54,17 +95,52 @@ $(document).ready(function(){
     }
     formData["_csrf"] = csrf;
     $.ajax({
-      url: window.location.pathname,
+      url: window.location.pathname + "/id",
       type: "POST",
       data: formData,
       success: function(){
-          window.location.reload(true);
+          window.location = '/';
         },
       error: function(jqXHR, textStatus, err) {
           $("#new-recruit-error").text("Invalid ID, or something else went wrong.");
           $("#new-csId").val("");
           $("input[name=\"gender\"]")[0].checked = false;
           $("input[name=\"gender\"]")[1].checked = false;
+        }
+      });
+  });
+
+  $("#create-recruit-name-btn").click(function(evt){
+    evt.preventDefault();
+    var formData = getFormData("#add-recruit-name-form");
+    if (!/^[A-Za-z\s]+$/.test(formData.recruitName)){
+      $("#new-recruit-name-error").text("Please enter a valid name!");
+      return;
+    }
+    if (!formData.gender){
+      $("#new-recruit-name-error").text("You must select a gender!");
+      return;
+    }
+    formData["_csrf"] = csrf;
+    $.ajax({
+      url: window.location.pathname,
+      type: "POST",
+      data: formData,
+      success: function(){
+          window.location = '/';
+        },
+      error: function(jqXHR, textStatus, err) {
+          var response = JSON.parse(jqXHR.responseText);
+          if (response.multipleResults) {
+            $("#add-recruit-name").modal("hide");
+            addRecruitOptions("#select-recruit-form", response.swimmers, response.gender);
+            $("#select-recruit").modal("show");
+          } else {
+            $("#new-recruit-name-error").text("This recruit does not have a profile, or something else went wrong.");
+            $("#new-name").val("");
+            $("input[name=\"gender\"]")[0].checked = false;
+            $("input[name=\"gender\"]")[1].checked = false;
+          }
         }
       });
   });
@@ -104,7 +180,6 @@ $(document).ready(function(){
 
   $('.logout-link').click(function(evt){
     evt.preventDefault();
-    console.log(evt.target);
     $.ajax({
       url: '/logout',
       type: 'POST',
@@ -114,4 +189,3 @@ $(document).ready(function(){
     });
   });
 });
-

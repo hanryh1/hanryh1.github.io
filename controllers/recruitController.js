@@ -4,12 +4,13 @@ var request       = require("request");
 
 var helpers       = require("../lib/helpers");
 var EVENTS        = require("../lib/events");
+var QueryHelper   = require("../lib/queryHelper");
 
 var Configuration = require("../models/configuration");
 var Recruit       = require("../models/recruit");
 var Time          = require("../models/time");
 
-controller = {};
+var controller = {};
 
 function findMatchingEvent(events, eventName) {
   for (var i=0; i < events.length; i++){
@@ -245,6 +246,33 @@ controller.getTimesForRecruit = function(req, res) {
   });
 }
 
+controller.createRecruitByName = function(req, res) {
+  QueryHelper.getQueryResults(req.body.recruitName, function(err, results){
+    if (err){
+      res.status(500).send(err);
+    } else {
+      if (results.length == 0) {
+        res.status(404).send({"message": "No matching recruits found."});
+      } else if (results.length == 1){
+        var recruit = results[0];
+        var csId = /\/swimmer\/([0-9]+)/.exec(recruit["url"])[1];
+        createRecruit(csId, req.body.gender, function(err, recruit){
+          console.log("Recruit created: ", recruit);
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            res.status(201).send(recruit);
+          }
+        });
+      } else {
+        res.status(400).send({"multipleResults": true,
+                              "swimmers": results,
+                              "gender": req.body.gender});
+      }
+    }
+  });
+}
+
 /**
 * Functions to modify a recruit's times
 */
@@ -389,51 +417,55 @@ controller.updateRecruit = function(req, res) {
                         });
 }
 
+function createRecruit(collegeSwimmingId, gender, callback) {
+  Recruit.findOne({"collegeSwimmingId": collegeSwimmingId}, function(err, recruit) {
+      if (err){
+        callback(err);
+      } else if (recruit){
+        callback(null, recruit); //already exists, don"t need to make new one
+      } else {
+        getRecruitData(collegeSwimmingId, function(err, recruit, data) {
+          if (err){
+            var status = err.status == 404 ? 404 : 500;
+          } else {
+            recruit.gender = gender;
+            Recruit.create(recruit, function(err, recruit) {
+              if (err){
+                callback(err);
+              } else {
+                var times = [];
+                for (var i = 1; i < data.length; i ++){
+                  var time = data[i];
+                  //only care about yard times
+                  if (time.eventName.indexOf(" Y ") >= 0){
+                    time.recruit = recruit._id;
+                    var t = new Time(time);
+                    t.save();
+                    times.push(t);
+                  }
+                }
+                recruit.times = times;
+                recruit.save(function (err, recruit) {
+                  if (err) res.status(500).send(err);
+                  else{
+                    updatePowerIndex(recruit, callback);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+  });
+}
+
 //get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
-  Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit) {
+  createRecruit(req.body.csId, req.body.gender, function(err, r) {
     if (err){
       res.status(500).send(err);
-    } else if (recruit){
-      res.status(200).send(recruit); //already exists, don"t need to make new one
-    } else {
-      getRecruitData(req.body.csId, function(err, recruit, data) {
-        if (err){
-          var status = err.status == 404 ? 404 : 500;
-        } else {
-          recruit.gender = req.body.gender;
-          Recruit.create(recruit, function(err, recruit) {
-            if (err){
-              res.status(500).send(err);
-            } else {
-              var times = [];
-              for (var i = 1; i < data.length; i ++){
-                var time = data[i];
-                //only care about yard times
-                if (time.eventName.indexOf(" Y ") >= 0){
-                  time.recruit = recruit._id;
-                  var t = new Time(time);
-                  t.save();
-                  times.push(t);
-                }
-              }
-              recruit.times = times;
-              recruit.save(function (err, recruit) {
-                if (err) res.status(500).send(err);
-                else{
-                  updatePowerIndex(recruit, function(err, r) {
-                    if (err){
-                      res.status(500).send(err);
-                    } else{
-                      res.status(201).send(r);
-                    }
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
+    } else{
+      res.status(201).send(r);
     }
   });
 };

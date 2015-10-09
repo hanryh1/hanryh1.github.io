@@ -7,6 +7,16 @@ block content
   div.container
     input(type="hidden" value=csrf)#csrf
     h1.title Recruits
+    div#select-recruit.modal.fade
+      div.modal-content
+        div.modal-body.center-align
+          div#select-recruit-error.error
+          div.right-align
+            button(data-dismiss="modal").sm-circular-btn.dismiss-modal-btn.default-btn
+              i.fa.fa-times
+          div
+            | There were multiple matching recruits. Select the correct one.
+          form(name="recruit-select", id="select-recruit-form")
     div#add-recruit.modal.fade.vertical-centered
       div.modal-content
         div.modal-body.center-align
@@ -14,7 +24,7 @@ block content
             button(data-dismiss="modal").sm-circular-btn.dismiss-modal-btn.default-btn
               i.fa.fa-times
           div#new-recruit-error.error
-          form(name="login", id="add-recruit-form")
+          form(name="recruit-by-id", id="add-recruit-csId-form")
             div.form-group
               label CollegeSwimming ID Number
               input(type="text", name="csId", id="new-csId").form-control
@@ -28,6 +38,27 @@ block content
                   input(type="radio" name="gender" value="F")
                   | Female
             button.btn.update-btn#create-recruit-btn Submit
+    div#add-recruit-name.modal.fade.vertical-centered
+      div.modal-content
+        div.modal-body.center-align
+          div.right-align
+            button(data-dismiss="modal").sm-circular-btn.dismiss-modal-btn.default-btn
+              i.fa.fa-times
+          div#new-recruit-name-error.error
+          form(name="recruit-by-name", id="add-recruit-name-form")
+            div.form-group
+              label Full Name
+              input(type="text", name="recruitName", id="new-name").form-control
+            div.form-group
+              div.radio
+                label.margin-right Gender
+                label.margin-right
+                  input(type="radio" name="gender" value="M")
+                  | Male
+                label
+                  input(type="radio" name="gender" value="F")
+                  | Female
+            button.btn.update-btn#create-recruit-name-btn Submit
     div#recruits
       div.row
         div.col-md-1
@@ -35,7 +66,7 @@ block content
           div#actions.right-align
             div.inline.action
               a(href="#")
-                button(data-toggle="modal" data-target="#add-recruit").btn.action-btn.circular-btn
+                button(data-toggle="modal" data-target="#add-recruit-name").btn.action-btn.circular-btn
                   i.fa.fa-plus
                 div.action-label
                   span Add New Recruit

@@ -99,6 +99,7 @@ $(document).ready(function(){
 
   var tableOptions = {
     dom: 't',
+    order: [[2, 'asc']],
     columnDefs: [{
       "targets": [0],
       "type": "event"

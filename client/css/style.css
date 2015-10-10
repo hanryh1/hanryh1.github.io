@@ -280,7 +280,7 @@ table{
   text-align: left;
 }
 
-#select-recruit {
+#select-recruit-modal {
   width: 50%;
   margin: auto;
   top: 20%;
@@ -603,7 +603,7 @@ th {
     font-size: 24px;
   }
 
-  #select-recruit {
+  #select-recruit-modal {
     width: 100%;
   }
 

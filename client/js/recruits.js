@@ -135,7 +135,7 @@ $(document).ready(function(){
           if (response.multipleResults) {
             $("#add-recruit-name").modal("hide");
             addRecruitOptions("#select-recruit-form", response.swimmers, response.gender);
-            $("#select-recruit").modal("show");
+            $("#select-recruit-modal").modal("show");
           } else {
             $("#new-recruit-name-error").text("This recruit does not have a profile, or something else went wrong.");
             $("#new-name").val("");

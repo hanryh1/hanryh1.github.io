@@ -110,6 +110,15 @@ th, td {
   margin: 20px 10px;
 }
 
+.vertical-centered-fixed{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+
 .vertical-centered{
   top: 50%;
   left: 50%;

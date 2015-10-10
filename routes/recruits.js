@@ -2,6 +2,7 @@ var express         = require('express');
 var router          = express.Router();
 var controller      = require('../controllers/recruitController');
 var isAuthenticated = require('../lib/authMiddleware').isAuthenticated;
+var isAdmin         = require("../lib/authMiddleware").isAdmin;
 
 router.post('/', isAuthenticated, controller.createRecruitByName);
 
@@ -22,7 +23,7 @@ router.put('/:recruitId/times/:timeId', isAuthenticated, function(req, res){ con
 
 router.put('/:recruitId/info', isAuthenticated, controller.updateRecruit);
 
-router.delete('/:recruitId', isAuthenticated, controller.deleteRecruit);
+router.delete('/:recruitId', isAuthenticated, isAdmin, controller.deleteRecruit);
 
 router.delete('/:recruitId/times/:timeId', isAuthenticated, controller.deleteTime);
 

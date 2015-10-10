@@ -231,6 +231,7 @@ controller.getAllRecruits = function(req, res) {
                                    "femaleRecruits": results[1],
                                    "classYears": results[2],
                                    "defaultYear": year,
+                                   "isAdmin": req.session.admin,
                                    "csrf": req.csrfToken() });
         });
   });

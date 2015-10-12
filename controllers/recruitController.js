@@ -526,6 +526,10 @@ function generateCsvRow(recruit, data) {
       row.push("");
     }
   }
+  var tags = recruit.tags.map(function(t){
+    return t.name;
+  });
+  row.push(tags.join(", "));
   data.push(row);
 }
 
@@ -534,7 +538,7 @@ function generateRecruitCsv(year, callback) {
     if (err) {
       callback(err);
     } else {
-      var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS);
+      var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS).concat(["Tags"]);
       var data = [headers, ["Men"]];
       for (var i = 0; i < recruits.maleRecruits.length; i ++){
         generateCsvRow(recruits.maleRecruits[i], data);

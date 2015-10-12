@@ -17,27 +17,6 @@ block content
           div
             | There were multiple matching recruits. Select the correct one.
           form(name="recruit-select", id="select-recruit-form")
-    div#add-recruit.modal.fade.vertical-centered
-      div.modal-content
-        div.modal-body.center-align
-          div.right-align
-            button(data-dismiss="modal").sm-circular-btn.dismiss-modal-btn.default-btn
-              i.fa.fa-times
-          div#new-recruit-error.error
-          form(name="recruit-by-id", id="add-recruit-csId-form")
-            div.form-group
-              label CollegeSwimming ID Number
-              input(type="text", name="csId", id="new-csId").form-control
-            div.form-group
-              div.radio
-                label.margin-right Gender
-                label.margin-right
-                  input(type="radio" name="gender" value="M")
-                  | Male
-                label
-                  input(type="radio" name="gender" value="F")
-                  | Female
-            button.btn.update-btn#create-recruit-btn Submit
     div#add-recruit-name.modal.fade.vertical-centered
       div.modal-content
         div.modal-body.center-align
@@ -65,6 +44,12 @@ block content
         div.col-md-10
           div#actions.right-align
             div.inline.action
+              a(href="/recruits/tags")
+                button.btn.action-btn.circular-btn
+                  i.fa.fa-tags
+                div.action-label
+                  span Tag Recruits
+            div.inline.action
               a(href="#")
                 button(data-toggle="modal" data-target="#add-recruit-name").btn.action-btn.circular-btn
                   i.fa.fa-plus
@@ -86,6 +71,12 @@ block content
                    option(value = year selected)= year
                   else
                     option(value = year)= year
+            form
+              label Tags
+              div.tags
+                for tag in tags
+                  input(type="checkbox", value=tag._id, checked=tag.checked).select-tag.inline
+                  span(hex-color=tag.color).tag-label.inline= tag.name
             if isAdmin
               div#are-you-sure-delete.modal.fade.vertical-centered
                 div.modal-content
@@ -102,6 +93,7 @@ block content
                 th Name
                 th Class Year
                 th Power Index
+                th Tags
                 if isAdmin
                   th.mobile-hidden Delete
             tbody
@@ -110,6 +102,9 @@ block content
                   td.name= m.name
                   td= m.classYear
                   td= m.powerIndex
+                  td
+                    for tag in m.tags
+                      span(hex-color=tag.color).tag-label.inline= tag.name
                   if isAdmin
                     td.center-align.mobile-hidden
                       button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn
@@ -121,6 +116,7 @@ block content
                 th Name
                 th Class Year
                 th Power Index
+                th Tags
                 if isAdmin
                   th.mobile-hidden Delete
             tbody
@@ -129,6 +125,9 @@ block content
                   td.name= f.name
                   td= f.classYear
                   td= f.powerIndex
+                  td
+                    for tag in f.tags
+                      span(hex-color=tag.color).tag-label.inline= tag.name
                   if isAdmin
                     td.center-align.mobile-hidden
                       button(data-toggle="modal" data-target="#are-you-sure-delete").sm-circular-btn.circular-delete-btn.delete-recruit-btn

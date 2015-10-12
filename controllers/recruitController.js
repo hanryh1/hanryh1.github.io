@@ -8,6 +8,7 @@ var QueryHelper   = require("../lib/queryHelper");
 
 var Configuration = require("../models/configuration");
 var Recruit       = require("../models/recruit");
+var Tag           = require("../models/tag");
 var Time          = require("../models/time");
 
 var controller = {};
@@ -128,7 +129,7 @@ function getRecruitsByGender(year, callback) {
   var getMales = new Promise(function(f, r) {
     Recruit
       .find({"gender": "M", "classYear": year})
-      .sort({powerIndex:1}).populate("times")
+      .sort({powerIndex:1}).populate("times tags")
       .exec(function(err, recruits){
           if (err){
             r(err);
@@ -141,7 +142,7 @@ function getRecruitsByGender(year, callback) {
   var getFemales = new Promise(function(f, r) {
       Recruit
         .find({"gender": "F", "classYear": year})
-        .sort({powerIndex:1}).populate("times")
+        .sort({powerIndex:1}).populate("times tags")
         .exec(function(err, recruits){
             if (err){
               r(err);
@@ -161,6 +162,8 @@ function getRecruitsByGender(year, callback) {
                            "femaleRecruits": results[1] });
       });
 }
+
+controller.getRecruitsByGender = getRecruitsByGender;
 
 /**
  * Helper function to get the right class year
@@ -182,13 +185,19 @@ function getClassYear(input, callback) {
 
 controller.getAllRecruits = function(req, res) {
   getClassYear(req.query.classYear, function(err, year){
+    var selectedTags = req.query.tags;
     var maleQuery = year ? {gender:"M", classYear: year} : {gender:"M"};
     var femaleQuery = year ? {gender:"F", classYear: year} : {gender:"F"};
+    // Check if first entry is empty string ( no tags )
+    if (selectedTags && selectedTags.length != 0 && selectedTags[0].length != 0) {
+      maleQuery.tags = { $all: selectedTags };
+      femaleQuery.tags = { $all: selectedTags };
+    }
     var getMales = new Promise(function(f, r) {
       Recruit
         .find(maleQuery)
         .sort({powerIndex:1, classYear: 1})
-        .populate("times")
+        .populate("times tags")
         .exec(function(err, recruits) {
           if (err){
             r(err);
@@ -202,7 +211,7 @@ controller.getAllRecruits = function(req, res) {
       Recruit
         .find(femaleQuery)
         .sort({powerIndex:1, classYear: 1})
-        .populate("times")
+        .populate("times tags")
         .exec(function(err, recruits) {
           if (err){
             r(err);
@@ -213,23 +222,47 @@ controller.getAllRecruits = function(req, res) {
     });
 
     var getClassYears = new Promise(function(f, r) {
-        Recruit
-          .getAllClassYears(function(err, years) {
-            if (err){
+      Recruit
+        .getAllClassYears(function(err, years) {
+          if (err) {
+            r(err);
+          } else {
+            years.sort();
+            f(years);
+          }
+        });
+    });
+
+    var getTags = new Promise(function(f, r) {
+        Tag
+          .getFullList(function(err, tags) {
+            if (err) {
               r(err);
             } else {
-              years.sort();
-              f(years);
+              f(tags);
             }
           });
     });
 
     Promise
-      .all([getMales, getFemales, getClassYears])
+      .all([getMales, getFemales, getClassYears, getTags])
         .then(function(results) {
+          var tags = results[3];
+          // woo double for loop
+          if (selectedTags){
+            for (var i = 0; i < tags.length; i++){
+              for (var j = 0; j < selectedTags.length; j++){
+                if (selectedTags[j] == tags[i]._id) {
+                  tags[i].checked = true;
+                  break;
+                }
+              }
+            }
+          }
           res.render("recruits", { "maleRecruits": results[0],
                                    "femaleRecruits": results[1],
                                    "classYears": results[2],
+                                   "tags": tags,
                                    "defaultYear": year,
                                    "isAdmin": req.session.admin,
                                    "csrf": req.csrfToken() });
@@ -362,7 +395,7 @@ controller.addTimeManually = function(req, res, requireFaster) {
 controller.getRecruit = function(req, res) {
   Recruit
     .findById(req.params.recruitId)
-    .populate("times")
+    .populate("times tags")
     .exec(function(err, recruit) {
       if (err){
         res.status(500).send(err);

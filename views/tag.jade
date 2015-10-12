@@ -1,0 +1,90 @@
+extends layout
+block scripts
+  script(src='/js/tag.js')
+block content
+  mixin sidebar-mixin()
+  mixin top-navbar-mixin()
+  div.container
+    input(type="hidden" value=csrf)#csrf
+    h1.title Tag Recruits
+    div#add-tag.modal.fade.vertical-centered
+      div.modal-content
+        div.modal-body.center-align
+          div.right-align
+            button(data-dismiss="modal").sm-circular-btn.dismiss-modal-btn.default-btn
+              i.fa.fa-times
+          div.margin-top
+            form(name="new-tag", id="add-tag-form")
+              div.form-group
+                label New Tag Name
+                input(type="text", name="tagName", id="tag-name").form-control
+              button.btn.update-btn#create-tag-btn Create!
+    div#recruits
+      div.row
+        div.col-md-1
+        div.col-md-10
+          div#actions.right-align
+            div.inline.action
+              a(href="#")
+                button(data-toggle="modal" data-target="#add-tag").btn.action-btn.circular-btn
+                  i.fa.fa-plus
+                div.action-label
+                  span Create New Tag
+            div.inline.action
+              a(href="/recruits")
+                button.btn.action-btn.circular-btn
+                  i.fa.fa-share
+                div.action-label
+                  span Back to Recruits
+          div.centered
+            form
+              div.form-group
+                select.form-control#select-tag
+                  option(default) Select a Tag to Apply
+                  for tag in tags
+                    option(value = tag._id)= tag.name
+            button.btn.btn-lg.update-btn#save-tags-btn Save Changes
+          div#tag-error
+          h2 Male
+          table.male-recruits
+            thead
+              tr
+                th Tag?
+                th Name
+                th Class Year
+                th Power Index
+                th Tags
+            tbody
+              for m in recruits.maleRecruits
+                tr(recruitId=m._id).recruit-row
+                  td.checkbox-td
+                    input(type="checkbox", value=m._id).inline.tag-checkbox
+                  td.name= m.name
+                  td= m.classYear
+                  td= m.powerIndex
+                  td
+                    for tag in m.tags
+                      span(hex-color=tag.color).tag-label.inline= tag.name
+          h2 Female
+          table.female-recruits
+            thead
+              tr
+                th Tag?
+                th Name
+                th Class Year
+                th Power Index
+                th Tags
+            tbody
+              for f in recruits.femaleRecruits
+                tr(recruitId=f._id).recruit-row
+                  td.checkbox-td
+                    input(type="checkbox", value=f._id).inline.tag-checkbox
+                  td.name= f.name
+                  td= f.classYear
+                  td= f.powerIndex
+                  td
+                    for tag in f.tags
+                      span(hex-color=tag.color).tag-label.inline= tag.name
+        div.col-md-1
+    include sidebar-mixin
+    include top-navbar-mixin

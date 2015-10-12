@@ -124,6 +124,11 @@ $(document).ready(function(){
 
   $('.single-recruit-times').dataTable(tableOptions);
 
+  $(".tag-label").each(function(i){
+    var hex = $(this).attr('hex-color');
+    $(this).css("background-color", hex);
+  });
+
   $('#times-editor').hide();
   $('#cancel-edit-times').hide();
   $('.bodylengths').hide();

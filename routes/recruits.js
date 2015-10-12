@@ -1,9 +1,22 @@
 var express         = require('express');
 var router          = express.Router();
 var controller      = require('../controllers/recruitController');
+var tagController   = require('../controllers/tagController');
 var isAuthenticated = require('../lib/authMiddleware').isAuthenticated;
 var isAdmin         = require("../lib/authMiddleware").isAdmin;
 
+/* Tagging Stuff */
+router.post('/tags', isAuthenticated, tagController.addOrGetTag);
+
+router.put('/tags/:tagId', isAuthenticated, tagController.updateRecruitTags);
+
+router.delete('/recruit/:recruitId/tags/:tagId', isAuthenticated, tagController.deleteTag);
+
+router.get('/tags', isAuthenticated, tagController.getTagPage);
+
+router.get('/tags/:tagId', isAuthenticated, tagController.getRecruitsForTag);
+
+/* Recruit Stuff */
 router.post('/', isAuthenticated, controller.createRecruitByName);
 
 router.post('/id', isAuthenticated, controller.createRecruit);

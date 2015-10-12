@@ -81,35 +81,12 @@ $(document).ready(function(){
   $("#recruits-link").addClass("active");
   $("#recruits-nav-link").addClass("active");
 
-  var csrf = $("#csrf").val();
-
-  $("#create-recruit-btn").click(function(evt){
-    evt.preventDefault();
-    var formData = getFormData("#add-recruit-csId-form");
-    if (!/^[0-9]{6}$/.test(formData.csId)){
-      $("#new-recruit-error").text("ID should be a 6-digit number.");
-      return;
-    }
-    if (!formData.gender){
-      $("#new-recruit-error").text("You must select a gender!");
-      return;
-    }
-    formData["_csrf"] = csrf;
-    $.ajax({
-      url: window.location.pathname + "/id",
-      type: "POST",
-      data: formData,
-      success: function(){
-          window.location = '/';
-        },
-      error: function(jqXHR, textStatus, err) {
-          $("#new-recruit-error").text("Invalid ID, or something else went wrong.");
-          $("#new-csId").val("");
-          $("input[name=\"gender\"]")[0].checked = false;
-          $("input[name=\"gender\"]")[1].checked = false;
-        }
-      });
+  $(".tag-label").each(function(i){
+    var hex = $(this).attr('hex-color');
+    $(this).css("background-color", hex);
   });
+
+  var csrf = $("#csrf").val();
 
   $("#create-recruit-name-btn").click(function(evt){
     evt.preventDefault();
@@ -146,10 +123,17 @@ $(document).ready(function(){
       });
   });
 
-  $("#select-year").change(function(){
+  function newQuery() {
     var classYear = $("#select-year").find("option:selected").attr("value");
-    window.location = "/recruits?classYear=" + classYear;
-  });
+    var tags = [];
+    $(".select-tag:checked").each(function(i,v){
+      tags.push($(this).attr("value"));
+    });
+    window.location = "/recruits?classYear=" + classYear + "&tags[]=" + tags.join("&tags[]=");
+  }
+
+  $("#select-year").change(newQuery);
+  $(".select-tag").click(newQuery);
 
   $(".delete-recruit-btn").click(function(evt){
     evt.stopPropagation();

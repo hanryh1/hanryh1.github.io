@@ -10,6 +10,9 @@ block content
       div.inline.col-md-9
         h2.recruit-title= recruit.name
         div.updateable-information
+          label Tags
+          for tag in recruit.tags
+            span(hex-color=tag.color).tag-label.inline= tag.name
           div
             p
               i.fa.fa-envelope.margin-right.info-icon

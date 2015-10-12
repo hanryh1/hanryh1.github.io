@@ -71,7 +71,7 @@ function updateTime(recruit, callback) {
           for (var i = 1; i < data.length; i ++){
             var time = data[i];
             //only care about yard times
-            if (time.eventName.indexOf(" Y ") >= 0){
+            if (EVENTS.indexOf(time.eventName) >= 0){
               var oldTime = findMatchingEvent(oldTimes, time.eventName);
               if (oldTime != -1){
                 if (oldTime.time <= time.time){

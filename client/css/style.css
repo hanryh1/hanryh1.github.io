@@ -217,7 +217,7 @@ table{
 .tag-label {
   padding: 0px 5px;
   border-radius: 2px;
-  margin: 0px 5px;
+  margin: 5px 5px;
 }
 
 .sorting, .sorting_asc, .sorting_desc {

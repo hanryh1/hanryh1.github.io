@@ -71,12 +71,28 @@ block content
                    option(value = year selected)= year
                   else
                     option(value = year)= year
-            form
+            form.margin-top
               label Tags
               div.tags
-                for tag in tags
-                  input(type="checkbox", value=tag._id, checked=tag.checked).select-tag.inline
-                  span(hex-color=tag.color).tag-label.inline= tag.name
+                div#select-union
+                  - if (union == 1)
+                    label.radio-inline
+                      input(type="radio" value="0" name="union")
+                      span Intersection
+                    label.radio-inline
+                      input(type="radio" value="1" name="union" checked)
+                      span Union
+                  - else
+                    label.radio-inline
+                      input(type="radio" value="0" name="union" checked)
+                      span Intersection
+                    label.radio-inline
+                      input(type="radio" value="1" name="union")
+                      span Union
+                div.margin-top
+                  for tag in tags
+                    input(type="checkbox", value=tag._id, checked=tag.checked).select-tag.inline
+                    span(hex-color=tag.color).tag-label.inline= tag.name
             if isAdmin
               div#are-you-sure-delete.modal.fade.vertical-centered
                 div.modal-content

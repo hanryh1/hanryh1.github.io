@@ -190,8 +190,13 @@ controller.getAllRecruits = function(req, res) {
     var femaleQuery = year ? {gender:"F", classYear: year} : {gender:"F"};
     // Check if first entry is empty string ( no tags )
     if (selectedTags && selectedTags.length != 0 && selectedTags[0].length != 0) {
-      maleQuery.tags = { $all: selectedTags };
-      femaleQuery.tags = { $all: selectedTags };
+      if (req.query.union == 1) {
+        maleQuery.tags = { $in: selectedTags };
+       femaleQuery.tags = { $in: selectedTags };
+      } else {
+        maleQuery.tags = { $all: selectedTags };
+        femaleQuery.tags = { $all: selectedTags };
+      }
     }
     var getMales = new Promise(function(f, r) {
       Recruit
@@ -263,6 +268,7 @@ controller.getAllRecruits = function(req, res) {
                                    "femaleRecruits": results[1],
                                    "classYears": results[2],
                                    "tags": tags,
+                                   "union": req.query.union,
                                    "defaultYear": year,
                                    "isAdmin": req.session.admin,
                                    "csrf": req.csrfToken() });

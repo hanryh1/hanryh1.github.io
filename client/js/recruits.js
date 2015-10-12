@@ -126,14 +126,17 @@ $(document).ready(function(){
   function newQuery() {
     var classYear = $("#select-year").find("option:selected").attr("value");
     var tags = [];
+    // check whether to take the union of labels instead of the intersection
+    var union = $("input[name='union']:checked").val();
     $(".select-tag:checked").each(function(i,v){
       tags.push($(this).attr("value"));
     });
-    window.location = "/recruits?classYear=" + classYear + "&tags[]=" + tags.join("&tags[]=");
+    window.location = "/recruits?classYear=" + classYear + "&tags[]=" + tags.join("&tags[]=") + "&union=" + union;
   }
 
   $("#select-year").change(newQuery);
   $(".select-tag").click(newQuery);
+  $("#select-union").change(newQuery);
 
   $(".delete-recruit-btn").click(function(evt){
     evt.stopPropagation();

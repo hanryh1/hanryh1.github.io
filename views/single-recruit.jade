@@ -9,19 +9,21 @@ block content
     div.recruit-info
       div.inline.col-md-9
         h2.recruit-title= recruit.name
+        div#error
+        div
+          label Rating
+            - var rating = recruit.rating ? recruit.rating : 0;
+            span(current-value=rating).star-rating
+              - var remaining = 5 - rating;
+              - for (var i = 0; i < rating; i++)
+                i(star-value=i+1).fa.fa-star.rating-star.rating-star-active
+              - for (var i = 0; i < remaining; i++)
+                - var starValue = i + rating +1;
+                i(star-value=starValue).fa.fa-star.rating-star
         div.updateable-information
           label Tags
           for tag in recruit.tags
             span(hex-color=tag.color).tag-label.inline= tag.name
-          div
-            label Rating
-              if recruit.rating
-                - for (var i = 0; i < Math.floor(recruit.rating); i ++)
-                  i.fa.fa-star.rating-star
-                - if (recruit.rating % 1 > 0)
-                  i.fa.fa-star-half.rating-star
-              else
-                span   None
           div
             p
               i.fa.fa-envelope.margin-right.info-icon
@@ -43,7 +45,6 @@ block content
           span.small-label Power Index
           h3.stat-value #{recruit.powerIndex}
       div.update-form-container
-        div.error
         div.form-group
           label Rating
           input(type="number", name="rating", value=recruit.rating, min=0, max=3, step=0.5).form-control#recruit-rating

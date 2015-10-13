@@ -437,15 +437,32 @@ controller.deleteRecruit = function(req, res) {
 }
 
 controller.updateRecruit = function(req, res) {
-  if (!req.body.email && !req.body.comments && !req.body.height && req.body.rating){
+  if (!req.body.email && !req.body.comments && !req.body.height){
     return res.status(400).send({"error": "Not all fields can be blank!"});
   }
   Recruit
     .findOneAndUpdate({ _id: req.params.recruitId},
                       { email: req.body.email,
                         comments: req.body.comments,
-                        rating: req.body.rating,
                         height: req.body.height },
+                        function(err, recruit) {
+                          if (err){
+                            res.status(500).send(err);
+                          } else {
+                            res.status(200)
+                               .send({"message": "Update successful."});
+
+                          }
+                        });
+}
+
+controller.updateRecruitRating = function(req, res) {
+  if (!req.body.rating){
+    return res.status(400).send({"error": "Rating must not be null!"});
+  }
+  Recruit
+    .findOneAndUpdate({ _id: req.params.recruitId},
+                      { rating: req.body.rating},
                         function(err, recruit) {
                           if (err){
                             res.status(500).send(err);

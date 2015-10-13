@@ -120,11 +120,14 @@ block content
                   td.mobile-hidden= m.classYear
                   td= m.powerIndex
                   td
-                    if m.rating
-                      - for (var i = 0; i < Math.floor(m.rating); i ++)
-                        i.fa.fa-star.rating-star
-                      - if (m.rating % 1 > 0)
-                        i.fa.fa-star-half.rating-star
+                    - var rating = m.rating ? m.rating : 0;
+                    span(current-value=rating).star-rating
+                      - var remaining = 5 - rating;
+                      - for (var i = 0; i < rating; i++)
+                        i(star-value=i+1).fa.fa-star.rating-star.rating-star-active
+                      - for (var i = 0; i < remaining; i++)
+                        - var starValue = i + rating +1;
+                        i(star-value=starValue).fa.fa-star.rating-star
                   td
                     for tag in m.tags
                       span(hex-color=tag.color).tag-label.inline= tag.name
@@ -150,11 +153,14 @@ block content
                   td.mobile-hidden= f.classYear
                   td= f.powerIndex
                   td
-                    if f.rating
-                      - for (var i = 0; i < Math.floor(f.rating); i ++)
-                        i.fa.fa-star.rating-star
-                      - if (f.rating % 1 > 0)
-                        i.fa.fa-star-half.rating-star
+                    - var rating = f.rating ? f.rating : 0;
+                    span(current-value=rating).star-rating
+                      - var remaining = 5 - rating;
+                      - for (var i = 0; i < rating; i++)
+                        i(star-value=i+1).fa.fa-star.rating-star.rating-star-active
+                      - for (var i = 0; i < remaining; i++)
+                        - var starValue = i + rating +1;
+                        i(star-value=starValue).fa.fa-star.rating-star
                   td
                     for tag in f.tags
                       span(hex-color=tag.color).tag-label.inline= tag.name

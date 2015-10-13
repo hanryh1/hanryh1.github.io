@@ -161,9 +161,66 @@ $(document).ready(function(){
     });
   });
 
-  $(".recruit-row").click(function(){
+  $(".recruit-row").click(function(evt){
+    var target = $(evt.target);
+    if (target.hasClass("star-rating") || target.hasClass("rating-star")){
+      return;
+    }
     var recruitId = $(this).attr("recruitid");
     window.location = "/recruits/" + recruitId;
+  });
+
+    $(".rating-star").mouseenter(function(){
+    var value = $(this).attr("star-value");
+    var parent = $(this).closest(".star-rating");
+    var stars = parent.children();
+    for (var i = 0; i < value; i ++){
+      var child = $(stars[i]);
+      if (!child.hasClass("rating-star-active")){
+        child.addClass("rating-star-active");
+      }
+    }
+    for (var i = value; i < 5; i++){
+      var child = $(stars[i]);
+      if (child.hasClass("rating-star-active")){
+        child.removeClass("rating-star-active");
+      }
+    }
+  });
+
+  /* Reset to normal when mouse leaves without clicking */
+  $(".rating-star").mouseleave(function(){
+    var parent = $(this).closest(".star-rating");
+    var originalValue = parent.attr("current-value");
+    var stars = parent.children();
+    for (var i = 0; i < originalValue; i ++){
+      var child = $(stars[i]);
+      if (!child.hasClass("rating-star-active")){
+        child.addClass("rating-star-active");
+      }
+    }
+    for (var i = originalValue; i < 5; i++){
+      var child = $(stars[i]);
+      if (child.hasClass("rating-star-active")){
+        child.removeClass("rating-star-active");
+      }
+    }
+  });
+
+  $(".rating-star").click(function(){
+    var value = $(this).attr("star-value");
+    var parent = $(this).closest(".star-rating");
+    var recruitId = $(this).closest(".recruit-row").attr("recruitid");
+    $.ajax({
+      url: "/recruits/" + recruitId + "/rating",
+      type: "PUT",
+      data: {"rating": value, "_csrf": csrf},
+      success: function(){
+        parent.attr("current-value", value);
+      }, error: function(jqXHR, textStatus, err){
+        $("#error").text("Oops, something went wrong.");
+      }
+    })
   });
 
   $('.logout-link').click(function(evt){

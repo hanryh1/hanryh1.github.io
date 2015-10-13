@@ -36,6 +36,8 @@ router.put('/:recruitId/times/:timeId', isAuthenticated, function(req, res){ con
 
 router.put('/:recruitId/info', isAuthenticated, controller.updateRecruit);
 
+router.put('/:recruitId/rating', isAuthenticated, controller.updateRecruitRating);
+
 router.delete('/:recruitId', isAuthenticated, isAdmin, controller.deleteRecruit);
 
 router.delete('/:recruitId/times/:timeId', isAuthenticated, controller.deleteTime);

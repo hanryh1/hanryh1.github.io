@@ -481,6 +481,15 @@ Top Navbar
 
 .rating-star {
   margin: 3px;
+  color: #DADFE1;
+}
+
+.rating-star:hover {
+  cursor: pointer;
+}
+
+.rating-star-active {
+  margin: 3px;
   color: #F9BF3B;
 }
 
@@ -524,12 +533,8 @@ Top Navbar
   border: 2px solid #00b5ad;
 }
 
-.updateable-information {
-  margin-top:30px;
-}
-
 .comments {
-  margin-top:30px;
+  margin-top:10px;
   max-width:315px;
 }
 

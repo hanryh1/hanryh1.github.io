@@ -145,7 +145,7 @@ $(document).ready(function(){
 
   $("#cancel-update").click(function(evt){
     $(".update-form-container").hide();
-    $(".error").hide();
+    $("#error").hide();
     $(".updateable-information").show();
   });
 
@@ -154,17 +154,12 @@ $(document).ready(function(){
     var email = $("#recruit-email").val();
     var comments = $("#recruit-comments").val();
     var height = $("#recruit-height").val();
-    var rating = $("#recruit-rating").val();
     if (!email.trim() && !comments.trim() && !height){
-      $(".error").text("Not all fields can be blank.");
+      $("#error").text("Not all fields can be blank.");
       return;
     }
     if (height && (height < 48 || height > 96)){
-      $(".error").text("Put a real height.");
-      return;
-    }
-    if (rating && (rating < 0 || rating > 3)){
-      $(".error").text("Stars must be between 0 and 3");
+      $("#error").text("Put a real height.");
       return;
     }
     $.ajax({
@@ -173,14 +168,13 @@ $(document).ready(function(){
       data: { "email": email,
               "comments": comments,
               "height": height,
-              "rating": rating,
               "_csrf": csrf
       },
       success: function(){
           window.location.reload(true);
         },
       error: function(jqXHR, textStatus, err) {
-          $(".error").text("Oops, something went wrong.");
+          $("#error").text("Oops, something went wrong.");
         }
       });
   });
@@ -253,6 +247,60 @@ $(document).ready(function(){
           $("#add-manual-time-error").text(errMsg || "Could not add new time.").show();
         }
     });
+  });
+
+  $(".rating-star").mouseenter(function(){
+    var value = $(this).attr("star-value");
+    var parent = $(this).closest(".star-rating");
+    var stars = parent.children();
+    for (var i = 0; i < value; i ++){
+      var child = $(stars[i]);
+      if (!child.hasClass("rating-star-active")){
+        child.addClass("rating-star-active");
+      }
+    }
+    for (var i = value; i < 5; i++){
+      var child = $(stars[i]);
+      if (child.hasClass("rating-star-active")){
+        child.removeClass("rating-star-active");
+      }
+    }
+  });
+
+  /* Reset to normal when mouse leaves without clicking */
+  $(".rating-star").mouseleave(function(){
+    var parent = $(this).closest(".star-rating");
+    var originalValue = parent.attr("current-value");
+    var stars = parent.children();
+    for (var i = 0; i < originalValue; i ++){
+      var child = $(stars[i]);
+      if (!child.hasClass("rating-star-active")){
+        child.addClass("rating-star-active");
+      }
+    }
+    for (var i = originalValue; i < 5; i++){
+      var child = $(stars[i]);
+      if (child.hasClass("rating-star-active")){
+        child.removeClass("rating-star-active");
+      }
+    }
+  });
+
+  $(".rating-star").click(function(){
+    var value = $(this).attr("star-value");
+    var parent = $(this).closest(".star-rating");
+    var recruitId = $("#new-time-btn").attr("recruitid");
+    $.ajax({
+      url: "/recruits/" + recruitId + "/rating",
+      type: "PUT",
+      data: {"rating": value, "_csrf": csrf},
+      success: function(){
+        parent.attr("current-value", value);
+      }, error: function(jqXHR, textStatus, err){
+        $("#error").text("Oops, something went wrong.");
+      }
+    })
+
   });
 
   $(".save-time-btn").click(function(evt){

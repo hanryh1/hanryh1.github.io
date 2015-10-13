@@ -437,13 +437,14 @@ controller.deleteRecruit = function(req, res) {
 }
 
 controller.updateRecruit = function(req, res) {
-  if (!req.body.email && !req.body.comments && !req.body.height){
+  if (!req.body.email && !req.body.comments && !req.body.height && req.body.rating){
     return res.status(400).send({"error": "Not all fields can be blank!"});
   }
   Recruit
     .findOneAndUpdate({ _id: req.params.recruitId},
                       { email: req.body.email,
                         comments: req.body.comments,
+                        rating: req.body.rating,
                         height: req.body.height },
                         function(err, recruit) {
                           if (err){
@@ -529,6 +530,7 @@ function generateCsvRow(recruit, data) {
   var tags = recruit.tags.map(function(t){
     return t.name;
   });
+  row.push(recruit.rating);
   row.push(tags.join(", "));
   data.push(row);
 }
@@ -538,7 +540,7 @@ function generateRecruitCsv(year, callback) {
     if (err) {
       callback(err);
     } else {
-      var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS).concat(["Tags"]);
+      var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS).concat(["Rating", "Tags"]);
       var data = [headers, ["Men"]];
       for (var i = 0; i < recruits.maleRecruits.length; i ++){
         generateCsvRow(recruits.maleRecruits[i], data);

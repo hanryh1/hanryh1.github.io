@@ -10,7 +10,8 @@ var recruitSchema = new mongoose.Schema({
   email: {type: 'String'},
   comments: {type: 'String'},
   height: {type: 'Number', min: 48, max: 96}, // in inches
-  tags: [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag'}]
+  tags: [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag'}],
+  rating: {type: 'Number', min: 0, max: 3}
 });
 
 recruitSchema.set('autoIndex', false);

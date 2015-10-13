@@ -479,6 +479,11 @@ Top Navbar
   color: #00b5ad;
 }
 
+.rating-star {
+  margin: 3px;
+  color: #F9BF3B;
+}
+
 .stats {
   float: right;
 }

@@ -154,6 +154,7 @@ $(document).ready(function(){
     var email = $("#recruit-email").val();
     var comments = $("#recruit-comments").val();
     var height = $("#recruit-height").val();
+    var rating = $("#recruit-rating").val();
     if (!email.trim() && !comments.trim() && !height){
       $(".error").text("Not all fields can be blank.");
       return;
@@ -162,12 +163,17 @@ $(document).ready(function(){
       $(".error").text("Put a real height.");
       return;
     }
+    if (rating && (rating < 0 || rating > 3)){
+      $(".error").text("Stars must be between 0 and 3");
+      return;
+    }
     $.ajax({
       url: window.location.pathname + "/info",
       type: "PUT",
       data: { "email": email,
               "comments": comments,
               "height": height,
+              "rating": rating,
               "_csrf": csrf
       },
       success: function(){

@@ -14,6 +14,15 @@ block content
           for tag in recruit.tags
             span(hex-color=tag.color).tag-label.inline= tag.name
           div
+            label Rating
+              if recruit.rating
+                - for (var i = 0; i < Math.floor(recruit.rating); i ++)
+                  i.fa.fa-star.rating-star
+                - if (recruit.rating % 1 > 0)
+                  i.fa.fa-star-half.rating-star
+              else
+                span   None
+          div
             p
               i.fa.fa-envelope.margin-right.info-icon
               span= recruit.email || "None"
@@ -35,6 +44,9 @@ block content
           h3.stat-value #{recruit.powerIndex}
       div.update-form-container
         div.error
+        div.form-group
+          label Rating
+          input(type="number", name="rating", value=recruit.rating, min=0, max=3, step=0.5).form-control#recruit-rating
         div.form-group
           label Email
           input(type="email", name="email", value=recruit.email).form-control#recruit-email

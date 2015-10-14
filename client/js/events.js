@@ -39,7 +39,7 @@ $(document).ready(function(){
   $.ajax({
       url: "/events/rank",
       type: 'GET',
-      data: {eventName: "50 Y Free", gender: "M", archived: 0},
+      data: {eventName: "50 Y Free", gender: "M"},
       success: function(data){
           var newHTML = generateHtml("50 Y Free", data);
           $("#event-rank").html(newHTML);

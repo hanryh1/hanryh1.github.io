@@ -198,6 +198,7 @@ controller.getAllRecruits = function(req, res) {
         femaleQuery.tags = { $all: selectedTags };
       }
     }
+
     var getMales = new Promise(function(f, r) {
       Recruit
         .find(maleQuery)
@@ -552,38 +553,69 @@ function generateCsvRow(recruit, data) {
   data.push(row);
 }
 
-function generateRecruitCsv(year, callback) {
-  getRecruitsByGender(year, function(err, recruits) {
-    if (err) {
-      callback(err);
-    } else {
-      var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS).concat(["Rating", "Tags"]);
-      var data = [headers, ["Men"]];
-      for (var i = 0; i < recruits.maleRecruits.length; i ++){
-        generateCsvRow(recruits.maleRecruits[i], data);
-      }
-      data = data.concat([[""],["Women"]])
-      for (var i = 0; i < recruits.femaleRecruits.length; i ++){
-        generateCsvRow(recruits.femaleRecruits[i], data);
-      }
-      callback(null, data);
-    }
-  });
-}
-
 controller.downloadRecruitCsv = function(req, res) {
-  Configuration.getDefaultYear(function(err, year) {
+  getClassYear(req.query.classYear, function(err, year){
     if (err) {
       res.status(500).send(err);
     } else {
-      generateRecruitCsv(year, function(err, data) {
-        if (err){
-          res.status(500).send(err)
+      var selectedTags = req.query.tags;
+      var maleQuery = year ? {gender:"M", classYear: year} : {gender:"M"};
+      var femaleQuery = year ? {gender:"F", classYear: year} : {gender:"F"};
+      // Check if first entry is empty string ( no tags )
+      if (selectedTags && selectedTags.length != 0 && selectedTags[0].length != 0) {
+        if (req.query.union == 1) {
+          maleQuery.tags = { $in: selectedTags };
+         femaleQuery.tags = { $in: selectedTags };
         } else {
-          res.attachment('recruits.csv');
-          csv().from(data).to(res);
+          maleQuery.tags = { $all: selectedTags };
+          femaleQuery.tags = { $all: selectedTags };
         }
+      }
+
+      var getMales = new Promise(function(f, r) {
+        Recruit
+          .find(maleQuery)
+          .sort({powerIndex:1, classYear: 1})
+          .populate("times tags")
+          .exec(function(err, recruits) {
+            if (err){
+              r(err);
+            } else {
+              f(recruits);
+            }
+          });
       });
+
+      var getFemales = new Promise(function(f, r) {
+        Recruit
+          .find(femaleQuery)
+          .sort({powerIndex:1, classYear: 1})
+          .populate("times tags")
+          .exec(function(err, recruits) {
+            if (err){
+              r(err);
+            } else {
+              f(recruits);
+            }
+          });
+      });
+      Promise
+        .all([getMales, getFemales])
+          .then(function(results) {
+            var headers = ["Name", "Email", "Height", "Power Points"].concat(EVENTS).concat(["Rating", "Tags"]);
+            var data = [headers, ["Men"]];
+            var male = results[0];
+            var female = results[1];
+            for (var i = 0; i < male.length; i ++){
+              generateCsvRow(male[i], data);
+            }
+            data = data.concat([[""],["Women"]])
+            for (var i = 0; i < female.length; i ++){
+              generateCsvRow(female[i], data);
+            }
+            res.attachment('recruits.csv');
+            csv().from(data).to(res);
+          });
     }
   });
 }

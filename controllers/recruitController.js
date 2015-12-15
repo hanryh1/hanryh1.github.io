@@ -69,18 +69,22 @@ function updateTime(recruit, callback) {
           callback(err);
         } else {
           var times = [];
-          for (var i = 1; i < data.length; i ++){
+          for (var i = 0; i < data.length; i ++){
             var time = data[i];
             //only care about yard times
             if (EVENTS.indexOf(time.eventName) >= 0){
               var oldTime = findMatchingEvent(oldTimes, time.eventName);
               if (oldTime != -1){
-                if (oldTime.time <= time.time){
+                if ((oldTime.time < time.time && time.manual)){
                   continue;
                 } else{
                   oldTime.time = time.time;
                   oldTime.points = time.points;
                   oldTime.timeString = time.timeString;
+                  oldTime.inFrontOf = null;
+                  oldTime.behind = null;
+                  oldTime.teamRank = null;
+                  oldTime.nationalRank = null;
                   oldTime.manual = false;
                   oldTime.save();
                 }

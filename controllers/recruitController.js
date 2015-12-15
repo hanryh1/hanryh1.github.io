@@ -37,9 +37,9 @@ function getRecruitData(collegeSwimmingId, callback) {
                 callback({"error": "Recruit not found", "status": 404});
               } else{
                 var data = [];
-                var name = $(".swimmer-name").text().trim();
+                var name = $(".swimmer-name").find("a").text().trim();
                 var classYear = parseInt($(".swimmer-class").find("strong").text()) + 4;
-                $("tr").each(function(i, tr){
+                $("tbody > tr").each(function(i, tr){
                   var children = $(this).children();
                   var row = {
                       "eventName": children[0].children[0].data,
@@ -108,12 +108,12 @@ function updatePowerIndex(recruit, callback) {
       if (error){
         console.log(error);
       } else if (response.statusCode == 200) {
-        powerIndexRegex = new RegExp("/powerindex\">[0-9]{1,2}\.[0-9]{1,2}</a>");
-        powerIndex = body.match(powerIndexRegex);
-        if (!powerIndex) {
+        var powerIndexRegex = new RegExp("/powerindex\".*>([0-9]{1,2}\.[0-9]{1,2})</a>");
+        var matches = body.match(powerIndexRegex);
+        if (!matches) {
           callback({"error": "Could not get power index", "status": 500}, null);
         } else{
-          recruit.powerIndex = powerIndex[0].substring(13, powerIndex[0].length-4);
+          recruit.powerIndex = matches[1];
           recruit.save(function(err, recruit) {
             callback(err, recruit);
           });

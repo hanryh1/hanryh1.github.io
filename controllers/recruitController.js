@@ -40,12 +40,11 @@ function getRecruitData(collegeSwimmingId, callback) {
                 var name = $(".swimmer-name").find("a").text().trim();
                 var classYear = parseInt($(".swimmer-class").find("strong").text()) + 4;
                 $("tbody > tr").each(function(i, tr){
-                  var children = $(this).children();
                   var row = {
-                      "eventName": children[0].children[0].data,
-                      "time": helpers.convertTimeToNumber(children[1].children[0].data),
-                      "timeString": children[1].children[0].data,
-                      "points": parseInt(children[2].children[0].data)
+                      "eventName": $(tr).find("td:nth-child(1)").text(),
+                      "time": helpers.convertTimeToNumber($(tr).find("td:nth-child(2)").text()),
+                      "timeString": $(tr).find("td:nth-child(2)").text(),
+                      "points": parseInt($(tr).find("td:nth-child(3)").text())
                   };
                   data.push(row);
                 });
@@ -496,7 +495,7 @@ function createRecruit(collegeSwimmingId, gender, callback) {
                 callback(err);
               } else {
                 var times = [];
-                for (var i = 1; i < data.length; i ++){
+                for (var i = 0; i < data.length; i ++){
                   var time = data[i];
                   //only care about yard times
                   if (time.eventName.indexOf(" Y ") >= 0){

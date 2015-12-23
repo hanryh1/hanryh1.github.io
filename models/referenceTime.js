@@ -7,7 +7,7 @@ var referenceTimeSchema = new mongoose.Schema({
   rank: {type: 'Number', required: true},
   gender: {type: 'String', enum: ['M', 'F'], required: true},
   created: {type: 'Date', default: Date.now},
-  type: {type: 'String', enum: ['Team', 'Nationals'], required: true}
+  type: {type: 'String', enum: ['Team', 'NationalsPrelims', 'NationalsFinals'], required: true}
 });
 
 referenceTimeSchema.set('autoIndex', false);

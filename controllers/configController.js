@@ -27,52 +27,69 @@ controller.updateTeamReferenceTimes = function(req, res) {
 //// Functions for getting times from meets ////
 
 // This is necessary because cheerio is weird
-function generateSelector(tableIndex, rowIndex, columnIndex) {
-  return ".table-with-teams:nth-child(" + tableIndex +
-         ") > tbody > tr:nth-child(" + rowIndex + ") > td:nth-child(" +
+function generateSelector(rowIndex, columnIndex) {
+  return "tr:nth-child(" + rowIndex + ") > td:nth-child(" +
          columnIndex + ")";
 }
 
-function getTimesFromTable(eventName, tableIndex, $) {
+function getTimesFromTable(eventName, $) {
   var times = [];
+  var isMile = eventName.indexOf("1650") != -1;
   // no finals, get top 16
-  var numRows = eventName.indexOf("1650") != -1 ? 16 : 8;
+  var numFinals = isMile ? 1 : 2;
   // timed finals, so get 4th column instead
-  var timeCol = eventName.indexOf("1650") != -1 ? 4 : 5;
-  for (var i = 1; i < numRows + 1; i++){
-    var time = {
-                  "time": helpers.convertTimeToNumber($(generateSelector(tableIndex, i, timeCol) + " > span > a ").text()),
-                  "eventName": eventName.substring(2),
-                  "rank": parseInt($(generateSelector(tableIndex, i, 1)).text().trim()),
-                  "gender": eventName[0],
-                  "type": "Nationals"
-                }
-    if (!isNaN(time.rank)){ // if someone gets DQed this won't be correct
+  var prelimsCol = 4;
+  var finalsCol = 5;
+  for (var j = 0; j < numFinals; j++){
+    for (var i = 1; i < 16/numFinals + 1; i++){
+      var time = {
+                    "time": helpers.convertTimeToNumber($($("tbody")[j]).find(generateSelector(i, prelimsCol) + " > abbr ").text().trim()),
+                    "eventName": eventName.substring(2),
+                    //"rank": parseInt($(tableBodies[i-1]).find(generateSelector(i, 1)).text().trim()),
+                    "gender": eventName[0],
+                    "type": "NationalsPrelims"
+                  }
       times.push(time);
+    }
+  }
+  times.sort(function(a, b){
+    return a.time - b.time;
+  });
+  // assign prelim rankings
+  for (var i = 0; i < times.length; i++){
+    times[i]["rank"] = i+1;
+  }
+  for (var j = 0; j < numFinals; j++){
+    for (var i = 1; i < 16 - 16/numFinals + 1; i++){
+      var time = {
+                    "time": helpers.convertTimeToNumber($($("tbody")[j]).find(generateSelector(i, finalsCol) + " > abbr ").text().trim()),
+                    "eventName": eventName.substring(2),
+                    "rank": parseInt($($("tbody")[j]).find(generateSelector(i, 1)).text().trim()),
+                    "gender": eventName[0],
+                    "type": "NationalsFinals"
+                  }
+      if (!isNaN(time.rank)){ // if someone gets DQed this won't be correct
+        times.push(time);
+      }
     }
   }
   return times;
 }
 
 function getTimesForEvent(eventName, eventIndex, meetUrl, callback) {
-  request(meetUrl + "/event/" + eventIndex, function(error, response, body) {
+  var url = meetUrl + "/event/" + eventIndex + "/";
+  request(url, function(error, response, body) {
     if (error){
       callback(error);
     } else if (response.statusCode == 200){
       var cheerio = require("cheerio"),
         $ = cheerio.load(body);
-      if (eventName.indexOf("1650") !=-1) { // no finals, get top 16
-        var data = getTimesFromTable(eventName, 1, $);
-      } else {
-        // A Final
-        var aFinal = getTimesFromTable(eventName, 1, $);
-        // B Final
-        var bFinal = getTimesFromTable(eventName, 2, $);
-        var data = aFinal.concat(bFinal);
-      }
+      var data = getTimesFromTable(eventName, $);
       callback(null, data);
     } else {
-      callback({"error": "Could not get page"});
+      console.log("URL: " + url);
+      console.log("Status code: " + response.statusCode);
+      callback({"error": "Could not get page."});
     }
   });
 }
@@ -110,7 +127,6 @@ controller.createReferenceTimesForMeet = function(req, res) {
               if (err){
                 callback(err);
               } else {
-                console.log(eventName);
                 ReferenceTime.create(times, function(err, t) {
                   if (err){
                     console.log("Error occured with:", eventName);
@@ -126,7 +142,7 @@ controller.createReferenceTimesForMeet = function(req, res) {
         }(ev, map[ev], req.body.meetUrl, calls));
       }
     }
-    ReferenceTime.remove({"type": "Nationals"}, function(err) {
+    ReferenceTime.remove({"type": {$in: ["Nationals", "NationalsPrelims", "NationalsFinals"]}}, function(err) {
       if (err) {
         res.status(500).send({"error": "Error removing old times"});
       } else {

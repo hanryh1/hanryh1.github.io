@@ -65,13 +65,34 @@ timeSchema.pre('save', function(next) {
             .findOne({ "eventName": self.eventName,
                        "gender": gender,
                        "time": { $gt: self.time },
-                       "type": "Nationals" })
-            .sort({ "time" : 1})
-            .exec(function(err, nationalTime) {
-              if (nationalTime) {
-                self.nationalRank = nationalTime.rank;
+                       "type": "NationalsPrelims" })
+            .exec(function(err, finalsQualifyingTime) {
+              if (finalsQualifyingTime) {
+                // no prelim/finals for 1650
+                if (self.eventName.indexOf("1650") != -1) {
+                  self.nationalRank = finalsQualifyingTime.rank;
+                }
+                // check against prelims times to see if time would have made finals
+                // then find the rank it would have gotten in finals
+                var rankUpperBound = finalsQualifyingTime.rank > 8 ? 16 : 8;
+                var rankLowerBound = finalsQualifyingTime.rank > 8 ? 9 : 1;
+                mongoose.model('ReferenceTime')
+                  .findOne({ "eventName": self.eventName,
+                             "gender": gender,
+                             "rank" : { $gt: rankLowerBound - 1, $lt: rankUpperBound + 1 },
+                             "time": { $gt: self.time },
+                             "type": "NationalsFinals" })
+                  .exec(function(err, nationalTime) {
+                    if (nationalTime) {
+                      self.nationalRank = nationalTime.rank;
+                    } else if (self.eventName.indexOf("1650") == -1){
+                      self.nationalRank = rankUpperBound;
+                    }
+                    f(self);
+                  });
+              } else {
+                f(self);
               }
-              f(self);
             });
         });
 

@@ -120,6 +120,7 @@ th, td {
 }
 
 .vertical-centered{
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
@@ -281,6 +282,7 @@ table{
     width: 350px;
 }
 
+<<<<<<< HEAD
 .recruit-radio {
   display: block;
   text-align: left;
@@ -295,6 +297,8 @@ table{
   -ms-transform: translate(0%,-20%);
 }
 
+=======
+>>>>>>> parent of 94e0b58... Add feature to recruits by name
 .default-btn:hover, .default-btn:focus {
   color: #000;
   border: 2px solid #000;

@@ -4,14 +4,13 @@ var request       = require("request");
 
 var helpers       = require("../lib/helpers");
 var EVENTS        = require("../lib/events");
-var QueryHelper   = require("../lib/queryHelper");
 
 var Configuration = require("../models/configuration");
 var Recruit       = require("../models/recruit");
 var Tag           = require("../models/tag");
 var Time          = require("../models/time");
 
-var controller = {};
+controller = {};
 
 function findMatchingEvent(events, eventName) {
   for (var i=0; i < events.length; i++){
@@ -33,12 +32,13 @@ function getRecruitData(collegeSwimmingId, callback) {
             } else if (response.statusCode == 200){
               var cheerio = require("cheerio"),
                 $ = cheerio.load(body);
-              if ($(".page404").length > 0){
+              if ($(".page404").length > 0) {
                 callback({"error": "Recruit not found", "status": 404});
-              } else{
+              } else {
                 var data = [];
-                var name = $(".swimmer-name").find("a").text().trim();
-                var classYear = parseInt($(".swimmer-class").find("strong").text()) + 4;
+                var name = $(".c-title").text().trim();
+                var classYearRegex = new RegExp('Class of ([0-9]{4})');
+                var classYear = parseInt(body.match(classYearRegex)[1]) + 4;
                 $("tbody > tr").each(function(i, tr){
                   var row = {
                       "eventName": $(tr).find("td:nth-child(1)").text(),
@@ -522,11 +522,49 @@ function createRecruit(collegeSwimmingId, gender, callback) {
 
 //get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
-  createRecruit(req.body.csId, req.body.gender, function(err, r) {
+  Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit) {
     if (err){
       res.status(500).send(err);
-    } else{
-      res.status(201).send(r);
+    } else if (recruit){
+      res.status(200).send(recruit); //already exists, don"t need to make new one
+    } else {
+      getRecruitData(req.body.csId, function(err, recruit, data) {
+        if (err){
+          var status = err.status == 404 ? 404 : 500;
+        } else {
+          recruit.gender = req.body.gender;
+          Recruit.create(recruit, function(err, recruit) {
+            if (err){
+              res.status(500).send(err);
+            } else {
+              var times = [];
+              for (var i = 1; i < data.length; i ++){
+                var time = data[i];
+                //only care about yard times
+                if (time.eventName.indexOf(" Y ") >= 0){
+                  time.recruit = recruit._id;
+                  var t = new Time(time);
+                  t.save();
+                  times.push(t);
+                }
+              }
+              recruit.times = times;
+              recruit.save(function (err, recruit) {
+                if (err) res.status(500).send(err);
+                else{
+                  updatePowerIndex(recruit, function(err, r) {
+                    if (err){
+                      res.status(500).send(err);
+                    } else{
+                      res.status(201).send(r);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
     }
   });
 };

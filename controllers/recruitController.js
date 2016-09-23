@@ -71,7 +71,7 @@ function updateTime(recruit, callback) {
           for (var i = 0; i < data.length; i ++){
             var time = data[i];
             //only care about yard times
-            if (EVENTS.indexOf(time.eventName) >= 0){
+            if (EVENTS.indexOf(time.eventName) >= 0) {
               var oldTime = findMatchingEvent(oldTimes, time.eventName);
               if (oldTime != -1){
                 if ((oldTime.time < time.time && time.manual)){
@@ -478,6 +478,7 @@ controller.updateRecruitRating = function(req, res) {
                         });
 }
 
+//get recruit's information from collegeswimming.com
 function createRecruit(collegeSwimmingId, gender, callback) {
   Recruit.findOne({"collegeSwimmingId": collegeSwimmingId}, function(err, recruit) {
       if (err){
@@ -498,7 +499,7 @@ function createRecruit(collegeSwimmingId, gender, callback) {
                 for (var i = 0; i < data.length; i ++){
                   var time = data[i];
                   //only care about yard times
-                  if (time.eventName.indexOf(" Y ") >= 0){
+                  if (EVENTS.indexOf(time.eventName) >= 0){
                     time.recruit = recruit._id;
                     var t = new Time(time);
                     t.save();
@@ -520,55 +521,15 @@ function createRecruit(collegeSwimmingId, gender, callback) {
   });
 }
 
-//get recruit's information from collegeswimming.com
 controller.createRecruit = function(req, res) {
-  Recruit.findOne({"collegeSwimmingId": req.body.csId}, function(err, recruit) {
+  createRecruit(req.body.csId, req.body.gender, function(err, recruit) {
     if (err){
       res.status(500).send(err);
     } else if (recruit){
       res.status(200).send(recruit); //already exists, don"t need to make new one
-    } else {
-      getRecruitData(req.body.csId, function(err, recruit, data) {
-        if (err){
-          var status = err.status == 404 ? 404 : 500;
-        } else {
-          recruit.gender = req.body.gender;
-          Recruit.create(recruit, function(err, recruit) {
-            if (err){
-              res.status(500).send(err);
-            } else {
-              var times = [];
-              for (var i = 1; i < data.length; i ++){
-                var time = data[i];
-                //only care about yard times
-                if (time.eventName.indexOf(" Y ") >= 0){
-                  time.recruit = recruit._id;
-                  var t = new Time(time);
-                  t.save();
-                  times.push(t);
-                }
-              }
-              recruit.times = times;
-              recruit.save(function (err, recruit) {
-                if (err) res.status(500).send(err);
-                else{
-                  updatePowerIndex(recruit, function(err, r) {
-                    if (err){
-                      res.status(500).send(err);
-                    } else{
-                      res.status(201).send(r);
-                    }
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
     }
   });
 };
-
 
 /**
 * CSV Generation

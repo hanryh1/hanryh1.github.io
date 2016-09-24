@@ -128,11 +128,11 @@ function updatePowerIndex(recruit, callback) {
 /**
 *Various functions to query for recruits
 **/
-function getRecruitsByGender(year, callback) {
+function getRecruitsByGender(year, sortParams, callback) {
   var getMales = new Promise(function(f, r) {
     Recruit
       .find({"gender": "M", "classYear": year})
-      .sort({powerIndex:1}).populate("times tags")
+      .sort(sortParams).populate("times tags")
       .exec(function(err, recruits){
           if (err){
             r(err);
@@ -145,7 +145,7 @@ function getRecruitsByGender(year, callback) {
   var getFemales = new Promise(function(f, r) {
       Recruit
         .find({"gender": "F", "classYear": year})
-        .sort({powerIndex:1}).populate("times tags")
+        .sort(sortParams).populate("times tags")
         .exec(function(err, recruits){
             if (err){
               r(err);

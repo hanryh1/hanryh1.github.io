@@ -20,7 +20,7 @@ controller.getTagPage = function(req, res) {
   });
 
   var getRecruits = new Promise(function(f, r){
-    getRecruitsByGender({$ne: null}, function(err, recruits){
+    getRecruitsByGender({$ne: null}, {classYear: -1, name:1}, function(err, recruits){
       if (err) {
         r(err);
       } else {

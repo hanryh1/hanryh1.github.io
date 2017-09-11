@@ -39,8 +39,9 @@ function getTimesFromTable(eventName, $) {
   var times = [];
   var isMile = eventName.indexOf("1650") != -1;
   // A final
+  var aFinalType = isMile ? "NationalsPrelims" : "NationalsFinals";
   $("tbody").first().find("tr").each(function(i,tr) {
-    times.push(generateTimeFromTr($, tr, eventName, "NationalsFinals"));
+    times.push(generateTimeFromTr($, tr, eventName, aFinalType));
   });
 
   if (!isMile) {

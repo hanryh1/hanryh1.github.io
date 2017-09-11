@@ -106,23 +106,28 @@ function updateTime(recruit, callback) {
 }
 
 function updatePowerIndex(recruit, callback) {
-  request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId,
-    function(error, response, body) {
-      if (error){
-        console.log(error);
-      } else if (response.statusCode == 200) {
-        var powerIndexRegex = new RegExp("/powerindex\".*>([0-9]{1,2}\.[0-9]{1,2})</a>");
-        var matches = body.match(powerIndexRegex);
-        if (!matches) {
-          callback({"error": "Could not get power index", "status": 500}, null);
-        } else{
-          recruit.powerIndex = matches[1];
-          recruit.save(function(err, recruit) {
-            callback(err, recruit);
-          });
+  // Collegeswimming removes power index for swimmers not in high school, so no point in checking here
+  if (recruit.classYear < (new Date().getFullYear() + 4)) {
+    callback(err, recruit);
+  } else {
+    request("http://www.collegeswimming.com/swimmer/" + recruit.collegeSwimmingId,
+      function(error, response, body) {
+        if (error){
+          console.log(error);
+        } else if (response.statusCode == 200) {
+          var powerIndexRegex = new RegExp("/powerindex\".*>([0-9]{1,2}\.[0-9]{1,2})</a>");
+          var matches = body.match(powerIndexRegex);
+          if (!matches) {
+            callback({"error": "Could not get power index", "status": 500}, null);
+          } else{
+            recruit.powerIndex = matches[1];
+            recruit.save(function(err, recruit) {
+              callback(err, recruit);
+            });
+          }
         }
-      }
-  });
+    });
+  }
 }
 
 /**

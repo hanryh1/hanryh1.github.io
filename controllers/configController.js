@@ -41,7 +41,10 @@ function getTimesFromTable(eventName, $) {
   // A final
   var aFinalType = isMile ? "NationalsPrelims" : "NationalsFinals";
   $("tbody").first().find("tr").each(function(i,tr) {
-    times.push(generateTimeFromTr($, tr, eventName, aFinalType));
+    // Only get top 16 for mile
+    if (i < 16) {
+      times.push(generateTimeFromTr($, tr, eventName, aFinalType));
+    }
   });
 
   if (!isMile) {

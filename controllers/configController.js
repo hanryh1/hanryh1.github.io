@@ -25,53 +25,37 @@ controller.updateTeamReferenceTimes = function(req, res) {
 }
 
 //// Functions for getting times from meets ////
-
-// This is necessary because cheerio is weird
-function generateSelector(rowIndex, columnIndex) {
-  return "tr:nth-child(" + rowIndex + ") > td:nth-child(" +
-         columnIndex + ")";
+function generateTimeFromTr($, tr, eventName, type) {
+  return {
+      "time": helpers.convertTimeToNumber($(tr).find("td:nth-child(4)").text().trim()),
+      "rank": $(tr).find("td:nth-child(1)").text().trim(),
+      "eventName": eventName.substring(2),
+      "gender": eventName[0],
+      "type": type,
+    }
 }
 
 function getTimesFromTable(eventName, $) {
   var times = [];
   var isMile = eventName.indexOf("1650") != -1;
-  // no finals, get top 16
-  var numFinals = isMile ? 1 : 2;
-  // timed finals, so get 4th column instead
-  var prelimsCol = 4;
-  var finalsCol = 5;
-  for (var j = 0; j < numFinals; j++){
-    for (var i = 1; i < 16/numFinals + 1; i++){
-      var time = {
-                    "time": helpers.convertTimeToNumber($($("tbody")[j]).find(generateSelector(i, prelimsCol) + " > abbr ").text().trim()),
-                    "eventName": eventName.substring(2),
-                    //"rank": parseInt($(tableBodies[i-1]).find(generateSelector(i, 1)).text().trim()),
-                    "gender": eventName[0],
-                    "type": "NationalsPrelims"
-                  }
-      times.push(time);
-    }
-  }
-  times.sort(function(a, b){
-    return a.time - b.time;
+  // A final
+  $("tbody").first().find("tr").each(function(i,tr) {
+    times.push(generateTimeFromTr($, tr, eventName, "NationalsFinals"));
   });
-  // assign prelim rankings
-  for (var i = 0; i < times.length; i++){
-    times[i]["rank"] = i+1;
-  }
-  for (var j = 0; j < numFinals; j++){
-    for (var i = 1; i < 16 - 16/numFinals + 1; i++){
-      var time = {
-                    "time": helpers.convertTimeToNumber($($("tbody")[j]).find(generateSelector(i, finalsCol) + " > abbr ").text().trim()),
-                    "eventName": eventName.substring(2),
-                    "rank": parseInt($($("tbody")[j]).find(generateSelector(i, 1)).text().trim()),
-                    "gender": eventName[0],
-                    "type": "NationalsFinals"
-                  }
-      if (!isNaN(time.rank)){ // if someone gets DQed this won't be correct
-        times.push(time);
+
+  if (!isMile) {
+    // B final
+    $("tbody").eq(1).find("tr").each(function(i,tr) {
+      times.push(generateTimeFromTr($, tr, eventName, "NationalsFinals"));
+    });
+
+    // Prelims
+    $("tbody").eq(2).find("tr").each(function(i,tr) {
+      // We only care about top 16
+      if (i < 16) {
+        times.push(generateTimeFromTr($, tr, eventName, "NationalsPrelims"));
       }
-    }
+    });
   }
   return times;
 }
@@ -154,7 +138,7 @@ controller.createReferenceTimesForMeet = function(req, res) {
           } else {
             console.log("Times successfully created");
             console.log("Updating all recruit times");
-            updateAllRecruits(true);
+            updateAllRecruits(true, true);
           }
         });
       }
@@ -203,7 +187,7 @@ controller.createTimeStandards = function(req, res) {
         } else {
           res.status(201).send({"message": "New standards created."});
           console.log("Updating all recruit times");
-          updateAllRecruits(true);
+          updateAllRecruits(true, true);
         }
       });
     }

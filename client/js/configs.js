@@ -12,7 +12,7 @@ $(document).ready(function(){
   $("#submit-meet-link").click(function(evt){
     evt.preventDefault();
     var url = $("#meet-url").val();
-    if (!/^http:\/\/www.collegeswimming.com\/results\/[0-9]{5,6}$/.test(url)){
+    if (!/^https:\/\/www.collegeswimming.com\/results\/[0-9]{5,6}$/.test(url)){
       $(".error").text("Invalid meet URL.");
       return;
     }

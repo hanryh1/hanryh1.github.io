@@ -102,7 +102,6 @@ block content
                 th Name
                 th.mobile-hidden Class Year
                 th Power Index
-                th Stars
                 th Tags
                 if isAdmin
                   th.mobile-hidden Delete
@@ -112,15 +111,6 @@ block content
                   td.name= m.name
                   td.mobile-hidden= m.classYear
                   td= m.powerIndex
-                  td
-                    - var rating = m.rating ? m.rating : 0;
-                    span(current-value=rating).star-rating
-                      - var remaining = 5 - rating;
-                      - for (var i = 0; i < rating; i++)
-                        i(star-value=i+1).fa.fa-star.rating-star.rating-star-active
-                      - for (var i = 0; i < remaining; i++)
-                        - var starValue = i + rating +1;
-                        i(star-value=starValue).fa.fa-star.rating-star
                   td
                     for tag in m.tags
                       span(hex-color=tag.color).tag-label.inline= tag.name
@@ -135,7 +125,6 @@ block content
                 th Name
                 th.mobile-hidden Class Year
                 th Power Index
-                th Stars
                 th Tags
                 if isAdmin
                   th.mobile-hidden Delete
@@ -145,15 +134,6 @@ block content
                   td.name= f.name
                   td.mobile-hidden= f.classYear
                   td= f.powerIndex
-                  td
-                    - var rating = f.rating ? f.rating : 0;
-                    span(current-value=rating).star-rating
-                      - var remaining = 5 - rating;
-                      - for (var i = 0; i < rating; i++)
-                        i(star-value=i+1).fa.fa-star.rating-star.rating-star-active
-                      - for (var i = 0; i < remaining; i++)
-                        - var starValue = i + rating +1;
-                        i(star-value=starValue).fa.fa-star.rating-star
                   td
                     for tag in f.tags
                       span(hex-color=tag.color).tag-label.inline= tag.name

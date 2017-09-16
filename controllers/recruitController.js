@@ -36,7 +36,7 @@ function getRecruitData(collegeSwimmingId, callback) {
                 callback({"error": "Recruit not found", "status": 404});
               } else {
                 var data = [];
-                var name = $("div > h1").contents().get(0).nodeValue.trim();
+                var name = $("div > h1").contents().get(0).nodeValue.trim() || $(".u-mr-").text();
                 var classYearRegex = new RegExp('Class of ([0-9]{4})');
                 var classYear = parseInt(body.match(classYearRegex)[1]) + 4;
                 $("tbody > tr").each(function(i, tr){

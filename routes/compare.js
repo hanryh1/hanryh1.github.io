@@ -9,4 +9,6 @@ router.get('/swimmers', isAuthenticated, controller.getRecruitsAndRoster);
 
 router.get('/times', isAuthenticated, controller.compareSwimmerToTeamMember);
 
+router.get('/recruit-times', isAuthenticated, controller.compareRecruitToRecruit);
+
 module.exports = router;
